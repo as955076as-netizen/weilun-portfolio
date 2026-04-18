@@ -3,150 +3,255 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>官煒倫 - 個人履歷與作品集</title>
+    <title>官煒倫 | 個人作品集</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* --- 基礎設定與變數 --- */
         :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #34495e;
-            --accent-color: #3498db;
-            --bg-color: #f8f9fa;
-            --text-color: #333;
+            --bg-color: #0f172a;      /* 深藍色背景 */
+            --card-bg: #1e293b;       /* 卡片背景 */
+            --text-main: #f8fafc;     /* 主要文字顏色 */
+            --text-muted: #94a3b8;    /* 次要文字顏色 */
+            --accent: #3b82f6;        /* 科技藍強調色 */
+            --accent-hover: #2563eb;
         }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: var(--text-color);
-            background-color: var(--bg-color);
-            margin: 0;
-            padding: 0;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: var(--bg-color); 
+            color: var(--text-main); 
+            line-height: 1.6; 
         }
-        header {
-            background-color: var(--primary-color);
-            color: white;
-            text-align: center;
-            padding: 4rem 2rem;
+        
+        /* --- 頂部導覽列 --- */
+        nav { 
+            position: fixed; top: 0; width: 100%; 
+            background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(10px); 
+            padding: 1rem 5%; display: flex; justify-content: space-between; 
+            align-items: center; z-index: 1000; 
+            border-bottom: 1px solid rgba(255,255,255,0.1); 
         }
-        header h1 {
-            margin: 0;
-            font-size: 2.5rem;
+        .logo { font-size: 1.5rem; font-weight: bold; color: var(--text-main); text-decoration: none; letter-spacing: 2px; }
+        .nav-links { display: flex; gap: 2rem; list-style: none; }
+        .nav-links a { color: var(--text-main); text-decoration: none; transition: color 0.3s; font-weight: 500; }
+        .nav-links a:hover { color: var(--accent); }
+
+        /* --- 區塊共用設定 --- */
+        section { padding: 7rem 5% 4rem; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; }
+        .section-title { font-size: 2.5rem; margin-bottom: 3rem; text-align: center; position: relative; }
+        .section-title::after { 
+            content: ''; position: absolute; bottom: -10px; left: 50%; 
+            transform: translateX(-50%); width: 60px; height: 4px; 
+            background: var(--accent); border-radius: 2px; 
         }
-        header p {
-            font-size: 1.2rem;
-            color: #ecf0f1;
-            margin-top: 10px;
+
+        /* --- 首頁 Hero 區塊 --- */
+        #home { align-items: center; text-align: center; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
+        .hero-subtitle { font-size: 1.2rem; color: var(--accent); margin-bottom: 1rem; font-weight: 600; letter-spacing: 1px; }
+        .hero-title { font-size: 4rem; margin-bottom: 1rem; font-weight: 800; }
+        .hero-desc { font-size: 1.2rem; color: var(--text-muted); max-width: 600px; margin: 0 auto 2rem; }
+        .btn { 
+            display: inline-block; padding: 0.8rem 2rem; background: var(--accent); 
+            color: white; text-decoration: none; border-radius: 30px; 
+            font-weight: bold; transition: background 0.3s, transform 0.3s; 
         }
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 2rem;
+        .btn:hover { background: var(--accent-hover); transform: translateY(-3px); }
+
+        /* --- 網格排版 --- */
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+
+        /* --- 關於我 --- */
+        .about-content { background: var(--card-bg); padding: 3rem; border-radius: 12px; max-width: 800px; margin: 0 auto; text-align: justify; border: 1px solid rgba(255,255,255,0.05); }
+        .about-content p { margin-bottom: 1rem; color: var(--text-muted); font-size: 1.1rem; }
+        
+        /* --- 技能卡片 --- */
+        .skill-card { background: var(--card-bg); padding: 2rem; border-radius: 12px; transition: transform 0.3s; border: 1px solid rgba(255,255,255,0.05); }
+        .skill-card:hover { transform: translateY(-5px); border-color: var(--accent); }
+        .skill-card i { font-size: 2.5rem; color: var(--accent); margin-bottom: 1rem; }
+        .skill-list { list-style: none; color: var(--text-muted); }
+        .skill-list li { margin-bottom: 0.5rem; display: flex; align-items: center; gap: 10px; }
+        .skill-list li::before { content: '▹'; color: var(--accent); font-weight: bold; }
+
+        /* --- 經歷時間軸 --- */
+        .timeline { position: relative; max-width: 800px; margin: 0 auto; }
+        .timeline::before { content: ''; position: absolute; left: 50%; width: 2px; height: 100%; background: var(--card-bg); }
+        .timeline-item { margin-bottom: 3rem; position: relative; width: 50%; padding-right: 3rem; }
+        .timeline-item:nth-child(even) { left: 50%; padding-left: 3rem; padding-right: 0; }
+        .timeline-dot { 
+            position: absolute; right: -11px; top: 0; width: 20px; height: 20px; 
+            background: var(--accent); border-radius: 50%; border: 4px solid var(--bg-color); z-index: 2;
         }
-        section {
-            background: white;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        }
-        h2 {
-            color: var(--primary-color);
-            border-bottom: 2px solid var(--accent-color);
-            padding-bottom: 0.5rem;
-            margin-top: 0;
-        }
-        .project-card, .experience-item {
-            margin-bottom: 1.5rem;
-        }
-        .project-card h3, .experience-item h3 {
-            margin-bottom: 0.2rem;
-            color: var(--secondary-color);
-        }
-        .tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-        }
-        .tag {
-            background-color: #e1f0fa;
-            color: var(--accent-color);
-            padding: 0.2rem 0.6rem;
-            border-radius: 4px;
-            font-size: 0.85rem;
-            font-weight: bold;
-        }
-        ul {
-            padding-left: 1.5rem;
-        }
-        @media (max-width: 600px) {
-            .container { padding: 1rem; }
-            header { padding: 3rem 1rem; }
+        .timeline-item:nth-child(even) .timeline-dot { left: -9px; }
+        .timeline-content { background: var(--card-bg); padding: 1.5rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); }
+        .timeline-content h3 { color: var(--text-main); margin-bottom: 0.2rem; }
+        .timeline-content h4 { color: var(--accent); margin-bottom: 0.5rem; font-size: 0.95rem; }
+        .timeline-content p { color: var(--text-muted); font-size: 0.95rem; }
+
+        /* --- 專案作品卡片 --- */
+        .project-card { background: var(--card-bg); border-radius: 12px; overflow: hidden; transition: transform 0.3s; border: 1px solid rgba(255,255,255,0.05); }
+        .project-card:hover { transform: translateY(-10px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        .project-img { width: 100%; height: 200px; background: #0f172a; display: flex; align-items: center; justify-content: center; color: var(--accent); font-size: 4rem; }
+        .project-content { padding: 2rem; }
+        .project-content h3 { margin-bottom: 1rem; }
+        .project-content p { color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.95rem; }
+        .tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .tag { background: rgba(59, 130, 246, 0.1); color: var(--accent); padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+
+        /* --- 頁尾 --- */
+        footer { text-align: center; padding: 2rem; background: var(--card-bg); color: var(--text-muted); }
+
+        /* --- RWD 手機版響應式設定 --- */
+        @media (max-width: 768px) {
+            .nav-links { display: none; } /* 手機版隱藏選單，保持乾淨 */
+            .hero-title { font-size: 2.5rem; }
+            .timeline::before { left: 0; }
+            .timeline-item { width: 100%; padding-left: 2rem; padding-right: 0; }
+            .timeline-item:nth-child(even) { left: 0; }
+            .timeline-dot, .timeline-item:nth-child(even) .timeline-dot { left: -9px; }
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>官煒倫</h1>
-        <p>電腦視覺開發 / 自動化流程整合 / 展演技術執行</p>
-    </header>
+    <nav>
+        <a href="#home" class="logo">Guan.</a>
+        <ul class="nav-links">
+            <li><a href="#home">首頁</a></li>
+            <li><a href="#about">關於我</a></li>
+            <li><a href="#skills">專業技能</a></li>
+            <li><a href="#experience">經歷</a></li>
+            <li><a href="#projects">專案作品</a></li>
+        </ul>
+    </nav>
 
-    <div class="container">
-        
-        <section>
-            <h2>重點專案</h2>
-            <div class="project-card">
-                <h3>AI 居家安全危險物品辨識與即時警報系統</h3>
-                <p>獨立開發基於電腦視覺的即時監控系統，針對居家環境中的人物、刀具、剪刀等物件進行識別與異常通報。</p>
-                <ul>
-                    <li>使用 <strong>YOLOv8</strong> 自定義訓練模型，並透過 <strong>OpenCV</strong> 處理影像串流。</li>
-                    <li>成功優化並壓縮模型，將模型大小從 49.7MB 大幅縮減至 <strong>6MB</strong>，提升執行效率。</li>
-                    <li>使用 <strong>Tkinter</strong> 開發圖形化使用者介面 (GUI)。</li>
-                    <li>整合 <strong>n8n</strong> 自動化工作流程，當偵測到危險物件時，即時觸發 <strong>LINE</strong> 與 <strong>Gmail</strong> 警報通知。</li>
+    <section id="home">
+        <p class="hero-subtitle">Hello, I'm</p>
+        <h1 class="hero-title">官煒倫</h1>
+        <p class="hero-desc">結合電腦視覺開發、自動化流程整合與展演技術執行的跨領域實踐者。</p>
+        <a href="#projects" class="btn">查看我的作品 <i class="fa-solid fa-arrow-down"></i></a>
+    </section>
+
+    <section id="about">
+        <h2 class="section-title">關於我</h2>
+        <div class="about-content">
+            <p>畢業於醒吾科技大學流行音樂創作學系。具備音樂藝術的涵養，並將這份對細節的敏銳度帶入程式開發與自動化領域。</p>
+            <p>過去曾擔任電視台主控助理導播，培養了在高壓環境下即時排除問題與控管流程的能力。同時，透過參與卡內基訓練，我深刻體會到人際溝通、團隊協作以及持續成長的重要性。</p>
+            <p>目前專注於 Python 程式開發與 AI 電腦視覺的應用，致力於將 YOLOv8 等前瞻技術結合 n8n 自動化工具，創造出能解決實際問題的智慧系統。</p>
+        </div>
+    </section>
+
+    <section id="skills">
+        <h2 class="section-title">專業技能</h2>
+        <div class="grid-3">
+            <div class="skill-card">
+                <i class="fa-solid fa-code"></i>
+                <h3>程式與 AI 開發</h3>
+                <ul class="skill-list">
+                    <li>Python (資料結構與演算法)</li>
+                    <li>YOLOv8 / YOLO11 模型訓練</li>
+                    <li>OpenCV 影像處理</li>
+                    <li>Tkinter 圖形化介面開發</li>
                 </ul>
-                <div class="tags">
-                    <span class="tag">Python</span>
-                    <span class="tag">YOLOv8</span>
-                    <span class="tag">OpenCV</span>
-                    <span class="tag">n8n</span>
-                    <span class="tag">Tkinter</span>
+            </div>
+            <div class="skill-card">
+                <i class="fa-solid fa-network-wired"></i>
+                <h3>自動化與環境建置</h3>
+                <ul class="skill-list">
+                    <li>n8n 自動化工作流程整合</li>
+                    <li>LINE Messaging API / Gmail 警報連動</li>
+                    <li>Docker & WSL2 環境配置</li>
+                    <li>AI 模型輕量化與部署</li>
+                </ul>
+            </div>
+            <div class="skill-card">
+                <i class="fa-solid fa-music"></i>
+                <h3>專業軟體與跨領域</h3>
+                <ul class="skill-list">
+                    <li>TQC 專業認證：Excel</li>
+                    <li>TQC 專業認證：AutoCAD 2D</li>
+                    <li>展演燈光與音控技術執行</li>
+                    <li>流行音樂創作 & 鋼琴演奏</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="experience">
+        <h2 class="section-title">經歷與培訓</h2>
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <h3>電視台主控助理導播</h3>
+                    <h4>傳播媒體業</h4>
+                    <p>負責確保電視台節目訊號播送的穩定與流程控管，具備高抗壓性與即時問題排除能力。</p>
                 </div>
             </div>
-        </section>
-
-        <section>
-            <h2>工作經歷</h2>
-            <div class="experience-item">
-                <h3>電視台主控助理導播</h3>
-                <p>負責確保電視台節目訊號播送的穩定與流程控管，具備高抗壓性與即時問題排除能力。</p>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <h3>硬體技術執行 (音控與燈光)</h3>
+                    <h4>台北流行音樂中心</h4>
+                    <p>負責音樂展演與畢業製作的燈光及音響硬體執行，具備現場技術協調與實務操作經驗。</p>
+                </div>
             </div>
-            <div class="experience-item">
-                <h3>硬體技術執行 (音控與燈光)</h3>
-                <p><strong>台北流行音樂中心</strong></p>
-                <p>負責音樂展演與畢業製作的燈光及音響硬體執行，具備現場技術協調與實務操作經驗。</p>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <h3>卡內基訓練</h3>
+                    <h4>專業職能進修</h4>
+                    <p>進行為期兩個月的訓練，系統性提升公眾表達技巧、人際關係處理與團隊協作的自信心。</p>
+                </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section>
-            <h2>教育與培訓</h2>
-            <div class="experience-item">
-                <h3>醒吾科技大學</h3>
-                <p>流行音樂創作學系 學士</p>
+    <section id="projects">
+        <h2 class="section-title">專案作品</h2>
+        <div class="grid-3">
+            <div class="project-card">
+                <div class="project-img"><i class="fa-solid fa-shield-halved"></i></div>
+                <div class="project-content">
+                    <h3>Smart Safety Care 居家安全系統</h3>
+                    <p>基於電腦視覺的即時監控系統，能準確識別環境中的刀具、剪刀等危險物件，並透過圖形化介面即時顯示。</p>
+                    <div class="tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">YOLOv8</span>
+                        <span class="tag">OpenCV</span>
+                        <span class="tag">Tkinter</span>
+                    </div>
+                </div>
             </div>
-            <div class="experience-item">
-                <h3>卡內基訓練</h3>
-                <p>於主控助理導播離職後參與，系統性提升溝通技巧、人際關係處理與團隊協作能力。</p>
+            <div class="project-card">
+                <div class="project-img"><i class="fa-solid fa-bolt"></i></div>
+                <div class="project-content">
+                    <h3>AI 辨識自動化警報連動</h3>
+                    <p>將 AI 偵測結果無縫對接自動化流程，當系統偵測到異常時，自動觸發流程並發送 LINE 及 Gmail 警示通知。</p>
+                    <div class="tags">
+                        <span class="tag">n8n</span>
+                        <span class="tag">LINE API</span>
+                        <span class="tag">Workflow Automation</span>
+                    </div>
+                </div>
             </div>
-        </section>
+            <div class="project-card">
+                <div class="project-img"><i class="fa-solid fa-compress"></i></div>
+                <div class="project-content">
+                    <h3>YOLO 模型優化與輕量化</h3>
+                    <p>針對深度學習模型進行壓縮與優化，成功將物件偵測模型大小從 49.7MB 大幅縮減至 6MB，顯著提升部署效率與推論速度。</p>
+                    <div class="tags">
+                        <span class="tag">Deep Learning</span>
+                        <span class="tag">Model Optimization</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        <section>
-            <h2>專業證照</h2>
-            <ul>
-                <li>TQC 專業技能認證 - <strong>Excel</strong></li>
-                <li>TQC 專業技能認證 - <strong>AutoCAD 2D</strong></li>
-            </ul>
-        </section>
-
-    </div>
+    <footer>
+        <p>&copy; 2026 官煒倫 Guan Weilun. All rights reserved.</p>
+    </footer>
 
 </body>
 </html>
