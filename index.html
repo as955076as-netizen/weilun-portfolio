@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio | AI Engineering</title>
+    <title>ROY | AI Engineering Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=Noto+Sans+TC:wght@300;400;700;900&display=swap" rel="stylesheet">
     
     <style>
-        /* 色彩規範與全域變數 */
         :root {
-            --bg-dark: #0a0a0c;
+            --bg-dark: #050505; /* 配合圖片的極深色背景 */
             --accent-gold: #c8a97e;
         }
         
@@ -22,38 +21,6 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* 玻璃擬態導覽列 (Glassmorphism) */
-        .nav-glass {
-            background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        /* 精品雜誌感微小標籤 (Eyebrow Text) */
-        .eyebrow {
-            letter-spacing: 0.25em;
-            color: var(--accent-gold);
-        }
-
-        /* 超大號主標題排版 */
-        .hero-title {
-            line-height: 1.05;
-            text-shadow: 0 4px 24px rgba(0, 0, 0, 0.8);
-        }
-
-        /* 按鈕互動質感 */
-        .btn-gold-outline {
-            border-color: rgba(200, 169, 126, 0.4);
-            color: var(--accent-gold);
-        }
-        .btn-gold-outline:hover {
-            background-color: rgba(200, 169, 126, 0.1);
-            border-color: var(--accent-gold);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 20px rgba(200, 169, 126, 0.15);
-        }
-
         /* 預留給 JS 的特效畫布層 */
         #particle-canvas {
             position: absolute;
@@ -62,56 +29,56 @@
             width: 100%;
             height: 100%;
             z-index: -1;
-            opacity: 0.8;
-            pointer-events: none; /* 確保不阻擋滑鼠點擊 */
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        /* 浮水印風格超大標題 */
+        .watermark-title {
+            color: rgba(255, 255, 255, 0.08); /* 極淡的透明白，模擬圖片中的深灰色調 */
+            user-select: none;
+        }
+
+        /* 膠囊按鈕互動 */
+        .btn-capsule {
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        .btn-capsule:hover {
+            border-color: rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.05);
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col relative selection:bg-[#c8a97e] selection:text-[#0a0a0c]">
+<body class="min-h-screen flex flex-col relative selection:bg-white/20 selection:text-white">
 
     <canvas id="particle-canvas"></canvas>
 
-    <nav class="nav-glass fixed w-full z-50 transition-all duration-300">
-        <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
-            <div class="font-bold text-xl tracking-widest text-white">WL.G</div>
-            <div class="hidden md:flex space-x-10 text-xs font-light tracking-[0.2em] text-white/60">
-                <a href="#about" class="hover:text-[#c8a97e] transition-colors duration-300">ABOUT</a>
-                <a href="#works" class="hover:text-[#c8a97e] transition-colors duration-300">WORKS</a>
-                <a href="#contact" class="hover:text-[#c8a97e] transition-colors duration-300">CONTACT</a>
-            </div>
-        </div>
-    </nav>
-
-    <main class="flex-grow flex items-center px-6 pt-32 pb-20 relative z-10 min-h-screen">
-        <div class="max-w-7xl mx-auto w-full flex flex-col items-start space-y-10">
+    <main class="flex-grow flex items-center justify-center px-6 relative z-10 min-h-screen">
+        <div class="max-w-7xl mx-auto w-full flex flex-col items-center justify-center text-center">
             
-            <div class="eyebrow text-sm font-medium uppercase flex items-center space-x-4">
-                <span class="w-10 h-[1px] bg-[#c8a97e]"></span>
-                <span>// Cross-Disciplinary AI Engineering</span>
+            <div class="text-xs md:text-sm font-bold tracking-[0.5em] text-white/80 mb-6 md:mb-10 pl-[0.5em]">
+                R O Y . 2 0 2 6
             </div>
 
-            <div class="flex flex-col space-y-4">
-                <h1 class="hero-title text-7xl md:text-8xl lg:text-[9rem] font-black tracking-tighter text-white">
-                    ENGINEERING
-                </h1>
-                <h1 class="hero-title text-7xl md:text-8xl lg:text-[9rem] font-black tracking-tighter text-white/80">
-                    THE UNSEEN.
-                </h1>
-                <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold mt-6 tracking-[0.15em] text-white/90">
-                    賦 能 視 覺・智 動 未 來
-                </h2>
-            </div>
+            <h1 class="watermark-title text-[8rem] sm:text-[12rem] md:text-[18rem] lg:text-[22rem] font-black leading-none tracking-tighter">
+                ROY
+            </h1>
 
-            <p class="text-base md:text-lg lg:text-xl text-white/60 max-w-2xl leading-relaxed font-light mt-8 tracking-wide">
-                將系統整合的絕對精準，注入人工智慧的維度。<br>
-                專注於電腦視覺、流程自動化與數據工程，<br>
-                在實務與演算法的交界，重新定義技術的深度與廣度。
+            <p class="text-xs md:text-sm lg:text-base text-white/60 tracking-[0.15em] md:tracking-[0.2em] font-light mt-[-1rem] md:mt-[-3rem] lg:mt-[-5rem] z-10 px-4">
+                電腦視覺 × 流程自動化 × 數據工程 / 在實務與演算法的交界，重新定義技術的深度與廣度。
             </p>
 
-            <div class="pt-8">
-                <a href="#works" class="btn-gold-outline border inline-flex items-center justify-center px-10 py-4 text-sm tracking-[0.2em] font-light transition-all duration-300">
-                    EXPLORE WORKS
+            <div class="pt-16 md:pt-24 flex flex-col items-center space-y-6 z-10">
+                <a href="#works" class="btn-capsule group inline-flex items-center justify-center px-10 py-3 md:py-4 rounded-full text-sm font-medium tracking-[0.2em] transition-all duration-300">
+                    <span class="pl-[0.2em]">進入系統</span>
+                    <span class="ml-4 font-inter text-lg group-hover:translate-x-1 transition-transform duration-300">→</span>
                 </a>
+                
+                <div class="text-[9px] md:text-[10px] tracking-[0.3em] font-inter text-[#c8a97e]/60 pl-[0.3em]">
+                    * ENTER EXPERIENCE
+                </div>
             </div>
 
         </div>
