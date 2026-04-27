@@ -32,10 +32,58 @@
             pointer-events: none;
         }
 
+        /* --- 超大主標題特效控制開始 --- */
         .watermark-title {
-            color: rgba(255, 255, 255, 0.08);
+            position: relative;
+            color: transparent; /* 文字本身透明，以利 background-clip text */
             user-select: none;
+            
+            /* 平時：低透明度白/金流動光澤 */
+            background: linear-gradient(
+                120deg,
+                rgba(255, 255, 255, 0.03) 0%,
+                rgba(255, 255, 255, 0.03) 30%,
+                rgba(200, 169, 126, 0.15) 50%, /* 溫潤金光澤 */
+                rgba(255, 255, 255, 0.03) 70%,
+                rgba(255, 255, 255, 0.03) 100%
+            );
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            animation: metallic-shine 10s linear infinite;
         }
+
+        /* 懸停：水墨描邊填滿特效 */
+        .watermark-title::before {
+            content: attr(data-text);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            
+            color: var(--accent-gold);
+            -webkit-text-stroke: 0px transparent;
+            
+            /* 初期狀態：clip-path 裁切在最底部 */
+            clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
+            transition: clip-path 0.8s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s ease;
+            z-index: 1;
+            filter: drop-shadow(0 0 0px rgba(200, 169, 126, 0));
+        }
+
+        /* 滑鼠懸停時觸發填滿與發光 */
+        .watermark-title:hover::before {
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+            filter: drop-shadow(0 0 15px rgba(200, 169, 126, 0.3));
+        }
+
+        @keyframes metallic-shine {
+            to {
+                background-position: 200% center;
+            }
+        }
+        /* --- 超大主標題特效控制結束 --- */
 
         .btn-capsule {
             border: 1px solid rgba(255, 255, 255, 0.15);
@@ -59,13 +107,13 @@
                 K U A N . 2 0 2 6
             </div>
 
-            <h1 class="watermark-title text-[8rem] sm:text-[12rem] md:text-[18rem] lg:text-[22rem] font-black leading-none tracking-tighter">
+            <h1 class="watermark-title text-[8rem] sm:text-[12rem] md:text-[18rem] lg:text-[22rem] font-black leading-none tracking-tighter" data-text="ROY">
                 ROY
             </h1>
 
             <p class="text-xs md:text-sm lg:text-base text-white/60 tracking-[0.15em] md:tracking-[0.2em] font-light mt-[-1rem] md:mt-[-3rem] lg:mt-[-5rem] z-10 px-4">
-                電腦視覺 · 流程自動化 · 影音工程
-「從實務現場跨越至演算法開發，以精準的自動化邏輯，重構視覺工程的無限可能。」
+                電腦視覺 · 流程自動化 · 影音工程<br>
+                「從實務現場跨越至演算法開發，以精準的自動化邏輯，重構視覺工程的無限可能。」
             </p>
 
             <div class="pt-16 md:pt-24 flex flex-col items-center space-y-6 z-10">
@@ -89,11 +137,10 @@
     let particlesArray = [];
     let w, h;
 
-    // 滑鼠互動區域設定
     const mouse = {
         x: null,
         y: null,
-        radius: 150 // 滑鼠連線的觸發距離
+        radius: 150 
     };
 
     window.addEventListener('mousemove', (event) => {
@@ -112,7 +159,6 @@
         init();
     });
 
-    // 粒子類別
     class Particle {
         constructor(x, y, directionX, directionY, size, color) {
             this.x = x;
@@ -123,7 +169,6 @@
             this.color = color;
         }
 
-        // 繪製單一粒子
         draw() {
             ctx.beginPath();
             ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
@@ -131,7 +176,6 @@
             ctx.fill();
         }
 
-        // 粒子移動與邊界碰撞邏輯
         update() {
             if (this.x > w || this.x < 0) {
                 this.directionX = -this.directionX;
@@ -146,38 +190,32 @@
         }
     }
 
-    // 初始化粒子陣列
     function init() {
         particlesArray = [];
         w = canvas.width = window.innerWidth;
         h = canvas.height = window.innerHeight;
         
-        // 根據螢幕大小決定粒子密度，12000 可依需求調整，數字越小越密集
         let numberOfParticles = (w * h) / 12000;
         
         for (let i = 0; i < numberOfParticles; i++) {
-            let size = (Math.random() * 1.5) + 0.5; // 粒子大小
+            let size = (Math.random() * 1.5) + 0.5; 
             let x = (Math.random() * ((w - size * 2) - (size * 2)) + size * 2);
             let y = (Math.random() * ((h - size * 2) - (size * 2)) + size * 2);
-            // 控制粒子飄移速度
             let directionX = (Math.random() - 0.5) * 0.6; 
             let directionY = (Math.random() - 0.5) * 0.6;
-            let color = 'rgba(200, 169, 126, 0.8)'; // 使用 --accent-gold 的 rgba 值
+            let color = 'rgba(200, 169, 126, 0.8)'; 
 
             particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
         }
     }
 
-    // 動態連線邏輯
     function connect() {
         let opacityValue = 1;
         for (let a = 0; a < particlesArray.length; a++) {
             for (let b = a; b < particlesArray.length; b++) {
-                // 粒子間的距離計算
                 let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x))
                              + ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
                 
-                // 若粒子間距小於設定值，則連線
                 if (distance < (w / 15) * (h / 15)) {
                     opacityValue = 1 - (distance / 20000);
                     ctx.strokeStyle = `rgba(200, 169, 126, ${opacityValue})`;
@@ -189,7 +227,6 @@
                 }
             }
 
-            // 滑鼠與粒子的距離計算
             if (mouse.x != null && mouse.y != null) {
                 let dx = particlesArray[a].x - mouse.x;
                 let dy = particlesArray[a].y - mouse.y;
@@ -208,7 +245,6 @@
         }
     }
 
-    // 動畫循環
     function animate() {
         requestAnimationFrame(animate);
         ctx.clearRect(0, 0, w, h);
