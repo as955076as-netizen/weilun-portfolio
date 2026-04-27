@@ -1,394 +1,789 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>官煒倫 | Premium Portfolio</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
-        /* --- 視覺與色彩規範 (Visual & Color Specifications) --- */
-        :root {
-            --bg-base: #0a0a0c;
-            --card-bg: rgba(255, 255, 255, 0.04);
-            --card-border: rgba(255, 255, 255, 0.05);
-            --accent-gold: #c8a97e;
-            --accent-glow: rgba(200, 169, 126, 0.15);
-            --text-main: #f3f3f4;
-            --text-muted: #8b8b93;
-            --easing: cubic-bezier(0.19, 1, 0.22, 1);
-            --font-en: 'Inter', sans-serif;
-            --font-tw: 'Noto Sans TC', sans-serif;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>陳大明 · Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #0a0a0c;
+  --gold:    #c8a97e;
+  --gold-d:  #7a6040;
+  --gold-l:  #e8cfa0;
+  --glass:   rgba(255,255,255,0.04);
+  --glass-b: rgba(200,169,126,0.18);
+  --white:   #f0ece4;
+  --muted:   rgba(240,236,228,0.42);
+  --dim:     rgba(240,236,228,0.10);
+  --ease:    cubic-bezier(0.19,1,0.22,1);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--white);
+  font-family:'Noto Sans TC',sans-serif;
+  font-weight:300;
+  overflow:hidden;
+  height:100vh;
+  cursor:none;
+}
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; background-color: var(--bg-base); }
-        body {
-            font-family: var(--font-tw);
-            color: var(--text-main);
-            background-color: transparent;
-            overflow-x: hidden;
-            line-height: 1.6;
-        }
+/* ── Ink particle canvas ── */
+#ink{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.75}
 
-        /* --- 墨跡粒子背景 (Particle Ink Canvas) --- */
-        #ink-canvas {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            z-index: -1;
-            pointer-events: none;
-        }
+/* ── Cursor ── */
+#cur{position:fixed;width:8px;height:8px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .15s,height .15s;mix-blend-mode:screen}
+#cur-r{position:fixed;width:32px;height:32px;border:1px solid rgba(200,169,126,.45);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .22s var(--ease),height .22s var(--ease),border-color .2s}
 
-        /* --- 導覽列 (Glassmorphism Nav) --- */
-        nav {
-            position: fixed; top: 0; width: 100%;
-            padding: 1.5rem 5%; z-index: 100;
-            display: flex; justify-content: space-between; align-items: center;
-            background: rgba(10, 10, 12, 0.6);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--card-border);
-            transition: all 0.5s var(--easing);
-        }
-        .logo { font-family: var(--font-en); font-weight: 800; font-size: 1.2rem; color: var(--text-main); text-decoration: none; letter-spacing: 2px; }
-        .logo span { color: var(--accent-gold); }
-        .nav-links { display: flex; gap: 3rem; list-style: none; }
-        .nav-links a {
-            color: var(--text-muted); text-decoration: none; font-size: 0.85rem;
-            text-transform: uppercase; letter-spacing: 1px; transition: color 0.4s var(--easing);
-        }
-        .nav-links a:hover { color: var(--accent-gold); }
+/* ── Noise grain ── */
+body::after{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)' opacity='1'/%3E%3C/svg%3E");
+  opacity:.028;pointer-events:none;z-index:1;
+}
 
-        /* --- 基礎佈局與進場動畫 --- */
-        section { padding: 120px 5% 60px; max-width: 1400px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; }
-        
-        .reveal { opacity: 0; transform: translateY(50px); transition: all 1.2s var(--easing); }
-        .reveal.active { opacity: 1; transform: translateY(0); }
-        
-        /* 延遲階梯效果 */
-        .delay-1 { transition-delay: 0.1s; }
-        .delay-2 { transition-delay: 0.2s; }
-        .delay-3 { transition-delay: 0.3s; }
+/* ── Navbar ── */
+#nav{
+  position:fixed;top:0;left:0;right:0;height:64px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 52px;z-index:50;
+  transition:background .4s,backdrop-filter .4s,border-color .4s;
+  border-bottom:1px solid transparent;
+}
+#nav.scrolled{
+  background:rgba(10,10,12,.72);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-color:var(--dim);
+}
+.logo{
+  font-family:'Cormorant Garamond',serif;
+  font-size:18px;letter-spacing:.22em;color:var(--gold);
+  display:flex;align-items:baseline;gap:10px;
+}
+.logo-sub{font-family:'Noto Sans TC',sans-serif;font-size:9px;letter-spacing:.35em;color:var(--muted);font-weight:300}
+.nav-r{display:flex;align-items:center;gap:36px}
+.nav-r a{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s;cursor:none}
+.nav-r a:hover,.nav-r a.on{color:var(--gold)}
+.nav-cta{
+  padding:8px 22px;border:1px solid var(--gold-d);
+  color:var(--gold)!important;font-size:10px!important;
+  letter-spacing:.16em!important;
+  transition:background .25s,border-color .25s,box-shadow .25s!important;
+}
+.nav-cta:hover{background:rgba(200,169,126,.1);border-color:var(--gold)!important;box-shadow:0 0 20px rgba(200,169,126,.2)!important}
 
-        /* --- 英雄區塊 (Hero Section) --- */
-        #hero { position: relative; }
-        .eyebrow {
-            font-family: var(--font-en); font-size: 0.85rem; font-weight: 600;
-            color: var(--accent-gold); letter-spacing: 0.25em; text-transform: uppercase;
-            margin-bottom: 1.5rem; display: flex; align-items: center; gap: 15px;
-        }
-        .eyebrow::before { content: ""; display: block; width: 40px; height: 1px; background: var(--accent-gold); }
-        .hero-title {
-            font-size: clamp(3rem, 8vw, 6rem); font-weight: 900; line-height: 1.1;
-            letter-spacing: -0.02em; margin-bottom: 2rem; color: #ffffff;
-        }
-        .hero-desc {
-            font-size: 1.1rem; color: var(--text-muted); max-width: 600px;
-            font-weight: 300; margin-bottom: 3rem;
-        }
-        .btn-gold {
-            display: inline-block; padding: 1rem 2.5rem; font-family: var(--font-en);
-            font-size: 0.9rem; letter-spacing: 1px; font-weight: 500;
-            color: var(--bg-base); background: var(--accent-gold); text-decoration: none;
-            border-radius: 2px; transition: transform 0.4s var(--easing), box-shadow 0.4s var(--easing);
-        }
-        .btn-gold:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 15px 30px -10px var(--accent-glow);
-        }
+/* ── Progress bar ── */
+#prog{
+  position:fixed;top:64px;left:0;height:1px;
+  background:linear-gradient(90deg,var(--gold-d),var(--gold),var(--gold-l));
+  z-index:51;width:0;
+  transition:width .55s var(--ease);
+  box-shadow:0 0 10px rgba(200,169,126,.55);
+}
 
-        /* --- Bento Grid 佈局 (非對稱層次) --- */
-        .section-header {
-            font-size: 2.5rem; font-weight: 800; margin-bottom: 3rem;
-            color: #fff; display: flex; align-items: flex-end; gap: 1rem;
-        }
-        .section-header span { font-size: 1rem; color: var(--accent-gold); font-family: var(--font-en); font-weight: 400; padding-bottom: 0.5rem; }
+/* ── Slides ── */
+.deck{position:relative;width:100%;height:100%;z-index:2}
+.slide{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  justify-content:center;align-items:center;
+  padding:80px 72px 64px;
+  opacity:0;pointer-events:none;
+  transform:translateX(70px);
+  transition:opacity .75s var(--ease),transform .75s var(--ease);
+}
+.slide.act{opacity:1;pointer-events:all;transform:translateX(0)}
+.slide.exit{opacity:0;transform:translateX(-70px)}
 
-        .bento-grid {
-            display: grid;
-            grid-template-columns: repeat(12, 1fr);
-            grid-auto-rows: minmax(280px, auto);
-            gap: 20px;
-        }
-        .bento-item {
-            background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--card-border);
-            border-radius: 16px;
-            padding: 2.5rem;
-            transition: all 0.6s var(--easing);
-            position: relative;
-            overflow: hidden;
-        }
-        .bento-item:hover {
-            transform: translateY(-8px);
-            background: rgba(255, 255, 255, 0.06);
-            border-color: rgba(200, 169, 126, 0.3);
-            box-shadow: 0 20px 40px -10px var(--accent-glow);
-        }
-        
-        /* 網格分配 */
-        .bento-large { grid-column: span 8; }
-        .bento-medium { grid-column: span 4; }
-        .bento-full { grid-column: span 12; }
-        
-        .bento-item h3 { font-size: 1.5rem; color: #fff; margin-bottom: 1rem; font-weight: 600; }
-        .bento-item p { color: var(--text-muted); font-weight: 300; font-size: 0.95rem; line-height: 1.8; }
-        
-        .tech-tags { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 1.5rem; }
-        .tag {
-            font-family: var(--font-en); font-size: 0.75rem; color: var(--accent-gold);
-            padding: 0.4rem 1rem; border: 1px solid rgba(200, 169, 126, 0.3);
-            border-radius: 30px; background: rgba(200, 169, 126, 0.05);
-        }
+/* ── Keyframes ── */
+@keyframes fu{from{opacity:0;transform:translateY(50px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+@keyframes sx{from{opacity:0;transform:scaleX(0)}to{opacity:1;transform:scaleX(1)}}
+@keyframes pulse{0%,100%{opacity:.6}50%{opacity:1}}
 
-        /* --- 作品集區塊 (Media Effects) --- */
-        .project-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 30px;
-        }
-        .project-card {
-            background: var(--card-bg); border: 1px solid var(--card-border);
-            border-radius: 16px; overflow: hidden; cursor: pointer;
-            transition: all 0.6s var(--easing); display: flex; flex-direction: column;
-        }
-        .project-card:hover {
-            transform: translateY(-8px); box-shadow: 0 20px 40px -10px var(--accent-glow);
-        }
-        .project-img-container {
-            width: 100%; height: 260px; overflow: hidden; position: relative;
-            background: rgba(0,0,0,0.5); border-bottom: 1px solid var(--card-border);
-        }
-        .project-img {
-            width: 100%; height: 100%; object-fit: cover;
-            transition: transform 1.2s var(--easing); opacity: 0.7;
-        }
-        .project-card:hover .project-img { transform: scale(1.06); opacity: 1; }
-        .project-info { padding: 2.5rem; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
-        .project-info h3 { font-size: 1.5rem; margin-bottom: 1rem; color: #fff; }
-        .project-info p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem; }
+/* ── Shared typography ── */
+.eyebrow{
+  font-size:9px;letter-spacing:.32em;text-transform:uppercase;
+  color:var(--gold);font-weight:400;
+  opacity:0;animation:fu .6s var(--ease) .2s forwards;
+}
+.h-main{
+  font-family:'Cormorant Garamond',serif;
+  font-weight:300;line-height:1.0;
+  color:var(--white);
+  opacity:0;
+}
+.h-main em{color:var(--gold);font-style:italic}
+.muted-text{font-size:14px;line-height:1.9;font-weight:300;color:var(--muted)}
 
-        /* 響應式設定 */
-        @media (max-width: 1024px) {
-            .bento-large, .bento-medium { grid-column: span 12; }
-        }
-        @media (max-width: 768px) {
-            .nav-links { display: none; }
-            .hero-title { font-size: 3rem; }
-            section { padding: 100px 5% 40px; }
-            .project-grid { grid-template-columns: 1fr; }
-        }
-    </style>
+/* ── Glass card base ── */
+.glass{
+  background:var(--glass);
+  border:1px solid var(--glass-b);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+}
+
+/* ────────────── SLIDE 1 — Hero ────────────── */
+#s1{gap:0}
+.hero-number{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(180px,22vw,280px);
+  font-weight:300;
+  line-height:.8;
+  color:rgba(200,169,126,.06);
+  position:absolute;
+  right:-20px;top:50%;transform:translateY(-50%);
+  pointer-events:none;
+  letter-spacing:-.02em;
+  user-select:none;
+}
+.hero-eyebrow{
+  font-size:9px;letter-spacing:.38em;text-transform:uppercase;color:var(--gold);
+  margin-bottom:22px;opacity:0;animation:fu .6s var(--ease) .4s forwards;
+}
+.hero-name{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(64px,8.5vw,110px);
+  font-weight:300;line-height:.92;
+  color:var(--white);
+  opacity:0;animation:fu .9s var(--ease) .6s forwards;
+}
+.hero-name em{color:var(--gold);font-style:italic;display:block}
+.hero-line{
+  width:52px;height:1px;
+  background:linear-gradient(90deg,var(--gold),transparent);
+  margin:30px 0;
+  opacity:0;animation:sx .5s var(--ease) 1s forwards;
+  transform-origin:left;
+}
+.hero-role{
+  font-size:clamp(10px,1.1vw,12px);letter-spacing:.28em;text-transform:uppercase;
+  color:var(--muted);font-weight:300;
+  opacity:0;animation:fu .6s var(--ease) 1.1s forwards;
+}
+.hero-tagline{
+  margin-top:12px;
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(16px,1.8vw,21px);font-style:italic;font-weight:300;
+  color:rgba(240,236,228,.35);
+  opacity:0;animation:fu .6s var(--ease) 1.2s forwards;
+}
+.hero-btns{
+  display:flex;gap:14px;margin-top:44px;
+  opacity:0;animation:fu .6s var(--ease) 1.35s forwards;
+}
+.btn-g{
+  padding:13px 40px;border:1px solid var(--gold);
+  background:rgba(200,169,126,.08);
+  color:var(--gold);font-size:10px;letter-spacing:.2em;text-transform:uppercase;
+  cursor:none;transition:background .3s,box-shadow .3s,color .3s;
+}
+.btn-g:hover{background:var(--gold);color:var(--bg);box-shadow:0 0 36px rgba(200,169,126,.35)}
+.btn-o{
+  padding:13px 40px;border:1px solid var(--dim);
+  background:transparent;
+  color:var(--muted);font-size:10px;letter-spacing:.2em;text-transform:uppercase;
+  cursor:none;transition:border-color .3s,color .3s;
+}
+.btn-o:hover{border-color:var(--gold-d);color:var(--white)}
+
+/* scroll hint */
+.scroll-hint{
+  position:absolute;bottom:32px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  opacity:0;animation:fi .8s var(--ease) 1.8s forwards;
+}
+.scroll-hint span{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+.scroll-line{width:1px;height:32px;background:linear-gradient(to bottom,var(--gold),transparent);animation:pulse 2.2s ease-in-out infinite}
+
+/* ────────────── SLIDE 2 — About ────────────── */
+#s2{flex-direction:row;gap:72px;align-items:center}
+
+.portrait-wrap{
+  flex-shrink:0;
+  width:clamp(160px,17vw,215px);
+  height:clamp(200px,21vw,265px);
+  position:relative;
+  opacity:0;animation:fu .8s var(--ease) .3s forwards;
+}
+.portrait-inner{
+  width:100%;height:100%;
+  background:linear-gradient(155deg,#1e1810 0%,#0e0c08 100%);
+  border:1px solid var(--gold-d);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(48px,6vw,76px);color:var(--gold);
+  position:relative;overflow:hidden;
+  transition:transform .5s var(--ease);
+}
+.portrait-inner::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(200,169,126,.12) 0%,transparent 55%)}
+.portrait-wrap:hover .portrait-inner{transform:scale(1.03) rotate(-1deg)}
+.portrait-wrap::before{content:'';position:absolute;inset:-9px;border:1px solid rgba(200,169,126,.12);pointer-events:none}
+.portrait-wrap::after{
+  content:'Designer';position:absolute;bottom:-13px;right:-13px;
+  font-size:8px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--gold);border:1px solid var(--gold-d);
+  padding:5px 11px;background:var(--bg);
+}
+
+.about-r{max-width:480px}
+.about-bio{
+  font-size:clamp(13px,1.25vw,15px);line-height:2;font-weight:300;color:var(--muted);
+  opacity:0;animation:fu .6s var(--ease) .5s forwards;
+}
+.about-div{
+  width:38px;height:1px;background:var(--gold-d);
+  margin:22px 0;opacity:0;animation:sx .4s var(--ease) .65s forwards;transform-origin:left;
+}
+.tags{display:flex;flex-wrap:wrap;gap:8px;opacity:0;animation:fu .5s var(--ease) .75s forwards}
+.tag{
+  font-size:9px;letter-spacing:.14em;text-transform:uppercase;
+  padding:5px 14px;border:1px solid var(--gold-d);
+  color:var(--gold);background:rgba(200,169,126,.05);
+  transition:background .2s,border-color .2s;cursor:none;
+}
+.tag:hover{background:rgba(200,169,126,.14);border-color:var(--gold)}
+
+/* stats row */
+.stats{display:flex;gap:36px;margin-top:28px;opacity:0;animation:fu .5s var(--ease) .9s forwards}
+.stat-n{font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:300;color:var(--gold);line-height:1}
+.stat-l{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+
+/* ────────────── SLIDE 3 — Work (Bento) ────────────── */
+#s3{align-items:flex-start;padding-top:88px}
+
+.bento{
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  grid-template-rows:auto auto;
+  gap:12px;width:100%;margin-top:8px;
+}
+
+/* card base */
+.bc{
+  background:var(--glass);
+  border:1px solid rgba(200,169,126,.14);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  position:relative;overflow:hidden;cursor:none;
+  transition:border-color .35s var(--ease),transform .35s var(--ease),box-shadow .35s var(--ease);
+  opacity:0;
+}
+.bc:hover{
+  border-color:rgba(200,169,126,.5);
+  transform:translateY(-8px);
+  box-shadow:0 16px 48px rgba(200,169,126,.1),0 0 0 1px rgba(200,169,126,.12);
+}
+.bc::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(200,169,126,.06) 0%,transparent 60%);
+  opacity:0;transition:opacity .35s;
+}
+.bc:hover::before{opacity:1}
+
+/* reveal overlay */
+.bc-overlay{
+  position:absolute;inset:0;
+  background:rgba(10,10,12,.82);
+  display:flex;flex-direction:column;justify-content:flex-end;padding:22px;
+  opacity:0;transition:opacity .4s var(--ease);
+}
+.bc:hover .bc-overlay{opacity:1}
+
+/* gold line reveal */
+.bc-line{
+  position:absolute;bottom:0;left:0;
+  height:2px;width:0;
+  background:linear-gradient(90deg,var(--gold-d),var(--gold));
+  transition:width .4s var(--ease);
+}
+.bc:hover .bc-line{width:100%}
+
+/* img zoom */
+.bc-img{
+  width:100%;height:100%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:44px;overflow:hidden;position:relative;
+  background:linear-gradient(160deg,#171410 0%,#0d0c09 100%);
+  transition:transform .55s var(--ease);
+}
+.bc:hover .bc-img{transform:scale(1.06)}
+
+/* sizing */
+.bc1{grid-column:span 3;grid-row:span 2;animation:fu .55s var(--ease) .2s forwards}
+.bc2{grid-column:span 3;animation:fu .55s var(--ease) .32s forwards}
+.bc3{grid-column:span 2;animation:fu .55s var(--ease) .44s forwards}
+.bc4{grid-column:span 1;animation:fu .55s var(--ease) .56s forwards}
+
+.bc1 .bc-img{height:100%;min-height:240px}
+.bc2 .bc-img,.bc3 .bc-img,.bc4 .bc-img{height:130px}
+
+.bc-badge{
+  display:inline-block;margin-bottom:6px;
+  font-size:8px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--gold);border:1px solid var(--gold-d);padding:3px 10px;
+}
+.bc-t{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:var(--white);margin-bottom:6px}
+.bc-d{font-size:11px;line-height:1.65;color:var(--muted);font-weight:300}
+.bc-link{
+  display:inline-block;margin-top:10px;font-size:9px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--gold);
+  border-bottom:1px solid var(--gold-d);padding-bottom:1px;
+}
+.bc4 .bc-img{font-size:28px}
+.bc4-body{padding:14px 16px}
+.bc4-n{font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--gold)}
+.bc4-l{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:2px}
+
+/* ────────────── SLIDE 4 — Skills ────────────── */
+#s4{}
+.skills-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:44px 88px;width:100%;max-width:820px;margin-top:0;
+}
+.scol-t{font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:20px;opacity:0}
+.scol-t.on{animation:fu .5s var(--ease) forwards}
+.si{margin-bottom:15px}
+.sr{display:flex;justify-content:space-between;margin-bottom:5px}
+.sn{font-size:13px;color:var(--white);font-weight:300;letter-spacing:.03em}
+.sp{font-size:11px;color:var(--gold);font-family:'Cormorant Garamond',serif}
+.st{height:1px;background:rgba(255,255,255,.07);overflow:visible;position:relative}
+.sf{
+  height:1px;width:0;
+  background:linear-gradient(90deg,var(--gold-d),var(--gold));
+  transition:width 1.6s var(--ease);
+  position:relative;
+}
+.sf::after{
+  content:'';position:absolute;right:-3px;top:-3px;
+  width:7px;height:7px;border-radius:50%;
+  background:var(--gold-l);box-shadow:0 0 10px var(--gold),0 0 20px rgba(200,169,126,.4);
+  opacity:0;transition:opacity .3s 1.4s;
+}
+.sf.lit::after{opacity:1}
+
+/* ────────────── SLIDE 5 — Contact ────────────── */
+#s5{}
+.c-wrap{text-align:center;position:relative;z-index:2;max-width:720px}
+.c-label{font-size:9px;letter-spacing:.36em;text-transform:uppercase;color:var(--gold);margin-bottom:18px;opacity:0;animation:fi .5s var(--ease) .2s forwards}
+.c-h{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(48px,7vw,92px);
+  font-weight:300;line-height:1.0;color:var(--white);
+  opacity:0;animation:fu .9s var(--ease) .35s forwards;
+}
+.c-h em{color:var(--gold);font-style:italic;display:block}
+.c-sub{
+  margin-top:16px;font-family:'Cormorant Garamond',serif;
+  font-size:17px;font-style:italic;font-weight:300;color:var(--muted);
+  opacity:0;animation:fu .6s var(--ease) .55s forwards;
+}
+.c-bar{
+  width:1px;height:52px;
+  background:linear-gradient(to bottom,var(--gold),transparent);
+  margin:34px auto;
+  opacity:0;animation:fi .5s var(--ease) .7s forwards;
+}
+.c-btns{
+  display:flex;gap:14px;justify-content:center;flex-wrap:wrap;
+  opacity:0;animation:fu .6s var(--ease) .8s forwards;
+}
+.c-info{
+  margin-top:40px;font-size:11px;letter-spacing:.1em;color:var(--muted);
+  opacity:0;animation:fu .5s var(--ease) 1.0s forwards;
+}
+
+/* ── Nav dots ── */
+#dots{
+  position:fixed;bottom:38px;left:50%;transform:translateX(-50%);
+  display:flex;gap:10px;align-items:center;z-index:50;
+}
+.dot{
+  width:5px;height:5px;border-radius:50%;background:var(--dim);
+  border:1px solid transparent;cursor:none;
+  transition:background .2s,width .25s var(--ease),border-color .2s;
+}
+.dot.act{width:18px;border-radius:99px;background:var(--gold);border-color:var(--gold)}
+
+/* ── Arr btns ── */
+.arr{
+  position:fixed;top:50%;z-index:50;
+  background:none;border:1px solid var(--dim);
+  color:var(--muted);width:40px;height:40px;border-radius:50%;
+  font-size:15px;transform:translateY(-50%);
+  transition:border-color .2s,color .2s,background .2s;
+  cursor:none;display:flex;align-items:center;justify-content:center;
+}
+.arr:hover{border-color:var(--gold);color:var(--gold);background:rgba(200,169,126,.07)}
+#pB{left:22px}#nB{right:22px}
+
+/* ── Counter ── */
+#cntr{
+  position:fixed;bottom:38px;right:52px;
+  font-family:'Cormorant Garamond',serif;
+  font-size:12px;color:var(--muted);letter-spacing:.14em;z-index:50;
+}
+#cntr b{color:var(--gold);font-weight:300;font-size:19px}
+
+/* hover expand for interactive elements */
+.hoverable:hover ~ #cur{width:18px;height:18px}
+</style>
 </head>
 <body>
 
-    <canvas id="ink-canvas"></canvas>
+<canvas id="ink"></canvas>
+<div id="cur"></div>
+<div id="cur-r"></div>
 
-    <nav>
-        <a href="#hero" class="logo">GUAN<span>.</span></a>
-        <ul class="nav-links">
-            <li><a href="#about">About</a></li>
-            <li><a href="#expertise">Expertise</a></li>
-            <li><a href="#projects">Work</a></li>
-        </ul>
-    </nav>
+<!-- Navbar -->
+<header id="nav">
+  <div class="logo">CHEN <span class="logo-sub">STUDIOS</span></div>
+  <nav class="nav-r" id="navLinks">
+    <a href="#" class="on" data-i="0">首頁</a>
+    <a href="#" data-i="1">關於</a>
+    <a href="#" data-i="2">作品</a>
+    <a href="#" data-i="3">技能</a>
+    <a href="#" class="nav-cta" data-i="4">聯絡</a>
+  </nav>
+</header>
 
-    <section id="hero">
-        <div class="reveal">
-            <div class="eyebrow">Professional Breadth / AI Vision</div>
-            <h1 class="hero-title">官煒倫</h1>
-            <p class="hero-desc">以流行音樂的藝術底蘊為基石，深耕 AI 電腦視覺與自動化工程。將跨領域的細膩度轉化為高效能的系統整合架構。</p>
-            <a href="#projects" class="btn-gold">Explore Works</a>
+<div id="prog"></div>
+
+<div class="deck">
+
+  <!-- S1 Hero -->
+  <div class="slide act" id="s1">
+    <div class="hero-number">陳</div>
+    <div style="position:relative;z-index:2;max-width:680px;width:100%">
+      <div class="hero-eyebrow">Designer · Developer · Creative Director</div>
+      <h1 class="hero-name">陳<em>大明</em></h1>
+      <div class="hero-line"></div>
+      <p class="hero-role">UI/UX 設計師 &nbsp;·&nbsp; 前端開發者 &nbsp;·&nbsp; 品牌顧問</p>
+      <p class="hero-tagline">"以設計感知世界，以程式碼書寫夢想"</p>
+      <div class="hero-btns">
+        <button class="btn-g" onclick="goTo(2)">探索作品 →</button>
+        <button class="btn-o" onclick="goTo(4)">聯絡我</button>
+      </div>
+    </div>
+    <div class="scroll-hint">
+      <span>向下探索</span>
+      <div class="scroll-line"></div>
+    </div>
+  </div>
+
+  <!-- S2 About -->
+  <div class="slide" id="s2">
+    <div class="portrait-wrap">
+      <div class="portrait-inner">陳</div>
+    </div>
+    <div class="about-r">
+      <div class="eyebrow">About Me</div>
+      <h2 class="h-main" style="font-size:clamp(32px,4.2vw,54px);margin-bottom:20px;animation:fu .65s var(--ease) .35s forwards">你好，<br>我是<em>陳大明</em></h2>
+      <p class="about-bio">五年設計與開發經驗，專注打造兼具美感與功能的數位產品。熱衷使用者研究、品牌視覺與互動設計，擅長將複雜需求轉化為直覺且優雅的介面體驗。</p>
+      <div class="about-div"></div>
+      <div class="tags">
+        <span class="tag">UI Design</span><span class="tag">UX Research</span>
+        <span class="tag">React</span><span class="tag">Figma</span>
+        <span class="tag">Branding</span><span class="tag">Motion</span>
+      </div>
+      <div class="stats">
+        <div><div class="stat-n">5+</div><div class="stat-l">年經驗</div></div>
+        <div><div class="stat-n">38</div><div class="stat-l">個專案</div></div>
+        <div><div class="stat-n">12</div><div class="stat-l">個品牌</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S3 Work Bento -->
+  <div class="slide" id="s3">
+    <div class="eyebrow" style="align-self:flex-start">Selected Work</div>
+    <h2 class="h-main" style="font-size:clamp(30px,4vw,50px);align-self:flex-start;margin-bottom:0;animation:fu .6s var(--ease) .15s forwards">精選<em>作品</em></h2>
+    <div class="bento">
+      <!-- Card 1: large -->
+      <div class="bc bc1">
+        <div class="bc-img" style="font-size:72px">🏛</div>
+        <div class="bc-overlay">
+          <div class="bc-badge">Branding · 2024</div>
+          <div class="bc-t">品牌識別系統</div>
+          <div class="bc-d">為新創科技公司打造完整視覺語言，涵蓋 Logo、色彩規範與字型系統。</div>
+          <div class="bc-link">View Case Study →</div>
         </div>
-    </section>
-
-    <section id="expertise">
-        <h2 class="section-header reveal"><span>01 / </span> Expertise & Journey</h2>
-        <div class="bento-grid">
-            <div class="bento-item bento-large reveal delay-1">
-                <h3>System Architecture & AI</h3>
-                <p>專注於建構從邊緣運算到自動化工作流的完整生態系。透過精煉的模型輕量化技術，確保系統在真實環境中的穩定性與即時性。</p>
-                <div class="tech-tags">
-                    <span class="tag">Python</span>
-                    <span class="tag">YOLOv8 / YOLO11</span>
-                    <span class="tag">OpenCV</span>
-                    <span class="tag">n8n Automation</span>
-                    <span class="tag">Tkinter</span>
-                </div>
-            </div>
-
-            <div class="bento-item bento-medium reveal delay-2">
-                <h3>Communication</h3>
-                <p>經由卡內基訓練洗禮，具備精準的跨部門溝通技巧與專案協作思維。在複雜的技術需求中，始終保持清晰的邏輯與團隊向心力。</p>
-                <div class="tech-tags">
-                    <span class="tag">Team Collaboration</span>
-                    <span class="tag">Carnegie Training</span>
-                </div>
-            </div>
-
-            <div class="bento-item bento-full reveal delay-3">
-                <h3>Cross-Disciplinary Execution</h3>
-                <p>曾擔任電視台主控助理導播，養成在高壓環境下實現「零失誤」播出的嚴謹態度。此外，於台北流行音樂中心負責大型展演的燈光與音響硬體統籌，具備處理複雜硬體訊號交會與現場突發狀況的即時應變能力。</p>
-            </div>
+        <div class="bc-line"></div>
+      </div>
+      <!-- Card 2 -->
+      <div class="bc bc2">
+        <div class="bc-img">📱</div>
+        <div class="bc-overlay">
+          <div class="bc-badge">Mobile UX · 2024</div>
+          <div class="bc-t">健康追蹤 App</div>
+          <div class="bc-d">iOS UX 重設計，轉換率提升 38%，獲 App Store 精選。</div>
+          <div class="bc-link">View Case Study →</div>
         </div>
-    </section>
-
-    <section id="projects">
-        <h2 class="section-header reveal"><span>02 / </span> Selected Works</h2>
-        <div class="project-grid">
-            
-            <div class="project-card reveal delay-1">
-                <div class="project-img-container">
-                    <div class="project-img" style="background: linear-gradient(45deg, #1a1a24, #0a0a0c); display:flex; align-items:center; justify-content:center; color: var(--accent-gold); font-size: 3rem;">
-                        <i class="fa-solid fa-expand"></i>
-                    </div>
-                </div>
-                <div class="project-info">
-                    <div>
-                        <h3>Smart Safety Care 邊緣視覺系統</h3>
-                        <p>專為居家安全設計的即時監控架構。運用知識蒸餾技術，成功將 YOLO 深度學習模型由 49.7MB 大幅壓縮至 6MB，實現在受限硬體環境下的高幀率（FPS）危險物品偵測。</p>
-                    </div>
-                    <div class="tech-tags">
-                        <span class="tag">Computer Vision</span>
-                        <span class="tag">Model Compression</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="project-card reveal delay-2">
-                <div class="project-img-container">
-                    <div class="project-img" style="background: linear-gradient(45deg, #1a1a24, #0a0a0c); display:flex; align-items:center; justify-content:center; color: var(--accent-gold); font-size: 3rem;">
-                        <i class="fa-solid fa-project-diagram"></i>
-                    </div>
-                </div>
-                <div class="project-info">
-                    <div>
-                        <h3>AI 異常連動警報網</h3>
-                        <p>整合電腦視覺推論結果與 n8n 自動化工作流。當系統捕獲特定目標或危險行為時，無需人工介入，即刻觸發 API 串接，毫秒級推送 LINE 與 Gmail 圖文警報。</p>
-                    </div>
-                    <div class="tech-tags">
-                        <span class="tag">n8n</span>
-                        <span class="tag">API Integration</span>
-                    </div>
-                </div>
-            </div>
-
+        <div class="bc-line"></div>
+      </div>
+      <!-- Card 3 -->
+      <div class="bc bc3">
+        <div class="bc-img">🌐</div>
+        <div class="bc-overlay">
+          <div class="bc-badge">Web · 2023</div>
+          <div class="bc-t">電商平台改版</div>
+          <div class="bc-d">全站重構，降低 60% 維護成本。</div>
+          <div class="bc-link">View →</div>
         </div>
-    </section>
+        <div class="bc-line"></div>
+      </div>
+      <!-- Card 4: stat -->
+      <div class="bc bc4">
+        <div style="padding:22px 20px">
+          <div class="bc4-n">38+</div>
+          <div class="bc4-l">完成專案</div>
+        </div>
+        <div style="padding:0 20px 20px">
+          <div class="bc4-n" style="color:var(--white);font-size:20px">🏆</div>
+          <div class="bc4-l">獎項肯定</div>
+        </div>
+        <div class="bc-line"></div>
+      </div>
+    </div>
+  </div>
 
-    <script>
-        /* --- 1. 滾動進場動畫 (Scroll Reveal with Stagger) --- */
-        const revealElements = document.querySelectorAll('.reveal');
-        const revealOptions = { threshold: 0.1, rootMargin: "0px 0px -50px 0px" };
+  <!-- S4 Skills -->
+  <div class="slide" id="s4">
+    <div class="eyebrow">Expertise</div>
+    <h2 class="h-main" style="font-size:clamp(30px,4vw,50px);margin-bottom:36px;animation:fu .6s var(--ease) .15s forwards">專業<em>技能</em></h2>
+    <div class="skills-grid">
+      <div>
+        <div class="scol-t" id="sc1">設計工具</div>
+        <div class="si"><div class="sr"><span class="sn">Figma</span><span class="sp">97%</span></div><div class="st"><div class="sf" data-w="97"></div></div></div>
+        <div class="si"><div class="sr"><span class="sn">UI Design</span><span class="sp">95%</span></div><div class="st"><div class="sf" data-w="95"></div></div></div>
+        <div class="si"><div class="sr"><span class="sn">Motion Design</span><span class="sp">80%</span></div><div class="st"><div class="sf" data-w="80"></div></div></div>
+        <div class="si"><div class="sr"><span class="sn">Branding</span><span class="sp">88%</span></div><div class="st"><div class="sf" data-w="88"></div></div></div>
+      </div>
+      <div>
+        <div class="scol-t" id="sc2">開發技術</div>
+        <div class="si"><div class="sr"><span class="sn">HTML / CSS</span><span class="sp">93%</span></div><div class="st"><div class="sf" data-w="93"></div></div></div>
+        <div class="si"><div class="sr"><span class="sn">React / Next.js</span><span class="sp">86%</span></div><div class="st"><div class="sf" data-w="86"></div></div></div>
+        <div class="si"><div class="sr"><span class="sn">TypeScript</span><span class="sp">76%</span></div><div class="st"><div class="sf" data-w="76"></div></div></div>
+        <div class="si"><div class="sr"><span class="sn">Framer</span><span class="sp">82%</span></div><div class="st"><div class="sf" data-w="82"></div></div></div>
+      </div>
+    </div>
+  </div>
 
-        const revealObserver = new IntersectionObserver(function(entries, observer) {
-            entries.forEach(entry => {
-                if (!entry.isIntersecting) return;
-                entry.target.classList.add('active');
-                observer.unobserve(entry.target);
-            });
-        }, revealOptions);
+  <!-- S5 Contact -->
+  <div class="slide" id="s5">
+    <div class="c-wrap">
+      <div class="c-label">Let's Create Together</div>
+      <h2 class="c-h">讓我們一起<em>創造美好</em></h2>
+      <p class="c-sub">開放全職合作 · 接案諮詢 · 創意企劃</p>
+      <div class="c-bar"></div>
+      <div class="c-btns">
+        <button class="btn-g">✉ 寄封信給我</button>
+        <button class="btn-o">◈ GitHub</button>
+        <button class="btn-o">⟡ LinkedIn</button>
+      </div>
+      <div class="c-info">hello@chendaming.com &nbsp;·&nbsp; +886 912 345 678</div>
+    </div>
+  </div>
 
-        revealElements.forEach(el => revealObserver.observe(el));
+</div>
 
-        /* --- 2. 墨跡粒子特效系統 (Kinetic Ink Particle System) --- */
-        const canvas = document.getElementById('ink-canvas');
-        const ctx = canvas.getContext('2d');
-        let width, height;
-        let particles = [];
-        
-        // 滑鼠互動座標
-        let mouse = { x: null, y: null, radius: 250 };
+<button class="arr" id="pB">←</button>
+<button class="arr" id="nB">→</button>
+<div id="dots">
+  <div class="dot act" data-i="0"></div>
+  <div class="dot" data-i="1"></div>
+  <div class="dot" data-i="2"></div>
+  <div class="dot" data-i="3"></div>
+  <div class="dot" data-i="4"></div>
+</div>
+<div id="cntr"><b>01</b> / 05</div>
 
-        window.addEventListener('mousemove', (e) => {
-            mouse.x = e.x; mouse.y = e.y;
-        });
-        window.addEventListener('mouseout', () => {
-            mouse.x = null; mouse.y = null;
-        });
+<script>
+/* ══ INK PARTICLE SYSTEM ══ */
+(function(){
+  const canvas = document.getElementById('ink');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [], mouse = {x: -999, y: -999};
+  const COUNT = 90;
 
-        function resizeCanvas() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
+  function resize(){
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  document.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
 
-        class Particle {
-            constructor() {
-                this.x = Math.random() * width;
-                this.y = Math.random() * height;
-                this.size = Math.random() * 2 + 0.5;
-                this.baseX = this.x;
-                this.baseY = this.y;
-                this.density = (Math.random() * 30) + 1;
-                // 流體般的緩慢移動速度
-                this.vx = (Math.random() - 0.5) * 0.5;
-                this.vy = (Math.random() - 0.5) * 0.5;
-            }
-            draw() {
-                // 使用墨金色
-                ctx.fillStyle = 'rgba(200, 169, 126, 0.4)';
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.closePath();
-                ctx.fill();
-            }
-            update() {
-                // 基礎流動
-                this.x += this.vx;
-                this.y += this.vy;
+  function Particle(){
+    this.reset = function(){
+      this.x  = Math.random() * W;
+      this.y  = Math.random() * H;
+      this.vx = (Math.random() - .5) * .4;
+      this.vy = (Math.random() - .5) * .4;
+      this.r  = Math.random() * 1.8 + .4;
+      this.a  = Math.random() * .35 + .08;
+      this.life = Math.random() * 300 + 200;
+      this.age  = 0;
+      const warm = Math.random();
+      if(warm > .6){
+        const t = Math.random();
+        // gold spectrum
+        const gr = Math.round(160 + t*72), gg = Math.round(120 + t*60), gb = Math.round(60 + t*40);
+        this.color = `rgb(${gr},${gg},${gb})`;
+      } else {
+        this.color = `rgba(200,169,126,${.12 + Math.random()*.2})`;
+      }
+    };
+    this.reset();
+  }
 
-                // 邊界回彈
-                if(this.x > width || this.x < 0) this.vx = -this.vx;
-                if(this.y > height || this.y < 0) this.vy = -this.vy;
+  for(let i=0;i<COUNT;i++){
+    const p = new Particle();
+    p.age = Math.random() * p.life; // stagger start
+    particles.push(p);
+  }
 
-                // 滑鼠互動 (吸引與暈染效果)
-                if (mouse.x != null) {
-                    let dx = mouse.x - this.x;
-                    let dy = mouse.y - this.y;
-                    let distance = Math.sqrt(dx * dx + dy * dy);
-                    let forceDirectionX = dx / distance;
-                    let forceDirectionY = dy / distance;
-                    let maxDistance = mouse.radius;
-                    let force = (maxDistance - distance) / maxDistance;
-                    let directionX = forceDirectionX * force * this.density * 0.05;
-                    let directionY = forceDirectionY * force * this.density * 0.05;
+  function draw(){
+    ctx.clearRect(0,0,W,H);
 
-                    if (distance < mouse.radius) {
-                        this.x += directionX;
-                        this.y += directionY;
-                    }
-                }
-            }
-        }
+    particles.forEach(p => {
+      p.age++;
+      if(p.age > p.life){ p.reset(); return; }
 
-        function initParticles() {
-            particles = [];
-            // 粒子數量依螢幕大小調整
-            let numberOfParticles = (width * height) / 9000;
-            for (let i = 0; i < numberOfParticles; i++) {
-                particles.push(new Particle());
-            }
-        }
+      // mouse attract / swirl
+      const dx = mouse.x - p.x, dy = mouse.y - p.y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if(dist < 200){
+        const f = (200 - dist) / 200 * .015;
+        // swirl: perpendicular + attraction
+        p.vx += (-dy/dist * f * 1.4) + (dx/dist * f * .4);
+        p.vy += ( dx/dist * f * 1.4) + (dy/dist * f * .4);
+      }
 
-        function animate() {
-            // 水墨暈染 Decay & Blur 效果：不清空畫布，而是覆蓋一層帶透明度的背景色
-            ctx.fillStyle = 'rgba(10, 10, 12, 0.15)';
-            ctx.fillRect(0, 0, width, height);
+      // gentle random drift
+      p.vx += (Math.random()-.5) * .015;
+      p.vy += (Math.random()-.5) * .015;
 
-            for (let i = 0; i < particles.length; i++) {
-                particles[i].update();
-                particles[i].draw();
-            }
-            requestAnimationFrame(animate);
-        }
+      // dampen
+      p.vx *= .98; p.vy *= .98;
 
-        initParticles();
-        animate();
-    </script>
+      p.x += p.vx; p.y += p.vy;
+
+      // wrap
+      if(p.x < -10) p.x = W+10;
+      if(p.x > W+10) p.x = -10;
+      if(p.y < -10) p.y = H+10;
+      if(p.y > H+10) p.y = -10;
+
+      // fade in/out
+      const life01 = p.age / p.life;
+      const alpha = p.a * Math.sin(life01 * Math.PI);
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fillStyle = p.color.replace(/[\d.]+\)$/, alpha+')');
+      ctx.fill();
+
+      // ink trail: draw a blurred smear
+      if(dist < 140){
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        ctx.lineTo(p.x - p.vx*8, p.y - p.vy*8);
+        ctx.strokeStyle = `rgba(200,169,126,${alpha*.35})`;
+        ctx.lineWidth = p.r * .6;
+        ctx.stroke();
+      }
+    });
+
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ══ CURSOR ══ */
+const curEl = document.getElementById('cur');
+const ringEl = document.getElementById('cur-r');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  curEl.style.left = mx+'px'; curEl.style.top = my+'px';
+});
+(function loop(){
+  rx += (mx-rx)*.1; ry += (my-ry)*.1;
+  ringEl.style.left = rx+'px'; ringEl.style.top = ry+'px';
+  requestAnimationFrame(loop);
+})();
+document.querySelectorAll('button,.tag,.dot,.bc,.arr,.nav-r a,.portrait-inner').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{ curEl.style.width='16px'; curEl.style.height='16px'; ringEl.style.width='48px'; ringEl.style.height='48px'; ringEl.style.borderColor='rgba(200,169,126,.85)'; });
+  el.addEventListener('mouseleave',()=>{ curEl.style.width='8px'; curEl.style.height='8px'; ringEl.style.width='32px'; ringEl.style.height='32px'; ringEl.style.borderColor='rgba(200,169,126,.45)'; });
+});
+
+/* ══ SLIDES ══ */
+const slides = document.querySelectorAll('.slide');
+const dots   = document.querySelectorAll('.dot');
+const navAs  = document.querySelectorAll('#navLinks a');
+const prog   = document.getElementById('prog');
+const cntr   = document.getElementById('cntr');
+const navEl  = document.getElementById('nav');
+let cur=0, busy=false;
+const nums=['01','02','03','04','05'];
+
+function goTo(n){
+  if(busy||n===cur||n<0||n>=slides.length) return;
+  busy = true;
+  const old = cur;
+  slides[old].classList.remove('act'); slides[old].classList.add('exit');
+  dots[old].classList.remove('act');
+  navAs.forEach(a=>a.classList.remove('on'));
+  cur = n;
+  setTimeout(()=>{ slides[old].classList.remove('exit'); resetAnims(old); resetSkills(); busy=false; }, 750);
+  slides[cur].classList.add('act');
+  dots[cur].classList.add('act');
+  navAs[cur]?.classList.add('on');
+  prog.style.width = ((cur+1)/slides.length*100)+'%';
+  cntr.innerHTML = '<b>'+nums[cur]+'</b> / 05';
+  navEl.classList.toggle('scrolled', cur > 0);
+  if(cur===3) triggerSkills();
+}
+
+function resetAnims(i){
+  slides[i].querySelectorAll('.h-main,.eyebrow,.hero-name,.hero-eyebrow,.hero-role,.hero-tagline,.hero-btns,.hero-line,.about-bio,.about-div,.tags,.stats,.about-r .eyebrow,.scroll-hint,.portrait-wrap,.c-label,.c-h,.c-sub,.c-bar,.c-btns,.c-info').forEach(el=>{
+    el.style.animationName='none'; void el.offsetWidth; el.style.animationName='';
+    el.style.opacity='';
+  });
+  slides[i].querySelectorAll('.bc').forEach(el=>{ el.style.opacity='0'; el.style.animationName='none'; void el.offsetWidth; el.style.animationName=''; });
+}
+
+function triggerSkills(){
+  document.querySelectorAll('#sc1,#sc2').forEach((el,i)=>{
+    el.style.opacity=0; el.classList.add('on'); el.style.animationDelay=(.2+i*.18)+'s';
+  });
+  setTimeout(()=>{
+    document.querySelectorAll('.sf').forEach(b=>{ b.style.width=b.dataset.w+'%'; b.classList.add('lit'); });
+  },380);
+}
+function resetSkills(){
+  document.querySelectorAll('.sf').forEach(b=>{ b.style.width='0'; b.classList.remove('lit'); });
+  document.querySelectorAll('#sc1,#sc2').forEach(el=>{ el.style.opacity=0; el.classList.remove('on'); void el.offsetWidth; });
+}
+
+document.getElementById('nB').onclick = ()=>goTo(cur+1);
+document.getElementById('pB').onclick = ()=>goTo(cur-1);
+dots.forEach(d=>d.addEventListener('click',()=>goTo(+d.dataset.i)));
+navAs.forEach(a=>a.addEventListener('click',e=>{ e.preventDefault(); goTo(+a.dataset.i); }));
+document.addEventListener('keydown', e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown') goTo(cur+1);
+  if(e.key==='ArrowLeft' ||e.key==='ArrowUp')   goTo(cur-1);
+});
+let tx=0;
+document.addEventListener('touchstart', e=>{ tx=e.touches[0].clientX; });
+document.addEventListener('touchend',   e=>{ const d=e.changedTouches[0].clientX-tx; if(Math.abs(d)>50){ d<0?goTo(cur+1):goTo(cur-1); } });
+
+// navbar scrolled state for slide > 0
+navEl.classList.add('scrolled');
+prog.style.width='20%';
+</script>
 </body>
 </html>
