@@ -5,11 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>官煒倫 | AI Engineer & Data Analyst</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <style>
         body { 
             background-color: #0a0f1a; 
             color: #f8fafc; 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+        }
+        /* 禁止捲動的 class，開場時使用 */
+        .no-scroll {
+            overflow: hidden;
+            height: 100vh;
+        }
+        /* 主視覺大字體暗色風格 */
+        .dark-logo-text {
+            color: #1a1a1a;
+            text-shadow: 0 0 1px rgba(255, 255, 255, 0.1);
+            line-height: 1;
+        }
+        /* 發光按鈕特效 */
+        .enter-btn {
+            background-color: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.4s ease;
+        }
+        .enter-btn:hover {
+            border-color: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
         }
         .neon-border {
             box-shadow: 0 0 15px rgba(56, 189, 248, 0.1);
@@ -25,127 +47,220 @@
         }
     </style>
 </head>
-<body class="antialiased selection:bg-sky-500 selection:text-white">
+<body class="antialiased selection:bg-sky-500 selection:text-white no-scroll">
 
-    <nav class="fixed w-full z-50 bg-[#0a0f1a]/80 backdrop-blur-md border-b border-slate-800">
-        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-            <span class="font-bold tracking-wider text-xl">W.L. GUAN</span>
-            <div class="hidden md:flex space-x-6 text-sm text-slate-300">
-                <a href="#about" class="hover:text-sky-400 transition">關於</a>
-                <a href="#projects" class="hover:text-sky-400 transition">專案</a>
-                <a href="#skills" class="hover:text-sky-400 transition">技能</a>
-            </div>
-        </div>
-    </nav>
-
-    <header class="min-h-screen flex flex-col justify-center items-center text-center px-6 pt-20">
-        <p class="text-sky-400 tracking-widest text-sm mb-4">PORTFOLIO 2026</p>
-        <h1 class="text-5xl md:text-7xl font-extrabold mb-4 tracking-tighter">官煒倫</h1>
-        <h2 class="text-2xl md:text-3xl font-medium mb-8 gradient-text">AI Engineer × Data Analyst</h2>
-        <p class="max-w-2xl text-slate-400 mb-10 leading-relaxed text-lg">
-            具備跨領域思維的 AI 開發者。專注於電腦視覺、邊緣運算模型優化，以及運用 n8n 打造自動化工作流，致力於將人工智慧技術轉化為解決實際問題的落地應用。
-        </p>
-        <div class="flex gap-4">
-            <a href="#projects" class="px-8 py-3 bg-sky-500 text-slate-900 font-bold rounded-sm hover:bg-sky-400 transition duration-300">探索專案</a>
-            <a href="https://github.com/" target="_blank" class="px-8 py-3 border border-slate-600 text-slate-300 rounded-sm hover:border-sky-400 hover:text-sky-400 transition duration-300">GitHub</a>
-        </div>
-    </header>
-
-    <section id="about" class="py-24 px-6 max-w-6xl mx-auto border-t border-slate-800/50">
-        <div class="grid md:grid-cols-2 gap-12 items-center">
-            <div>
-                <h3 class="text-sm text-sky-400 tracking-widest mb-2">01 — BACKGROUND</h3>
-                <h2 class="text-3xl font-bold mb-6">跨界整合的技術視角</h2>
-                <p class="text-slate-400 leading-relaxed mb-4">
-                    從流行音樂創作與電視台主控的背景出發，培養了對專案執行與跨部門協作的敏銳度。目前專注於 AI 工程領域，特別是電腦視覺系統的開發與自動化流程的整合。
-                </p>
-                <p class="text-slate-400 leading-relaxed">
-                    我相信技術的核心在於解決問題。無論是訓練 YOLO 模型進行危險物品偵測，還是透過知識蒸餾壓縮模型以適應邊緣設備，我的目標始終是打造高效、穩定的系統架構。
-                </p>
-            </div>
-            <div class="bg-slate-800/50 p-8 rounded-lg border border-slate-700">
-                <div class="mb-6">
-                    <h4 class="font-bold text-lg mb-1">Kaggle Data Science</h4>
-                    <p class="text-slate-400 text-sm">Titanic Competition - Getting Started</p>
-                </div>
-                <div class="mb-6">
-                    <h4 class="font-bold text-lg mb-1">專業證照認證</h4>
-                    <p class="text-slate-400 text-sm">TQC Excel / TQC AutoCAD 2D</p>
-                </div>
-                <div>
-                    <h4 class="font-bold text-lg mb-1">溝通與協作</h4>
-                    <p class="text-slate-400 text-sm">卡內基訓練 (Carnegie Training)</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="projects" class="py-24 px-6 max-w-6xl mx-auto border-t border-slate-800/50">
-        <h3 class="text-sm text-sky-400 tracking-widest mb-2 text-center">02 — FEATURED PROJECTS</h3>
-        <h2 class="text-3xl font-bold mb-16 text-center">核心技術專案</h2>
+    <div id="intro-screen" class="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center transition-opacity duration-1000">
+        <div id="particles-js" class="absolute inset-0 z-0"></div>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div class="bg-slate-900 rounded-lg p-8 border border-slate-800 neon-border transition-all duration-300">
-                <div class="text-sky-400 text-2xl mb-4">👁️</div>
-                <h3 class="text-xl font-bold mb-3">Smart Safety Care</h3>
-                <h4 class="text-sm text-slate-300 mb-4">智能居家守護系統</h4>
-                <p class="text-slate-400 text-sm mb-6 leading-relaxed">
-                    基於 YOLOv8 框架開發，專注於居家環境安全。系統能即時偵測畫面中的危險物品（如刀具、剪刀），並具備高準確率。
-                </p>
-                <div class="flex flex-wrap gap-2 text-xs font-mono text-sky-200">
-                    <span class="bg-sky-900/30 px-2 py-1 rounded">YOLOv8</span>
-                    <span class="bg-sky-900/30 px-2 py-1 rounded">Computer Vision</span>
-                </div>
-            </div>
-
-            <div class="bg-slate-900 rounded-lg p-8 border border-slate-800 neon-border transition-all duration-300">
-                <div class="text-sky-400 text-2xl mb-4">⚡</div>
-                <h3 class="text-xl font-bold mb-3">Edge AI Optimization</h3>
-                <h4 class="text-sm text-slate-300 mb-4">邊緣運算模型壓縮</h4>
-                <p class="text-slate-400 text-sm mb-6 leading-relaxed">
-                    運用知識蒸餾 (Knowledge Distillation) 技術，將龐大的 YOLO 模型容量從 49.7MB 大幅壓縮至僅 6MB，完美適配邊緣設備部署需求。
-                </p>
-                <div class="flex flex-wrap gap-2 text-xs font-mono text-sky-200">
-                    <span class="bg-sky-900/30 px-2 py-1 rounded">Model Distillation</span>
-                    <span class="bg-sky-900/30 px-2 py-1 rounded">Edge Computing</span>
-                </div>
-            </div>
-
-            <div class="bg-slate-900 rounded-lg p-8 border border-slate-800 neon-border transition-all duration-300">
-                <div class="text-sky-400 text-2xl mb-4">⚙️</div>
-                <h3 class="text-xl font-bold mb-3">Automated Alert Workflow</h3>
-                <h4 class="text-sm text-slate-300 mb-4">異常偵測自動化警報</h4>
-                <p class="text-slate-400 text-sm mb-6 leading-relaxed">
-                    利用 n8n 串接 AI 辨識結果，建立多渠道自動化通知系統。當偵測到異常時，可實時觸發 LINE Messaging API 與 Gmail 發送警報。
-                </p>
-                <div class="flex flex-wrap gap-2 text-xs font-mono text-sky-200">
-                    <span class="bg-sky-900/30 px-2 py-1 rounded">n8n</span>
-                    <span class="bg-sky-900/30 px-2 py-1 rounded">LINE API</span>
-                    <span class="bg-sky-900/30 px-2 py-1 rounded">Python</span>
-                </div>
-            </div>
+        <div class="relative z-10 text-center flex flex-col items-center w-full px-4">
+            <p class="text-gray-400 tracking-[0.5em] text-xs md:text-sm mb-4 font-mono">W L . 2 0 2 6</p>
+            
+            <h1 class="text-[5rem] md:text-[10rem] font-black tracking-tighter mb-6 dark-logo-text select-none">GUAN.</h1>
+            
+            <p class="text-gray-400 text-xs md:text-sm tracking-[0.2em] mb-12 max-w-2xl leading-relaxed">
+                AI 視覺應用 × 數據分析 × 自動化整合 / 讓模型落地，用系統解決問題。
+            </p>
+            
+            <button id="enter-btn" class="enter-btn group rounded-[40px] px-8 py-3 flex flex-col items-center cursor-pointer">
+                <span class="text-white text-sm tracking-widest flex items-center gap-3 mb-1">
+                    進入系統
+                    <span class="group-hover:translate-x-1 transition-transform duration-300">➔</span>
+                </span>
+                <span class="text-[10px] text-gray-500 tracking-[0.2em]">ENTER EXPERIENCE</span>
+            </button>
         </div>
-    </section>
+    </div>
 
-    <section id="skills" class="py-24 px-6 max-w-6xl mx-auto border-t border-slate-800/50">
-        <h3 class="text-sm text-sky-400 tracking-widest mb-2 text-center">03 — TECH STACK</h3>
-        <h2 class="text-3xl font-bold mb-12 text-center">技術堆疊</h2>
-        <div class="flex flex-wrap justify-center gap-3 md:gap-4 max-w-4xl mx-auto">
-            <span class="px-5 py-2 border border-slate-700 bg-slate-800/30 rounded-full text-slate-300 hover:border-sky-500 hover:text-white transition cursor-default">Python</span>
-            <span class="px-5 py-2 border border-slate-700 bg-slate-800/30 rounded-full text-slate-300 hover:border-sky-500 hover:text-white transition cursor-default">YOLO Object Detection</span>
-            <span class="px-5 py-2 border border-slate-700 bg-slate-800/30 rounded-full text-slate-300 hover:border-sky-500 hover:text-white transition cursor-default">Data Analysis</span>
-            <span class="px-5 py-2 border border-slate-700 bg-slate-800/30 rounded-full text-slate-300 hover:border-sky-500 hover:text-white transition cursor-default">Knowledge Distillation</span>
-            <span class="px-5 py-2 border border-slate-700 bg-slate-800/30 rounded-full text-slate-300 hover:border-sky-500 hover:text-white transition cursor-default">n8n Workflow Automation</span>
-            <span class="px-5 py-2 border border-slate-700 bg-slate-800/30 rounded-full text-slate-300 hover:border-sky-500 hover:text-white transition cursor-default">API Integration</span>
-            <span class="px-5 py-2 border border-slate-700 bg-slate-800/30 rounded-full text-slate-300 hover:border-sky-500 hover:text-white transition cursor-default">LeetCode Data Structures</span>
-        </div>
-    </section>
-    
-    <footer class="py-16 border-t border-slate-800 text-center bg-[#05080f]">
-        <h2 class="text-2xl font-bold mb-6">準備好開始新的挑戰了嗎？</h2>
-        <a href="mailto:your-email@example.com" class="inline-block px-8 py-3 bg-white text-slate-900 font-bold rounded-sm hover:bg-slate-200 transition duration-300 mb-12">聯絡我</a>
-        <p class="text-slate-600 text-sm">© 2026 官煒倫. Crafted with Code & Data.</p>
-    </footer>
+    <div id="main-content" class="opacity-0 transition-opacity duration-1000">
+        <nav class="fixed w-full z-50 bg-[#0a0f1a]/80 backdrop-blur-md border-b border-slate-800">
+            <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+                <span class="font-bold tracking-wider text-xl">W.L. GUAN</span>
+                <div class="hidden md:flex space-x-6 text-sm text-slate-300">
+                    <a href="#about" class="hover:text-sky-400 transition">關於</a>
+                    <a href="#projects" class="hover:text-sky-400 transition">專案</a>
+                    <a href="#skills" class="hover:text-sky-400 transition">技能</a>
+                </div>
+            </div>
+        </nav>
 
+        <header class="min-h-screen flex flex-col justify-center items-center text-center px-6 pt-20">
+            <p class="text-sky-400 tracking-widest text-sm mb-4">PORTFOLIO 2026</p>
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-4 tracking-tighter">官煒倫</h1>
+            <h2 class="text-2xl md:text-3xl font-medium mb-8 gradient-text">AI Engineer × Data Analyst</h2>
+            <p class="max-w-2xl text-slate-400 mb-10 leading-relaxed text-lg">
+                具備跨領域思維的 AI 開發者。專注於電腦視覺、邊緣運算模型優化，以及運用 n8n 打造自動化工作流，致力於將人工智慧技術轉化為解決實際問題的落地應用。
+            </p>
+            <div class="flex gap-4">
+                <a href="#projects" class="px-8 py-3 bg-sky-500 text-slate-900 font-bold rounded-sm hover:bg-sky-400 transition duration-300">探索專案</a>
+                <a href="https://github.com/" target="_blank" class="px-8 py-3 border border-slate-600 text-slate-300 rounded-sm hover:border-sky-400 hover:text-sky-400 transition duration-300">GitHub</a>
+            </div>
+        </header>
+
+        <section id="about" class="py-24 px-6 max-w-6xl mx-auto border-t border-slate-800/50">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h3 class="text-sm text-sky-400 tracking-widest mb-2">01 — BACKGROUND</h3>
+                    <h2 class="text-3xl font-bold mb-6">跨界整合的技術視角</h2>
+                    <p class="text-slate-400 leading-relaxed mb-4">
+                        從流行音樂創作與電視台主控的背景出發，培養了對專案執行與跨部門協作的敏銳度。目前專注於 AI 工程領域，特別是電腦視覺系統的開發與自動化流程的整合。
+                    </p>
+                    <p class="text-slate-400 leading-relaxed">
+                        我相信技術的核心在於解決問題。無論是訓練 YOLO 模型進行危險物品偵測，還是透過知識蒸餾壓縮模型以適應邊緣設備，我的目標始終是打造高效、穩定的系統架構。
+                    </p>
+                </div>
+                <div class="bg-slate-800/50 p-8 rounded-lg border border-slate-700">
+                    <div class="mb-6">
+                        <h4 class="font-bold text-lg mb-1">Kaggle Data Science</h4>
+                        <p class="text-slate-400 text-sm">Titanic Competition - Getting Started</p>
+                    </div>
+                    <div class="mb-6">
+                        <h4 class="font-bold text-lg mb-1">專業證照認證</h4>
+                        <p class="text-slate-400 text-sm">TQC Excel / TQC AutoCAD 2D</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-lg mb-1">溝通與協作</h4>
+                        <p class="text-slate-400 text-sm">卡內基訓練 (Carnegie Training)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects" class="py-24 px-6 max-w-6xl mx-auto border-t border-slate-800/50">
+            <h3 class="text-sm text-sky-400 tracking-widest mb-2 text-center">02 — FEATURED PROJECTS</h3>
+            <h2 class="text-3xl font-bold mb-16 text-center">核心技術專案</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-slate-900 rounded-lg p-8 border border-slate-800 neon-border transition-all duration-300">
+                    <div class="text-sky-400 text-2xl mb-4">👁️</div>
+                    <h3 class="text-xl font-bold mb-3">Smart Safety Care</h3>
+                    <h4 class="text-sm text-slate-300 mb-4">智能居家守護系統</h4>
+                    <p class="text-slate-400 text-sm mb-6 leading-relaxed">
+                        基於 YOLOv8 框架開發，專注於居家環境安全。系統能即時偵測畫面中的危險物品（如刀具、剪刀），並具備高準確率。
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs font-mono text-sky-200">
+                        <span class="bg-sky-900/30 px-2 py-1 rounded">YOLOv8</span>
+                        <span class="bg-sky-900/30 px-2 py-1 rounded">Computer Vision</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 rounded-lg p-8 border border-slate-800 neon-border transition-all duration-300">
+                    <div class="text-sky-400 text-2xl mb-4">⚡</div>
+                    <h3 class="text-xl font-bold mb-3">Edge AI Optimization</h3>
+                    <h4 class="text-sm text-slate-300 mb-4">邊緣運算模型壓縮</h4>
+                    <p class="text-slate-400 text-sm mb-6 leading-relaxed">
+                        運用知識蒸餾 (Knowledge Distillation) 技術，將龐大的 YOLO 模型容量從 49.7MB 大幅壓縮至僅 6MB，完美適配邊緣設備部署需求。
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs font-mono text-sky-200">
+                        <span class="bg-sky-900/30 px-2 py-1 rounded">Model Distillation</span>
+                        <span class="bg-sky-900/30 px-2 py-1 rounded">Edge Computing</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 rounded-lg p-8 border border-slate-800 neon-border transition-all duration-300">
+                    <div class="text-sky-400 text-2xl mb-4">⚙️</div>
+                    <h3 class="text-xl font-bold mb-3">Automated Alert Workflow</h3>
+                    <h4 class="text-sm text-slate-300 mb-4">異常偵測自動化警報</h4>
+                    <p class="text-slate-400 text-sm mb-6 leading-relaxed">
+                        利用 n8n 串接 AI 辨識結果，建立多渠道自動化通知系統。當偵測到異常時，可實時觸發 LINE Messaging API 與 Gmail 發送警報。
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs font-mono text-sky-200">
+                        <span class="bg-sky-900/30 px-2 py-1 rounded">n8n</span>
+                        <span class="bg-sky-900/30 px-2 py-1 rounded">LINE API</span>
+                        <span class="bg-sky-900/30 px-2 py-1 rounded">Python</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="skills" class="py-24 px-6 max-w-6xl mx-auto border-t border-slate-800/50">
+            <h3 class="text-sm text-sky-400 tracking-widest mb-2 text-center">03 — TECH STACK</h3>
+            <h2 class="text-3xl font-bold mb-12 text-center">技術堆疊</h2>
+            <div class="flex flex-wrap justify-center gap-3 md:gap-4 max-w-4xl mx-auto">
+                <span class="px-5 py-2 border border-slate-700 bg-slate-800/30 rounded-full text-slate-300 hover:border-sky-500 hover:text-white transition cursor-default">Python</span>
+                <span class="px-5 py-2 border border-slate-700 bg-slate-800/30 rounded-full text-slate-300 hover:border-sky-500 hover:text-white transition cursor-default">YOLO Object Detection</span>
+                <span class="px-5 py-2 border border-slate-700 bg-slate-800/30 rounded-full text-slate-300 hover:border-sky-500 hover:text-white transition cursor-default">Data Analysis</span>
+                <span class="px-5 py-2 border border-slate-700 bg-slate-800/30 rounded-full text-slate-300 hover:border-sky-500 hover:text-white transition cursor-default">Knowledge Distillation</span>
+                <span class="px-5 py-2 border border-slate-700 bg-slate-800/30 rounded-full text-slate-300 hover:border-sky-500 hover:text-white transition cursor-default">n8n Workflow Automation</span>
+                <span class="px-5 py-2 border border-slate-700 bg-slate-800/30 rounded-full text-slate-300 hover:border-sky-500 hover:text-white transition cursor-default">API Integration</span>
+                <span class="px-5 py-2 border border-slate-700 bg-slate-800/30 rounded-full text-slate-300 hover:border-sky-500 hover:text-white transition cursor-default">LeetCode Data Structures</span>
+            </div>
+        </section>
+        
+        <footer class="py-16 border-t border-slate-800 text-center bg-[#05080f]">
+            <h2 class="text-2xl font-bold mb-6">準備好開始新的挑戰了嗎？</h2>
+            <a href="mailto:lyh0972717368@gmail.com" class="inline-block px-8 py-3 bg-white text-slate-900 font-bold rounded-sm hover:bg-slate-200 transition duration-300 mb-12">聯絡我</a>
+            <p class="text-slate-600 text-sm">© 2026 官煒倫. Crafted with Code & Data.</p>
+        </footer>
+    </div>
+
+    <script>
+        // 設定 particles.js 星網特效
+        particlesJS('particles-js', {
+            "particles": {
+                "number": {
+                    "value": 60,
+                    "density": { "enable": true, "value_area": 800 }
+                },
+                "color": { "value": "#d4af37" }, // 帶點金黃色的質感
+                "shape": { "type": "circle" },
+                "opacity": {
+                    "value": 0.3,
+                    "random": false
+                },
+                "size": {
+                    "value": 3,
+                    "random": true
+                },
+                "line_linked": {
+                    "enable": true,
+                    "distance": 150,
+                    "color": "#ffffff",
+                    "opacity": 0.1,
+                    "width": 1
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 1.5,
+                    "direction": "none",
+                    "random": false,
+                    "straight": false,
+                    "out_mode": "out",
+                    "bounce": false
+                }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": {
+                    "onhover": { "enable": true, "mode": "grab" },
+                    "onclick": { "enable": true, "mode": "push" },
+                    "resize": true
+                },
+                "modes": {
+                    "grab": { "distance": 200, "line_linked": { "opacity": 0.3 } }
+                }
+            },
+            "retina_detect": true
+        });
+
+        // 點擊按鈕的過場互動邏輯
+        document.getElementById('enter-btn').addEventListener('click', function() {
+            const introScreen = document.getElementById('intro-screen');
+            const mainContent = document.getElementById('main-content');
+            
+            // 讓開場畫面淡出
+            introScreen.style.opacity = '0';
+            
+            // 移除鎖定捲動
+            document.body.classList.remove('no-scroll');
+            
+            // 顯示主內容並淡入
+            mainContent.style.opacity = '1';
+            
+            // 等待淡出動畫結束後，徹底隱藏開場畫面以防阻擋點擊
+            setTimeout(() => {
+                introScreen.style.display = 'none';
+            }, 1000); // 這裡的時間需與 Tailwind 的 duration-1000 一致
+        });
+    </script>
 </body>
 </html>
