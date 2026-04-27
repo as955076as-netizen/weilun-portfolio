@@ -39,28 +39,25 @@
             height: 100vh;
         }
 
-        /* 核心動態緩動曲線 (Fluid & Slow) */
         .smooth-transition {
             transition: all 1.2s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
-        /* 4% 透明度玻璃擬態卡片 (Glassmorphism) */
         .glass-card {
             background: rgba(255, 255, 255, 0.04);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.03);
-            border-radius: 2px; /* 極簡現代，捨棄大圓角 */
+            border-radius: 2px;
             transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
         }
         .glass-card:hover {
             background: rgba(255, 255, 255, 0.06);
-            border-color: rgba(200, 169, 126, 0.4); /* 墨金點綴 */
+            border-color: rgba(200, 169, 126, 0.4);
             transform: translateY(-8px);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
         }
 
-        /* 階梯式淡入位移特效 (Scroll Reveal) */
         .reveal {
             opacity: 0;
             transform: translateY(50px);
@@ -70,16 +67,12 @@
             opacity: 1;
             transform: translateY(0);
         }
-        /* 階梯式延遲 */
         .delay-100 { transition-delay: 100ms; }
         .delay-200 { transition-delay: 200ms; }
-        .delay-300 { transition-delay: 300ms; }
 
-        /* 特殊文字風格 */
         .text-inkgold { color: #c8a97e; }
         .bg-inkgold { background-color: #c8a97e; }
         
-        /* 開場互動按鈕 */
         .enter-btn {
             border: 1px solid rgba(200, 169, 126, 0.3);
             transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
@@ -90,7 +83,6 @@
             letter-spacing: 0.1em;
         }
         
-        /* 導航列高斯模糊 */
         .nav-glass {
             background: rgba(10, 10, 12, 0.7);
             backdrop-filter: blur(20px);
@@ -101,9 +93,9 @@
 </head>
 <body class="antialiased selection:bg-inkgold selection:text-base no-scroll">
 
-    <div id="intro-screen" class="fixed inset-0 z-[100] bg-base flex flex-col items-center justify-center smooth-transition">
-        <div id="particles-js" class="absolute inset-0 z-0 pointer-events-auto"></div>
-        
+    <div id="particles-js" class="fixed inset-0 z-0 pointer-events-none"></div>
+
+    <div id="intro-screen" class="fixed inset-0 z-[100] flex flex-col items-center justify-center smooth-transition bg-base">
         <div class="relative z-10 text-center flex flex-col items-center w-full px-4">
             <p class="text-white/30 tracking-[0.6em] text-xs font-light mb-6">W . L . 2 0 2 6</p>
             
@@ -115,7 +107,7 @@
                 極簡與秩序的結合 / 讓模型落地，用系統解決問題。
             </p>
             
-            <button id="enter-btn" class="enter-btn group rounded-full px-10 py-4 flex flex-col items-center cursor-pointer">
+            <button id="enter-btn" class="enter-btn group rounded-full px-10 py-4 flex flex-col items-center cursor-pointer pointer-events-auto">
                 <span class="text-white/80 text-sm tracking-[0.3em] font-light flex items-center gap-4 transition-all duration-500">
                     進入系統
                     <span class="w-1 h-1 bg-inkgold rounded-full group-hover:w-8 group-hover:h-[1px] group-hover:rounded-none transition-all duration-700 ease-[cubic-bezier(0.19,1,0.22,1)]"></span>
@@ -124,9 +116,9 @@
         </div>
     </div>
 
-    <div id="main-content" class="opacity-0 smooth-transition">
+    <div id="main-content" class="opacity-0 smooth-transition relative z-10 pointer-events-none">
         
-        <nav class="fixed w-full z-50 nav-glass smooth-transition">
+        <nav class="fixed w-full z-50 nav-glass smooth-transition pointer-events-auto">
             <div class="max-w-7xl mx-auto px-8 py-5 flex justify-between items-center">
                 <span class="font-bold tracking-[0.2em] text-sm text-white/90">W.L. GUAN</span>
                 <div class="hidden md:flex space-x-8 text-xs tracking-widest text-white/50 font-light">
@@ -137,7 +129,7 @@
             </div>
         </nav>
 
-        <header class="min-h-screen flex flex-col justify-center items-start px-8 md:px-24 pt-20 relative">
+        <header class="min-h-screen flex flex-col justify-center items-start px-8 md:px-24 pt-20 relative pointer-events-auto">
             <div class="max-w-4xl reveal active">
                 <p class="text-inkgold tracking-[0.3em] text-xs mb-8 flex items-center gap-4">
                     <span class="w-8 h-[1px] bg-inkgold opacity-50"></span>
@@ -155,7 +147,7 @@
             </div>
         </header>
 
-        <section id="about" class="py-32 px-8 md:px-24 border-t border-white/[0.03]">
+        <section id="about" class="py-32 px-8 md:px-24 border-t border-white/[0.03] pointer-events-auto">
             <div class="max-w-7xl mx-auto grid md:grid-cols-12 gap-16">
                 <div class="md:col-span-5 reveal">
                     <h3 class="text-xs text-inkgold tracking-[0.4em] mb-4 font-light">01 — BACKGROUND</h3>
@@ -188,7 +180,7 @@
             </div>
         </section>
 
-        <section id="projects" class="py-32 px-8 md:px-24 border-t border-white/[0.03]">
+        <section id="projects" class="py-32 px-8 md:px-24 border-t border-white/[0.03] pointer-events-auto">
             <div class="max-w-7xl mx-auto">
                 <div class="reveal mb-20">
                     <h3 class="text-xs text-inkgold tracking-[0.4em] mb-4 font-light">02 — FEATURED</h3>
@@ -244,7 +236,7 @@
             </div>
         </section>
 
-        <section id="skills" class="py-32 px-8 md:px-24 border-t border-white/[0.03]">
+        <section id="skills" class="py-32 px-8 md:px-24 border-t border-white/[0.03] pointer-events-auto">
             <div class="max-w-4xl mx-auto text-center reveal">
                 <h3 class="text-xs text-inkgold tracking-[0.4em] mb-4 font-light">03 — TECH STACK</h3>
                 <h2 class="text-3xl md:text-4xl font-bold mb-16 text-white/90 tracking-tight">技術堆疊。</h2>
@@ -261,7 +253,7 @@
             </div>
         </section>
         
-        <footer class="py-24 border-t border-white/[0.05] text-center bg-[#070709] reveal">
+        <footer class="py-24 border-t border-white/[0.05] text-center bg-[#070709] reveal pointer-events-auto">
             <h2 class="text-2xl md:text-3xl font-bold mb-10 text-white/80 tracking-wide">準備好開始新的挑戰？</h2>
             <a href="mailto:lyh0972717368@gmail.com" class="inline-block px-10 py-4 bg-white/5 border border-white/10 text-white/80 text-sm tracking-[0.2em] hover:bg-inkgold hover:text-base hover:border-inkgold transition-all duration-700 ease-[cubic-bezier(0.19,1,0.22,1)] mb-16">
                 聯絡我
@@ -273,37 +265,37 @@
     </div>
 
     <script>
-        // 東方水墨粒子特效 (Particle.js) - 游標排斥與緩動流體
+        // 設定進階背景粒子互動 (星空塵埃與數位連線風格)
         particlesJS('particles-js', {
             "particles": {
                 "number": {
-                    "value": 80,
+                    "value": 70,
                     "density": { "enable": true, "value_area": 1000 }
                 },
                 "color": { 
-                    "value": ["#c8a97e", "#333333", "#1a1a1a"] // 墨金與深淺水墨灰
+                    "value": ["#c8a97e", "#ffffff", "#333333"] 
                 },
                 "shape": { "type": "circle" },
                 "opacity": {
-                    "value": 0.4,
+                    "value": 0.5,
                     "random": true,
-                    "anim": { "enable": true, "speed": 0.5, "opacity_min": 0.1, "sync": false }
+                    "anim": { "enable": true, "speed": 1, "opacity_min": 0.1, "sync": false }
                 },
                 "size": {
-                    "value": 6,
+                    "value": 4,
                     "random": true,
-                    "anim": { "enable": true, "speed": 1, "size_min": 1, "sync": false }
+                    "anim": { "enable": true, "speed": 2, "size_min": 0.5, "sync": false }
                 },
                 "line_linked": {
-                    "enable": true,
-                    "distance": 180,
+                    "enable": true,       // 開啟連線追蹤 (Node Connectivity)
+                    "distance": 160,
                     "color": "#c8a97e",
-                    "opacity": 0.05,
+                    "opacity": 0.15,
                     "width": 1
                 },
                 "move": {
                     "enable": true,
-                    "speed": 0.8, /* 極緩慢的流體感 */
+                    "speed": 0.8,
                     "direction": "none",
                     "random": true,
                     "straight": false,
@@ -312,34 +304,61 @@
                 }
             },
             "interactivity": {
-                "detect_on": "window",
+                "detect_on": "window", // 綁定整個視窗以穿透 div 捕捉滑鼠
                 "events": {
-                    "onhover": { "enable": true, "mode": "repulse" }, /* 游標排斥：推開迷霧感 */
-                    "onclick": { "enable": true, "mode": "push" },
+                    "onhover": { 
+                        "enable": true, 
+                        "mode": ["grab", "repulse"] // 同時啟用：游標連線追蹤 + 游標靠近排斥
+                    },
+                    "onclick": { 
+                        "enable": true, 
+                        "mode": "push" // 點擊噴發 (Click Explosion)
+                    },
                     "resize": true
                 },
                 "modes": {
-                    "repulse": { "distance": 150, "duration": 0.8 },
-                    "push": { "particles_nb": 3 }
+                    "grab": { 
+                        "distance": 250, 
+                        "line_linked": { "opacity": 0.6 } 
+                    },
+                    "repulse": { 
+                        "distance": 120, 
+                        "duration": 0.4 
+                    },
+                    "push": { 
+                        "particles_nb": 4 // 每次點擊噴發新增 4 顆粒子
+                    }
                 }
             },
             "retina_detect": true
         });
 
-        // 開場按鈕互動
+        // 加入滾動觸發 (Scroll Reaction)：頁面滾動時加速粒子流動
+        let scrollTimeout;
+        window.addEventListener('scroll', () => {
+            if (window.pJSDom && window.pJSDom[0]) {
+                window.pJSDom[0].pJS.particles.move.speed = 2.5; // 滾動時粒子加速
+                clearTimeout(scrollTimeout);
+                scrollTimeout = setTimeout(() => {
+                    window.pJSDom[0].pJS.particles.move.speed = 0.8; // 停止滾動後恢復緩慢
+                }, 150);
+            }
+        });
+
+        // 開場按鈕互動邏輯
         document.getElementById('enter-btn').addEventListener('click', function() {
             const introScreen = document.getElementById('intro-screen');
             const mainContent = document.getElementById('main-content');
             
-            // 淡出開場
+            // 讓開場畫面的背景變透明，只留下粒子
+            introScreen.style.backgroundColor = 'transparent';
             introScreen.style.opacity = '0';
             introScreen.style.pointerEvents = 'none';
             document.body.classList.remove('no-scroll');
             
-            // 淡入主內容
+            // 延遲顯示主內容，保持平滑過渡
             setTimeout(() => {
                 mainContent.style.opacity = '1';
-                // 觸發首屏的 reveal
                 revealElements();
             }, 800);
             
@@ -354,7 +373,7 @@
             for (var i = 0; i < reveals.length; i++) {
                 var windowHeight = window.innerHeight;
                 var elementTop = reveals[i].getBoundingClientRect().top;
-                var elementVisible = 100; // 元素距離底部多少時觸發
+                var elementVisible = 100;
                 
                 if (elementTop < windowHeight - elementVisible) {
                     reveals[i].classList.add("active");
