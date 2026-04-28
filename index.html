@@ -21,15 +21,14 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* [修改] 隱藏整個頁面的預設滑鼠（僅在有支援 hover 的電腦裝置上生效） */
+        /* 隱藏整個頁面的預設滑鼠（僅在有支援 hover 的電腦裝置上生效） */
         @media (hover: hover) and (pointer: fine) {
             body, a, button, h1, p { cursor: none !important; }
         }
 
-        /* [新加入] 游標圓點 (Dot) 的核心發光與暈光 */
+        /* 游標圓點 (Dot) 的核心發光與暈光 */
         #cursor-dot {
-            background-color: #fff; /* 核心設定為白色，看起來更亮 */
-            /* 兩層金色陰影：一層核心亮光，一層柔和暈光 */
+            background-color: #fff;
             box-shadow: 0 0 5px #fff, 
                         0 0 10px var(--accent-gold), 
                         0 0 20px var(--accent-gold), 
@@ -37,20 +36,18 @@
             transition: transform 0.1s;
         }
 
-        /* [新加入] 游標外圈 (Ring) 的霓虹發光 */
+        /* 游標外圈 (Ring) 的霓虹發光 */
         #cursor-ring {
             border-color: rgba(200, 169, 126, 0.8);
-            /* 使用 filter drop-shadow，發光效果會順著圓圈邊緣，質感更好 */
             filter: drop-shadow(0 0 4px var(--accent-gold));
             transition: all 0.3s ease-out;
         }
 
-        /* [修改] 游標碰到可點擊元素時的「強烈發光」狀態 */
+        /* 游標碰到可點擊元素時的「強烈發光」狀態 */
         .cursor-hover-active {
             transform: translate(-50%, -50%) scale(1.6) !important;
             background-color: rgba(200, 169, 126, 0.15) !important;
-            border-color: rgba(255, 255, 255, 0.9) !important; /* 碰觸時外圈變白 */
-            /* 增強霓虹發光 */
+            border-color: rgba(255, 255, 255, 0.9) !important;
             filter: drop-shadow(0 0 10px var(--accent-gold)) drop-shadow(0 0 5px #fff) !important;
         }
 
@@ -61,24 +58,21 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            z-index: -2; /* 放在粒子畫布 (-1) 的更底層 */
-            pointer-events: none; /* 確保不影響滑鼠點擊 */
+            z-index: -2; 
+            pointer-events: none; 
             
-            /* 設定一道傾斜的溫潤金漸層光束 */
             background: linear-gradient(
                 120deg,
                 transparent 0%,
                 transparent 40%,
-                rgba(200, 169, 126, 0.06) 50%, /* 光束核心亮度（數字越大越亮） */
+                rgba(200, 169, 126, 0.06) 50%, 
                 transparent 60%,
                 transparent 100%
             );
             background-size: 300% 300%;
-            /* 12s 控制掃過的速度，infinite 讓它無限循環 */
             animation: sweep-light 12s linear infinite;
         }
 
-        /* 控制光束從右下角掃向左上角的動畫 */
         @keyframes sweep-light {
             0% { background-position: 200% 100%; }
             100% { background-position: -100% -100%; }
@@ -95,8 +89,6 @@
             pointer-events: none;
         }
 
-        /* ... 原本的主標題特效 (metallic-shine 等) 保持不變 ... */
-
         .btn-capsule {
             border: 1px solid rgba(255, 255, 255, 0.15);
             background: rgba(0, 0, 0, 0.3);
@@ -106,30 +98,18 @@
         .btn-capsule:hover {
             border-color: rgba(255, 255, 255, 0.4);
             background: rgba(255, 255, 255, 0.05);
-            /* 按鈕本身也加上微微的金光 */
             box-shadow: 0 0 15px rgba(200, 169, 126, 0.2);
         }
 
         /* --- 超大主標題特效控制開始 --- */
         .watermark-title {
             position: relative;
-            color: transparent; 
+            /* [修改] 拿掉背景漸層動畫，改回純色低透明度的靜態浮水印 */
+            color: rgba(255, 255, 255, 0.08); 
             user-select: none;
-            
-            background: linear-gradient(
-                120deg,
-                rgba(255, 255, 255, 0.03) 0%,
-                rgba(255, 255, 255, 0.03) 30%,
-                rgba(200, 169, 126, 0.15) 50%, 
-                rgba(255, 255, 255, 0.03) 70%,
-                rgba(255, 255, 255, 0.03) 100%
-            );
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            background-clip: text;
-            animation: metallic-shine 10s linear infinite;
         }
 
+        /* 懸停時的水墨填滿特效 (保留) */
         .watermark-title::before {
             content: attr(data-text);
             position: absolute;
@@ -151,25 +131,7 @@
             clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
             filter: drop-shadow(0 0 15px rgba(200, 169, 126, 0.3));
         }
-
-        @keyframes metallic-shine {
-            to {
-                background-position: 200% center;
-            }
-        }
         /* --- 超大主標題特效控制結束 --- */
-
-        .btn-capsule {
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            /* 加入彈回原位時的平滑物理過渡效果 */
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s, border-color 0.3s;
-        }
-        .btn-capsule:hover {
-            border-color: rgba(255, 255, 255, 0.4);
-            background: rgba(255, 255, 255, 0.05);
-        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col relative selection:bg-white/20 selection:text-white">
@@ -181,12 +143,14 @@
 
     <canvas id="particle-canvas"></canvas>
 
-    <main class="flex-grow flex items-center justify-center px-8 relative z-10 min-h-screen w-full"> <div class="w-full px-8 lg:px-20 mx-auto flex flex-col items-center justify-center text-center"> <div class="text-xs md:text-sm font-bold tracking-[0.5em] text-white/80 mb-6 md:mb-10 pl-[0.5em]">K U A N . 2 0 2 6</div>
+    <main class="flex-grow flex items-center justify-center px-8 relative z-10 min-h-screen w-full"> 
+        <div class="w-full px-8 lg:px-20 mx-auto flex flex-col items-center justify-center text-center"> 
+            <div class="text-xs md:text-sm font-bold tracking-[0.5em] text-white/80 mb-6 md:mb-10 pl-[0.5em]">K U A N . 2 0 2 6</div>
 
             <div class="overflow-visible w-full flex items-center justify-center">
-            <h1 class="watermark-title inline-block px-[8vw] px-[6vw] text-[4vw] sm:text-[6vw] md:text-[10vw] lg:text-[14vw] font-black leading-none tracking-tighter overflow-visible" data-text="ROY">
-                ROY
-            </h1>
+                <h1 class="watermark-title inline-block px-[6vw] text-[4vw] sm:text-[6vw] md:text-[10vw] lg:text-[14vw] font-black leading-none tracking-tighter overflow-visible mb-12 md:mb-20" data-text="ROY">
+                    ROY
+                </h1>
             </div>
             <p class="text-xs md:text-sm lg:text-base text-white/60 tracking-[0.15em] md:tracking-[0.2em] font-light mt-6 md:mt-10 lg:mt-12 z-10 px-4">
                 電腦視覺 · 流程自動化 · 影音工程<br>
@@ -209,7 +173,7 @@
     
 <script>
     // ==========================================
-    // 1. 背景粒子特效 (維持原狀)
+    // 1. 背景粒子特效
     // ==========================================
     const canvas = document.getElementById('particle-canvas');
     const ctx = canvas.getContext('2d');
@@ -315,7 +279,7 @@
     animate();
 
     // ==========================================
-    // 2. 自訂發光延遲游標 (Glowing Trailing Cursor)
+    // 2. 自訂發光延遲游標
     // ==========================================
     const cursorDot = document.getElementById('cursor-dot');
     const cursorRing = document.getElementById('cursor-ring');
@@ -328,7 +292,6 @@
         cursorX = e.clientX;
         cursorY = e.clientY;
         
-        // 核心點 (Dot) 瞬間跟隨
         if(cursorDot) {
             cursorDot.style.left = `${cursorX}px`;
             cursorDot.style.top = `${cursorY}px`;
@@ -336,7 +299,6 @@
     });
 
     function animateCursor() {
-        // 平滑物理延遲
         ringX += (cursorX - ringX) * 0.15;
         ringY += (cursorY - ringY) * 0.15;
         
@@ -348,13 +310,11 @@
     }
     animateCursor();
 
-    // [修改] 當游標懸停在按鈕上時，改變發光質感
     const interactables = document.querySelectorAll('a, button');
     interactables.forEach(el => {
         el.addEventListener('mouseenter', () => {
             if(cursorRing) cursorRing.classList.add('cursor-hover-active');
             if(cursorDot) {
-                // 碰到按鈕時，核心點縮小，顏色變為金色，增加強烈 box-shadow
                 cursorDot.style.transform = 'translate(-50%, -50%) scale(0.6)';
                 cursorDot.style.backgroundColor = '#c8a97e'; 
                 cursorDot.style.boxShadow = '0 0 10px #fff, 0 0 20px #c8a97e, 0 0 30px #c8a97e';
@@ -363,7 +323,6 @@
         el.addEventListener('mouseleave', () => {
             if(cursorRing) cursorRing.classList.remove('cursor-hover-active');
             if(cursorDot) {
-                // 恢復原狀：核心白色，標準暈光
                 cursorDot.style.transform = 'translate(-50%, -50%) scale(1)';
                 cursorDot.style.backgroundColor = '#fff';
                 cursorDot.style.boxShadow = '0 0 5px #fff, 0 0 10px #c8a97e, 0 0 20px #c8a97e, 0 0 30px rgba(200, 169, 126, 0.5)';
@@ -372,7 +331,7 @@
     });
 
     // ==========================================
-    // 3. 磁性吸附按鈕 (維持原狀)
+    // 3. 磁性吸附按鈕
     // ==========================================
     const magneticBtn = document.querySelector('.btn-capsule');
     if(magneticBtn) {
