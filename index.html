@@ -178,88 +178,159 @@
     
 <script>
     // ==========================================
-    // 1. 高奢版數位訊號雨 (Minimalist Matrix Rain)
+    // 1. 幾何視覺鎖定特效 (Vision Tracking Nodes)
     // ==========================================
     const canvas = document.getElementById('particle-canvas');
     const ctx = canvas.getContext('2d');
     
     let w, h;
-    let columns = [];
-    let drops = [];
-    const fontSize = 16;
-    // 包含二進位與基礎十六進位代碼，呼應演算法底層
-    const charset = "0101010101010189ABCDEF"; 
+    let targets = [];
 
-    function initCanvas() {
-        w = canvas.width = window.innerWidth;
-        h = canvas.height = window.innerHeight;
-        columns = Math.floor(w / fontSize);
-        drops = [];
-        
-        // 初始化水滴位置，給予隨機負值讓它們不要同時落下
-        for (let i = 0; i < columns; i++) {
-            drops[i] = Math.random() * -100;
-        }
-    }
-    
-    initCanvas();
+    // 滑鼠實際位置
+    const mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+    // 掃描框的延遲跟隨位置
+    const scanner = { x: window.innerWidth / 2, y: window.innerHeight / 2, size: 50 };
 
-    window.addEventListener('resize', initCanvas);
-
-    // 取得滑鼠座標，用於發光互動
-    let mouseX = -1000;
-    let mouseY = -1000;
-    window.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
+    window.addEventListener('mousemove', (event) => {
+        mouse.x = event.clientX;
+        mouse.y = event.clientY;
     });
 
-    function drawMatrix() {
-        // 畫一層半透明的黑色背景，製造代碼逐漸消失的「拖尾效應」
-        ctx.fillStyle = 'rgba(5, 5, 5, 0.08)';
-        ctx.fillRect(0, 0, w, h);
+    window.addEventListener('resize', () => {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+        initCV();
+    });
 
-        ctx.font = `300 ${fontSize}px "Inter", monospace`;
-        ctx.textAlign = 'center';
+    // 線性插值 (用於產生平滑的延遲跟隨效果)
+    function lerp(start, end, amt) {
+        return (1 - amt) * start + amt * end;
+    }
 
-        for (let i = 0; i < drops.length; i++) {
-            // 隨機抽取字元
-            const text = charset.charAt(Math.floor(Math.random() * charset.length));
-            
-            const x = i * fontSize + (fontSize / 2);
-            const y = drops[i] * fontSize;
+    // 繪製科技感的邊角括號 (類似 YOLO 辨識框 ⌜ ⌝ ⌞ ⌟)
+    function drawCorners(x, y, size, color) {
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1.5;
+        const l = size / 3.5; // 邊角的線條長度
+        const s = size / 2;   // 往外推的半徑
 
-            // 計算文字與滑鼠的距離
-            const dx = x - mouseX;
-            const dy = y - mouseY;
-            const dist = Math.sqrt(dx * dx + dy * dy);
+        ctx.beginPath();
+        // 左上
+        ctx.moveTo(x - s, y - s + l); ctx.lineTo(x - s, y - s); ctx.lineTo(x - s + l, y - s);
+        // 右上
+        ctx.moveTo(x + s - l, y - s); ctx.lineTo(x + s, y - s); ctx.lineTo(x + s, y - s + l);
+        // 右下
+        ctx.moveTo(x + s, y + s - l); ctx.lineTo(x + s, y + s); ctx.lineTo(x + s - l, y + s);
+        // 左下
+        ctx.moveTo(x - s + l, y + s); ctx.lineTo(x - s, y + s); ctx.lineTo(x - s, y + s - l);
+        ctx.stroke();
+    }
 
-            // 如果滑鼠靠近，代碼會變亮；平時則是極低透明度的暗金微光
-            if (dist < 120) {
-                ctx.fillStyle = `rgba(200, 169, 126, 0.6)`;
+    // 繪製中心十字準星
+    function drawCross(x, y, size, color) {
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(x - size/2, y); ctx.lineTo(x + size/2, y);
+        ctx.moveTo(x, y - size/2); ctx.lineTo(x, y + size/2);
+        ctx.stroke();
+    }
+
+    class VisionTarget {
+        constructor() {
+            this.x = Math.random() * w;
+            this.y = Math.random() * h;
+            this.vx = (Math.random() - 0.5) * 0.3; // 極緩慢的漂浮
+            this.vy = (Math.random() - 0.5) * 0.3;
+            this.size = Math.random() * 15 + 15; // 目標大小
+            this.lockProgress = 0; // 0 到 1 的鎖定進度
+            this.id = Math.floor(Math.random() * 9999).toString().padStart(4, '0');
+        }
+
+        update() {
+            // 更新位置，碰到邊緣反彈
+            this.x += this.vx;
+            this.y += this.vy;
+            if(this.x < 0 || this.x > w) this.vx *= -1;
+            if(this.y < 0 || this.y > h) this.vy *= -1;
+
+            // 計算與主掃描框的距離
+            let dx = this.x - scanner.x;
+            let dy = this.y - scanner.y;
+            let dist = Math.sqrt(dx * dx + dy * dy);
+
+            // 鎖定半徑設定為 250px
+            if(dist < 250) {
+                // 靠近時，鎖定進度平滑增加
+                this.lockProgress = Math.min(1, this.lockProgress + 0.05);
             } else {
-                ctx.fillStyle = `rgba(200, 169, 126, 0.08)`;
+                // 遠離時，鎖定進度平滑消退
+                this.lockProgress = Math.max(0, this.lockProgress - 0.02);
             }
 
-            ctx.fillText(text, x, y);
+            this.draw();
+        }
 
-            // 當代碼超出螢幕底部，且隨機機率達成時，回到頂部重新落下
-            // 0.98 的機率讓雨滴顯得很稀疏、克制，不會干擾閱讀
-            if (y > h && Math.random() > 0.98) {
-                drops[i] = 0;
+        draw() {
+            // 背景未鎖定時的隱約十字標記
+            drawCross(this.x, this.y, 4, 'rgba(255, 255, 255, 0.1)');
+
+            // 當進入掃描範圍 (lockProgress > 0)
+            if(this.lockProgress > 0) {
+                // 1. 繪製收縮的鎖定框
+                let currentBoxSize = this.size + (1 - this.lockProgress) * 30; // 從大縮小到目標尺寸
+                drawCorners(this.x, this.y, currentBoxSize, `rgba(200, 169, 126, ${this.lockProgress * 0.7})`);
+
+                // 2. 繪製掃描連接虛線
+                ctx.beginPath();
+                ctx.moveTo(scanner.x, scanner.y);
+                ctx.lineTo(this.x, this.y);
+                ctx.strokeStyle = `rgba(200, 169, 126, ${this.lockProgress * 0.3})`;
+                ctx.setLineDash([2, 4]); // 設定為虛線
+                ctx.stroke();
+                ctx.setLineDash([]); // 畫完虛線立刻重置為實線
+
+                // 3. 繪製科技感文字 (ID 與 Confidence Score)
+                ctx.font = "9px Inter, monospace";
+                ctx.fillStyle = `rgba(200, 169, 126, ${this.lockProgress * 0.9})`;
+                ctx.fillText(`OBJ_${this.id}`, this.x + currentBoxSize/2 + 4, this.y - currentBoxSize/2 + 2);
+                ctx.fillText(`CONF: ${(this.lockProgress * 99).toFixed(0)}%`, this.x + currentBoxSize/2 + 4, this.y - currentBoxSize/2 + 14);
             }
-
-            // 控制下落速度 (0.5 代表半速，更有緩慢深沉的精品視覺感)
-            drops[i] += 0.5;
         }
     }
 
-    function animateMatrix() {
-        requestAnimationFrame(animateMatrix);
-        drawMatrix();
+    function initCV() {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+        targets = [];
+        
+        // 根據螢幕大小決定目標數量 (密度不宜過高，保持精品感)
+        let numTargets = (w * h) / 40000; 
+        for(let i = 0; i < numTargets; i++) {
+            targets.push(new VisionTarget());
+        }
     }
 
-    animateMatrix();
+    function animateCV() {
+        requestAnimationFrame(animateCV);
+        ctx.clearRect(0, 0, w, h);
+
+        // 主掃描框使用 lerp 產生物理滑動感
+        scanner.x = lerp(scanner.x, mouse.x, 0.1);
+        scanner.y = lerp(scanner.y, mouse.y, 0.1);
+
+        // 繪製所有背景目標
+        for (let i = 0; i < targets.length; i++) {
+            targets[i].update();
+        }
+
+        // 繪製主追蹤掃描框
+        drawCorners(scanner.x, scanner.y, scanner.size, 'rgba(200, 169, 126, 0.6)');
+        drawCross(scanner.x, scanner.y, 12, 'rgba(200, 169, 126, 0.4)');
+    }
+
+    initCV();
+    animateCV();
     
     // ==========================================
     // 2. 自訂發光延遲游標
