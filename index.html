@@ -51,7 +51,7 @@
             filter: drop-shadow(0 0 10px var(--accent-gold)) drop-shadow(0 0 5px #fff) !important;
         }
 
-        /* --- 全螢幕背景呼吸燈特效 (Full-page Breathing Light) --- */
+        /* --- 全螢幕背景呼吸燈特效 (優化版) --- */
         .ambient-breathe {
             position: fixed;
             top: 0;
@@ -61,23 +61,27 @@
             z-index: -2; 
             pointer-events: none;
             
-            /* 改用大範圍的對角線線性漸層，確保四個角落都有光澤 */
-            background: linear-gradient(
-                135deg, 
-                rgba(200, 169, 126, 0.06) 0%, 
-                rgba(200, 169, 126, 0.02) 100%
+            /* 1. 改用徑向漸變，讓呼吸燈看起來像從中心擴散的柔光 */
+            background: radial-gradient(
+                circle at center, 
+                rgba(200, 169, 126, 0.15) 0%, 
+                rgba(0, 0, 0, 0) 70%
             );
             
-            /* 拿掉 scale 縮放，純粹依靠 opacity 讓整個畫面均勻明暗 */
-            animation: full-breathe 3s ease-in-out infinite alternate;
+            /* 2. 引入 will-change 進行 GPU 加速，提升動畫流暢度 */
+            will-change: opacity;
+            
+            /* 3. 將時間調整為 4 秒，呼吸節奏更沈穩 */
+            /* 使用 cubic-bezier 讓吸氣/吐氣的起伏更細膩 */
+            animation: full-breathe 4s cubic-bezier(0.4, 0, 0.6, 1) infinite alternate;
         }
-
-        /* 呼吸的核心動畫：全域透明度漸變 */
+        
+        /* 呼吸的核心動畫：限制在 0.2 到 0.5 之間，避免過度明暗造成的視覺疲勞 */
         @keyframes full-breathe {
-            0% { opacity: 0.1; }  /* 吐氣：整體變暗 */
-            100% { opacity: 1; }  /* 吸氣：整體變亮 */
+            0% { opacity: 0.2; }   
+            100% { opacity: 0.5; } 
         }
-
+        
         #particle-canvas {
             position: absolute;
             top: 0;
@@ -88,13 +92,15 @@
             opacity: 0.6;
             pointer-events: none;
         }
-
+        
         .btn-capsule {
             border: 1px solid rgba(255, 255, 255, 0.15);
             background: rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(10px);
+            /* 保持原有的互動邏輯 */
             transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s, border-color 0.3s;
         }
+        
         .btn-capsule:hover {
             border-color: rgba(255, 255, 255, 0.4);
             background: rgba(255, 255, 255, 0.05);
