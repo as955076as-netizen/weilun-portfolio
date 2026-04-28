@@ -66,33 +66,15 @@
             100% { opacity: 1; } 
         }
 
-        /* --- 電影級懸浮微塵容器與濾鏡 --- */
-        .dust-container {
+        /* 光軌畫布 */
+        #pathway-canvas {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: -1;
-            overflow: hidden;
-            pointer-events: none;
-        }
-
-        #dust-canvas {
-            width: 100%;
-            height: 100%;
-            opacity: 0.7;
-        }
-
-        /* 景深虛化層：讓部分微塵產生 Bokeh 光圈效果 */
-        .bokeh-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            backdrop-filter: blur(1.5px);
-            -webkit-backdrop-filter: blur(1.5px);
+            opacity: 0.8;
             pointer-events: none;
         }
         
@@ -142,17 +124,14 @@
     <div id="cursor-dot" class="hidden md:block pointer-events-none fixed top-0 left-0 w-2 h-2 bg-[#c8a97e] rounded-full z-[100] transform -translate-x-1/2 -translate-y-1/2 transition-transform duration-100"></div>
     <div id="cursor-ring" class="hidden md:block pointer-events-none fixed top-0 left-0 w-10 h-10 border border-[#c8a97e]/50 rounded-full z-[99] transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ease-out"></div>
 
-    <div class="dust-container">
-        <canvas id="dust-canvas"></canvas>
-        <div class="bokeh-overlay"></div>
-    </div>
+    <canvas id="pathway-canvas"></canvas>
 
     <main class="flex-grow flex items-center justify-center px-8 relative z-10 min-h-screen w-full"> 
         <div class="w-full px-8 lg:px-20 mx-auto flex flex-col items-center justify-center text-center"> 
             <div class="text-xs md:text-sm font-bold tracking-[0.5em] text-white/80 mb-6 md:mb-10 pl-[0.5em]">K U A N . 2 0 2 6</div>
 
             <div class="overflow-visible w-full flex items-center justify-center">
-                <h1 class="watermark-title inline-block px-[6vw] text-[4vw] sm:text-[6vw] md:text-[10vw] lg:text-[14vw] font-black leading-none tracking-tighter overflow-visible mb-22 md:mb-30" data-text="ROY">
+                <h1 class="watermark-title inline-block px-[6vw] text-[4vw] sm:text-[6vw] md:text-[10vw] lg:text-[14vw] font-black leading-none tracking-tighter overflow-visible mb-12 md:mb-20" data-text="ROY">
                     ROY
                 </h1>
             </div>
@@ -177,88 +156,157 @@
     
 <script>
     // ==========================================
-    // 1. 電影級懸浮微塵特效 (Cinematic Bokeh Dust)
+    // 1. 自動化光軌特效 (Algorithmic Pathways)
     // ==========================================
-    const canvas = document.getElementById('dust-canvas');
+    const canvas = document.getElementById('pathway-canvas');
     const ctx = canvas.getContext('2d');
     
     let w, h;
-    let dustArray = [];
-    const mouse = { x: null, y: null };
-
-    window.addEventListener('mousemove', (e) => {
-        mouse.x = e.clientX;
-        mouse.y = e.clientY;
-    });
+    let paths = [];
+    const GRID_SIZE = 30; // 決定光軌轉折的網格大小
 
     window.addEventListener('resize', () => {
         w = canvas.width = window.innerWidth;
         h = canvas.height = window.innerHeight;
-        initDust();
+        initPaths();
     });
 
-    class DustParticle {
+    class Pathway {
         constructor() {
-            this.x = Math.random() * w;
-            this.y = Math.random() * h;
-            // z 軸決定深度：z 越小越清晰細小，z 越大則越靠近螢幕且模糊放大
-            this.z = Math.random() * 200; 
-            this.size = Math.random() * 1.5 + 0.5 + (this.z / 50);
-            this.speedX = (Math.random() - 0.5) * 0.2;
-            this.speedY = Math.random() * 0.2 + 0.1; 
-            this.baseOpacity = Math.random() * 0.3 + 0.1;
-            this.opacity = this.baseOpacity;
-            this.twinkleFactor = Math.random() * 0.005;
+            this.reset();
+        }
+
+        reset() {
+            // 確保生成點鎖定在網格上
+            this.x = Math.floor(Math.random() * (w / GRID_SIZE)) * GRID_SIZE;
+            this.y = Math.floor(Math.random() * (h / GRID_SIZE)) * GRID_SIZE;
+            this.history = [{x: this.x, y: this.y}];
+            this.maxLength = Math.floor(Math.random() * 40 + 20); // 拖影長度
+            this.speed = 2; 
+            
+            // 初始方向
+            this.setRandomDirection();
+            
+            this.age = 0;
+            this.maxAge = Math.random() * 200 + 100; // 存活時間
+            this.dead = false;
+            this.opacity = Math.random() * 0.4 + 0.1; // 基礎亮度
+        }
+
+        setRandomDirection() {
+            const dirs = [
+                {vx: this.speed, vy: 0},
+                {vx: -this.speed, vy: 0},
+                {vx: 0, vy: this.speed},
+                {vx: 0, vy: -this.speed}
+            ];
+            const dir = dirs[Math.floor(Math.random() * dirs.length)];
+            this.vx = dir.vx;
+            this.vy = dir.vy;
         }
 
         update() {
-            this.x += this.speedX;
-            this.y += this.speedY;
-
-            // 3D 視差效果：滑鼠移動時，深淺不同的微塵位移速度不同
-            if (mouse.x && mouse.y) {
-                let dx = (mouse.x - w / 2) * 0.01 * (this.z / 100);
-                let dy = (mouse.y - h / 2) * 0.01 * (this.z / 100);
-                this.x -= dx * 0.1;
-                this.y -= dy * 0.1;
+            if (this.dead) {
+                // 等待尾巴跑完再重生
+                if (this.history.length > 0) {
+                    this.history.shift();
+                } else {
+                    this.reset();
+                }
+                return;
             }
 
-            // 邊界檢查
-            if (this.y > h) this.y = -10;
-            if (this.x > w) this.x = 0;
-            if (this.x < 0) this.x = w;
+            this.age++;
+            if (this.age > this.maxAge || this.x < 0 || this.x > w || this.y < 0 || this.y > h) {
+                this.dead = true;
+                return;
+            }
 
-            // 隨機微閃爍
-            this.opacity = this.baseOpacity + Math.sin(Date.now() * this.twinkleFactor) * 0.1;
-            this.draw();
+            // 只有在精準到達網格交叉點時，才有機率 90 度轉彎
+            if (this.x % GRID_SIZE === 0 && this.y % GRID_SIZE === 0) {
+                if (Math.random() < 0.25) { // 25% 轉彎機率
+                    if (this.vx !== 0) {
+                        this.vx = 0;
+                        this.vy = Math.random() < 0.5 ? this.speed : -this.speed;
+                    } else {
+                        this.vy = 0;
+                        this.vx = Math.random() < 0.5 ? this.speed : -this.speed;
+                    }
+                }
+            }
+
+            this.x += this.vx;
+            this.y += this.vy;
+            this.history.push({x: this.x, y: this.y});
+
+            if (this.history.length > this.maxLength) {
+                this.history.shift();
+            }
         }
 
         draw() {
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(200, 169, 126, ${this.opacity})`;
-            ctx.fill();
+            if (this.history.length < 2) return;
+
+            ctx.lineWidth = 1.5;
+            
+            // 繪製帶有漸層消失效果的軌跡拖影
+            for (let i = 1; i < this.history.length; i++) {
+                ctx.beginPath();
+                ctx.moveTo(this.history[i-1].x, this.history[i-1].y);
+                ctx.lineTo(this.history[i].x, this.history[i].y);
+                
+                let tailFade = i / this.history.length; // 越靠近頭部越亮
+                let currentOpacity = this.opacity * tailFade;
+                
+                // 生命週期快結束時整體變暗
+                if (this.age > this.maxAge - 30 && !this.dead) {
+                    currentOpacity *= (this.maxAge - this.age) / 30; 
+                }
+
+                ctx.strokeStyle = `rgba(200, 169, 126, ${currentOpacity})`;
+                ctx.stroke();
+            }
+
+            // 繪製頭部的高光資料點 (Data Node)
+            if (!this.dead) {
+                const head = this.history[this.history.length - 1];
+                ctx.beginPath();
+                ctx.arc(head.x, head.y, 2, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity * 2})`;
+                
+                // 加上微弱的發光效果
+                ctx.shadowBlur = 8;
+                ctx.shadowColor = 'rgba(200, 169, 126, 0.8)';
+                ctx.fill();
+                ctx.shadowBlur = 0; // 重置陰影避免影響線條
+            }
         }
     }
 
-    function initDust() {
+    function initPaths() {
         w = canvas.width = window.innerWidth;
         h = canvas.height = window.innerHeight;
-        dustArray = [];
-        let density = (w * h) / 8000; // 微塵密度
+        paths = [];
+        // 控制畫面上的光軌數量
+        let density = (w * h) / 25000; 
         for (let i = 0; i < density; i++) {
-            dustArray.push(new DustParticle());
+            paths.push(new Pathway());
+            // 隨機錯開初始時間，讓光軌不會同時出生/死亡
+            paths[i].age = Math.random() * paths[i].maxAge; 
         }
     }
 
-    function animateDust() {
+    function animatePaths() {
         ctx.clearRect(0, 0, w, h);
-        dustArray.forEach(particle => particle.update());
-        requestAnimationFrame(animateDust);
+        paths.forEach(path => {
+            path.update();
+            path.draw();
+        });
+        requestAnimationFrame(animatePaths);
     }
 
-    initDust();
-    animateDust();
+    initPaths();
+    animatePaths();
 
     // ==========================================
     // 2. 自訂發光延遲游標
