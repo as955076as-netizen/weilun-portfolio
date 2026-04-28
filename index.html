@@ -66,33 +66,14 @@
             100% { opacity: 1; } 
         }
 
-        /* --- 電影級懸浮微塵容器與濾鏡 --- */
-        .dust-container {
+        /* --- 琴弦共振特效畫布 --- */
+        #strings-canvas {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: -1;
-            overflow: hidden;
-            pointer-events: none;
-        }
-
-        #dust-canvas {
-            width: 100%;
-            height: 100%;
-            opacity: 0.7;
-        }
-
-        /* 景深虛化層：讓部分微塵產生 Bokeh 光圈效果 */
-        .bokeh-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            backdrop-filter: blur(1.5px);
-            -webkit-backdrop-filter: blur(1.5px);
             pointer-events: none;
         }
         
@@ -142,10 +123,7 @@
     <div id="cursor-dot" class="hidden md:block pointer-events-none fixed top-0 left-0 w-2 h-2 bg-[#c8a97e] rounded-full z-[100] transform -translate-x-1/2 -translate-y-1/2 transition-transform duration-100"></div>
     <div id="cursor-ring" class="hidden md:block pointer-events-none fixed top-0 left-0 w-10 h-10 border border-[#c8a97e]/50 rounded-full z-[99] transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ease-out"></div>
 
-    <div class="dust-container">
-        <canvas id="dust-canvas"></canvas>
-        <div class="bokeh-overlay"></div>
-    </div>
+    <canvas id="strings-canvas"></canvas>
 
     <main class="flex-grow flex items-center justify-center px-8 relative z-10 min-h-screen w-full"> 
         <div class="w-full px-8 lg:px-20 mx-auto flex flex-col items-center justify-center text-center"> 
@@ -177,88 +155,126 @@
     
 <script>
     // ==========================================
-    // 1. 電影級懸浮微塵特效 (Cinematic Bokeh Dust)
+    // 1. 琴弦共振特效 (Acoustic Resonance)
     // ==========================================
-    const canvas = document.getElementById('dust-canvas');
+    const canvas = document.getElementById('strings-canvas');
     const ctx = canvas.getContext('2d');
     
     let w, h;
-    let dustArray = [];
-    const mouse = { x: null, y: null };
+    let stringsArray = [];
+    const mouse = { x: null, y: null, lastX: null };
 
     window.addEventListener('mousemove', (e) => {
+        // 紀錄上一幀的游標 X 軸，用來判斷是否有「橫向劃過」琴弦
+        if (mouse.x === null) {
+            mouse.lastX = e.clientX;
+        } else {
+            mouse.lastX = mouse.x;
+        }
         mouse.x = e.clientX;
         mouse.y = e.clientY;
     });
 
-    window.addEventListener('resize', () => {
-        w = canvas.width = window.innerWidth;
-        h = canvas.height = window.innerHeight;
-        initDust();
+    window.addEventListener('mouseout', () => {
+        mouse.x = null;
+        mouse.y = null;
+        mouse.lastX = null;
     });
 
-    class DustParticle {
-        constructor() {
-            this.x = Math.random() * w;
-            this.y = Math.random() * h;
-            // z 軸決定深度：z 越小越清晰細小，z 越大則越靠近螢幕且模糊放大
-            this.z = Math.random() * 200; 
-            this.size = Math.random() * 1.5 + 0.5 + (this.z / 50);
-            this.speedX = (Math.random() - 0.5) * 0.2;
-            this.speedY = Math.random() * 0.2 + 0.1; 
-            this.baseOpacity = Math.random() * 0.3 + 0.1;
-            this.opacity = this.baseOpacity;
-            this.twinkleFactor = Math.random() * 0.005;
+    window.addEventListener('resize', () => {
+        initStrings();
+    });
+
+    class AcousticString {
+        constructor(x) {
+            this.baseX = x;       // 琴弦原本的 X 座標
+            this.x = x;           // 琴弦目前被撥動到的 X 座標 (控制點)
+            this.vx = 0;          // 震動速度
+            this.hitY = h / 2;    // 紀錄被滑鼠撥動的 Y 軸位置，讓彎曲點看起來更真實
         }
 
         update() {
-            this.x += this.speedX;
-            this.y += this.speedY;
-
-            // 3D 視差效果：滑鼠移動時，深淺不同的微塵位移速度不同
-            if (mouse.x && mouse.y) {
-                let dx = (mouse.x - w / 2) * 0.01 * (this.z / 100);
-                let dy = (mouse.y - h / 2) * 0.01 * (this.z / 100);
-                this.x -= dx * 0.1;
-                this.y -= dy * 0.1;
+            // 1. 判斷滑鼠是否「劃過」這根琴弦
+            if (mouse.x !== null && mouse.lastX !== null) {
+                let crossed = (mouse.lastX <= this.baseX && mouse.x >= this.baseX) || 
+                              (mouse.lastX >= this.baseX && mouse.x <= this.baseX);
+                
+                if (crossed) {
+                    // 給予琴弦一個物理推力 (根據滑鼠移動的速度)
+                    let force = mouse.x - mouse.lastX;
+                    // 限制最大推力，避免震動過於誇張
+                    force = Math.max(-40, Math.min(40, force));
+                    this.vx += force;
+                    this.hitY = mouse.y; // 紀錄撥動的高度
+                }
             }
 
-            // 邊界檢查
-            if (this.y > h) this.y = -10;
-            if (this.x > w) this.x = 0;
-            if (this.x < 0) this.x = w;
+            // 2. 應用彈簧物理學 (Spring Physics)
+            let tension = 0.03;   // 張力：決定琴弦拉回原位的力道 (越大越緊)
+            let damping = 0.92;   // 阻尼：決定震動消散的速度 (越小停得越快)
+            
+            let force = (this.baseX - this.x) * tension;
+            this.vx += force;
+            this.vx *= damping;
+            this.x += this.vx;
 
-            // 隨機微閃爍
-            this.opacity = this.baseOpacity + Math.sin(Date.now() * this.twinkleFactor) * 0.1;
+            // 讓撥動點慢慢回歸畫面中央，保持靜止時的美感
+            this.hitY += (h / 2 - this.hitY) * 0.05;
+
             this.draw();
         }
 
         draw() {
+            // 靜止時的極低透明度
+            let opacity = 0.05; 
+            
+            // 計算目前的震動幅度，震動越大，琴弦越亮越粗
+            let vibrationGlow = Math.abs(this.vx) * 0.015; 
+            opacity = Math.min(0.8, opacity + vibrationGlow); 
+
             ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(200, 169, 126, ${this.opacity})`;
-            ctx.fill();
+            ctx.moveTo(this.baseX, 0);
+            // 使用貝茲曲線畫出琴弦被撥動時的彎曲感
+            ctx.quadraticCurveTo(this.x, this.hitY, this.baseX, h);
+            
+            ctx.strokeStyle = `rgba(200, 169, 126, ${opacity})`;
+            ctx.lineWidth = 1 + vibrationGlow * 3; 
+            ctx.stroke();
+
+            // 如果震動幅度夠大，在撥動點畫出一個發光的共鳴點
+            if (vibrationGlow > 0.03) {
+                ctx.beginPath();
+                ctx.arc(this.x, this.hitY, vibrationGlow * 8, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(200, 169, 126, ${opacity * 1.5})`;
+                ctx.fill();
+            }
         }
     }
 
-    function initDust() {
+    function initStrings() {
         w = canvas.width = window.innerWidth;
         h = canvas.height = window.innerHeight;
-        dustArray = [];
-        let density = (w * h) / 8000; // 微塵密度
-        for (let i = 0; i < density; i++) {
-            dustArray.push(new DustParticle());
+        stringsArray = [];
+        
+        // 決定琴弦的間距 (約每 40px 一根)
+        let spacing = 40;
+        let numStrings = Math.floor(w / spacing);
+        // 計算兩邊的留白，讓琴弦完美置中
+        let padding = (w - (numStrings - 1) * spacing) / 2;
+
+        for (let i = 0; i < numStrings; i++) {
+            stringsArray.push(new AcousticString(padding + i * spacing));
         }
     }
 
-    function animateDust() {
+    function animateStrings() {
         ctx.clearRect(0, 0, w, h);
-        dustArray.forEach(particle => particle.update());
-        requestAnimationFrame(animateDust);
+        stringsArray.forEach(string => string.update());
+        requestAnimationFrame(animateStrings);
     }
 
-    initDust();
-    animateDust();
+    initStrings();
+    animateStrings();
 
     // ==========================================
     // 2. 自訂發光延遲游標
