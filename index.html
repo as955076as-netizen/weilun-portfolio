@@ -50,7 +50,7 @@
             filter: drop-shadow(0 0 10px var(--accent-gold)) drop-shadow(0 0 5px #fff) !important;
         }
 
-        /* 背景呼吸燈 */
+        /* --- 優化後的背景呼吸燈 --- */
         .ambient-breathe {
             position: fixed;
             top: 0;
@@ -59,18 +59,21 @@
             height: 100vh;
             z-index: -2; 
             pointer-events: none;
+            
+            /* 改為徑向漸變光暈。若要換白光，將 rgba 改為 rgba(255,255,255,0.08) */
             background: radial-gradient(
                 circle at center, 
                 rgba(200, 169, 126, 0.15) 0%, 
                 rgba(0, 0, 0, 0) 70%
             );
-            will-change: opacity;
+            will-change: opacity; /* 提升效能 */
+            /* 調整為 4s 與 cubic-bezier 讓呼吸更沈穩 */
             animation: full-breathe 4s cubic-bezier(0.4, 0, 0.6, 1) infinite alternate;
         }
         
         @keyframes full-breathe {
-            0% { opacity: 0.1; }   
-            100% { opacity: 1; } 
+            0% { opacity: 0.2; }   
+            100% { opacity: 0.6; } 
         }
 
         /* --- 自動化光軌畫布 --- */
@@ -81,7 +84,7 @@
             width: 100%;
             height: 100%;
             z-index: -1;
-            opacity: 0.85; /* 控制光軌整體的亮度 */
+            opacity: 0.85; 
             pointer-events: none;
         }
         
@@ -134,7 +137,9 @@
     <canvas id="pathway-canvas"></canvas>
 
     <main class="flex-grow flex items-center justify-center px-8 relative z-10 min-h-screen w-full"> 
-        <div class="w-full px-8 lg:px-20 mx-auto flex flex-col items-center justify-center text-center"> 
+        
+        <div class="w-full px-8 lg:px-20 mx-auto flex flex-col items-center justify-center text-center transform translate-y-[8vh] md:translate-y-[12vh]"> 
+            
             <div class="text-xs md:text-sm font-bold tracking-[0.5em] text-white/80 mb-6 md:mb-10 pl-[0.5em]">K U A N . 2 0 2 6</div>
 
             <div class="overflow-visible w-full flex items-center justify-center">
@@ -142,6 +147,7 @@
                     ROY
                 </h1>
             </div>
+            
             <p class="text-xs md:text-sm lg:text-base text-white/60 tracking-[0.15em] md:tracking-[0.2em] font-light mt-6 md:mt-10 lg:mt-12 z-10 px-4">
                 電腦視覺 · 流程自動化 · 影音工程<br>
                 「從實務現場跨越至演算法開發，以精準的自動化邏輯，重構視覺工程的無限可能。」
@@ -194,31 +200,28 @@
         }
 
         reset() {
-            // 光軌起點
             this.x = Math.random() * w;
             this.y = Math.random() * h;
             
-            // 強制對齊虛擬網格 (20px)，讓折線更具機械規律感
             this.gridSize = 20;
             this.x = Math.floor(this.x / this.gridSize) * this.gridSize;
             this.y = Math.floor(this.y / this.gridSize) * this.gridSize;
             
-            this.history = []; // 儲存光束走過的軌跡
-            this.maxLength = Math.floor(Math.random() * 40 + 15); // 光束尾巴長度
-            this.speed = 2; // 移動速度
+            this.history = []; 
+            this.maxLength = Math.floor(Math.random() * 40 + 15); 
+            this.speed = 2; 
             
             this.setRandomOrthogonalDirection();
             
             this.baseOpacity = Math.random() * 0.3 + 0.1;
             this.opacity = this.baseOpacity;
-            this.turnChance = 0.02; // 轉彎的機率
+            this.turnChance = 0.02; 
             
             this.life = 0;
-            this.maxLife = Math.random() * 300 + 100; // 每條光束的壽命
+            this.maxLife = Math.random() * 300 + 100; 
         }
 
         setRandomOrthogonalDirection() {
-            // 只允許 90 度直線移動 (上下左右)
             const dirs = [
                 {dx: 1, dy: 0}, {dx: -1, dy: 0}, 
                 {dx: 0, dy: 1}, {dx: 0, dy: -1}
@@ -235,7 +238,6 @@
                 return;
             }
 
-            // 紀錄軌跡以畫出漸隱線條
             this.history.push({x: this.x, y: this.y});
             if (this.history.length > this.maxLength) {
                 this.history.shift();
@@ -244,13 +246,10 @@
             this.x += this.dx;
             this.y += this.dy;
 
-            // 轉彎邏輯
             if (Math.random() < this.turnChance) {
-                // 轉彎前，強制鎖定回網格，確保直角精準
                 this.x = Math.floor(this.x / this.gridSize) * this.gridSize;
                 this.y = Math.floor(this.y / this.gridSize) * this.gridSize;
                 
-                // 執行 90 度轉向
                 if (this.dx !== 0) {
                     this.dy = Math.random() < 0.5 ? this.speed : -this.speed;
                     this.dx = 0;
@@ -260,7 +259,6 @@
                 }
             }
 
-            // 超出螢幕時重置
             if (this.x < 0 || this.x > w || this.y < 0 || this.y > h) {
                 this.reset();
             }
@@ -269,7 +267,6 @@
         draw() {
             if (this.history.length < 2) return;
 
-            // 計算與滑鼠的距離
             let distToMouse = 9999;
             if (mouse.x && mouse.y) {
                 let mdx = this.x - mouse.x;
@@ -277,13 +274,11 @@
                 distToMouse = Math.sqrt(mdx * mdx + mdy * mdy);
             }
 
-            // 當滑鼠靠近時，光軌會「感知」並大幅增亮
             let currentOpacity = this.baseOpacity;
             if (distToMouse < 150) {
                 currentOpacity = Math.min(1, currentOpacity + (150 - distToMouse) * 0.008);
             }
 
-            // 繪製漸隱尾跡
             ctx.beginPath();
             ctx.moveTo(this.history[0].x, this.history[0].y);
             for (let i = 1; i < this.history.length; i++) {
@@ -291,7 +286,6 @@
             }
             ctx.lineTo(this.x, this.y);
 
-            // 漸層上色 (從透明漸變到前端的最亮點)
             let grad = ctx.createLinearGradient(this.history[0].x, this.history[0].y, this.x, this.y);
             grad.addColorStop(0, 'rgba(200, 169, 126, 0)');
             grad.addColorStop(1, `rgba(200, 169, 126, ${currentOpacity})`);
@@ -300,7 +294,6 @@
             ctx.lineWidth = 1.2;
             ctx.stroke();
 
-            // 繪製前端的數據節點 (發光點)
             ctx.beginPath();
             ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
             ctx.fillStyle = `rgba(200, 169, 126, ${currentOpacity + 0.3})`;
@@ -312,7 +305,6 @@
         w = canvas.width = window.innerWidth;
         h = canvas.height = window.innerHeight;
         pathways = [];
-        // 根據螢幕尺寸決定光束數量
         let density = (w * h) / 12000; 
         for (let i = 0; i < density; i++) {
             pathways.push(new Pathway());
