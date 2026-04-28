@@ -51,39 +51,31 @@
             filter: drop-shadow(0 0 10px var(--accent-gold)) drop-shadow(0 0 5px #fff) !important;
         }
 
-        /* --- 背景呼吸燈特效 (Breathing Light) --- */
+        /* --- 全螢幕背景呼吸燈特效 (Full-page Breathing Light) --- */
         .ambient-breathe {
             position: fixed;
-            /* 將畫布放大，避免縮放時看到邊界 */
-            top: -20%;
-            left: -20%;
-            width: 140vw;
-            height: 140vh;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
             z-index: -2; 
             pointer-events: none;
             
-            /* 使用徑向漸層，在中心創造一個極度柔和的金屬光暈 */
-            background: radial-gradient(
-                circle at 50% 50%, 
-                rgba(200, 169, 126, 0.08) 0%, 
-                rgba(200, 169, 126, 0.02) 30%, 
-                transparent 60%
+            /* 改用大範圍的對角線線性漸層，確保四個角落都有光澤 */
+            background: linear-gradient(
+                135deg, 
+                rgba(200, 169, 126, 0.06) 0%, 
+                rgba(200, 169, 126, 0.02) 100%
             );
             
-            /* 8秒的完整呼吸週期，alternate 會讓它來回平滑漸變 (亮->暗->亮) */
-            animation: breathe-light 8s ease-in-out infinite alternate;
+            /* 拿掉 scale 縮放，純粹依靠 opacity 讓整個畫面均勻明暗 */
+            animation: full-breathe 8s ease-in-out infinite alternate;
         }
 
-        /* 呼吸的核心動畫：透明度與微幅縮放 */
-        @keyframes breathe-light {
-            0% { 
-                opacity: 0.3; 
-                transform: scale(0.9); /* 吐氣：變暗、微微縮小 */
-            }
-            100% { 
-                opacity: 1; 
-                transform: scale(1.1); /* 吸氣：變亮、微微擴散 */
-            }
+        /* 呼吸的核心動畫：全域透明度漸變 */
+        @keyframes full-breathe {
+            0% { opacity: 0.1; }  /* 吐氣：整體變暗 */
+            100% { opacity: 1; }  /* 吸氣：整體變亮 */
         }
 
         #particle-canvas {
