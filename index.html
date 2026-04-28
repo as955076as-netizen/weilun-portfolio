@@ -1,402 +1,331 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ROY | AI Engineering Portfolio</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=Noto+Sans+TC:wght@300;400;700;900&display=swap" rel="stylesheet">
-    
-    <style>
-        :root {
-            --bg-dark: #050505;
-            --accent-gold: #c8a97e;
-        }
-        
-        body {
-            background-color: var(--bg-dark);
-            color: #ffffff;
-            font-family: 'Inter', 'Noto Sans TC', sans-serif;
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-        }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROY | AI Engineering Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=Noto+Sans+TC:wght@300;400;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-dark: #050505;
+            --accent-gold: #c8a97e;
+        }
+        
+        body {
+            background-color: var(--bg-dark);
+            color: #ffffff;
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
 
-        /* 隱藏預設滑鼠 */
-        @media (hover: hover) and (pointer: fine) {
-            body, a, button, h1, p { cursor: none !important; }
-        }
+        /* 隱藏預設滑鼠 */
+        @media (hover: hover) and (pointer: fine) {
+            body, a, button, h1, p { cursor: none !important; }
+        }
 
-        /* 游標圓點 (Dot) */
-        #cursor-dot {
-            background-color: #fff;
-            box-shadow: 0 0 5px #fff, 
-                        0 0 10px var(--accent-gold), 
-                        0 0 20px var(--accent-gold), 
-                        0 0 30px rgba(200, 169, 126, 0.5);
-            transition: transform 0.1s;
-        }
+        /* 游標圓點 (Dot) */
+        #cursor-dot {
+            background-color: #fff;
+            box-shadow: 0 0 5px #fff, 0 0 10px var(--accent-gold), 0 0 20px var(--accent-gold), 0 0 30px rgba(200, 169, 126, 0.5);
+            transition: transform 0.1s;
+        }
 
-        /* 游標外圈 (Ring) */
-        #cursor-ring {
-            border-color: rgba(200, 169, 126, 0.8);
-            filter: drop-shadow(0 0 4px var(--accent-gold));
-            transition: all 0.3s ease-out;
-        }
+        /* 游標外圈 (Ring) */
+        #cursor-ring {
+            border-color: rgba(200, 169, 126, 0.8);
+            filter: drop-shadow(0 0 4px var(--accent-gold));
+            transition: all 0.3s ease-out;
+        }
 
-        .cursor-hover-active {
-            transform: translate(-50%, -50%) scale(1.6) !important;
-            background-color: rgba(200, 169, 126, 0.15) !important;
-            border-color: rgba(255, 255, 255, 0.9) !important;
-            filter: drop-shadow(0 0 10px var(--accent-gold)) drop-shadow(0 0 5px #fff) !important;
-        }
+        .cursor-hover-active {
+            transform: translate(-50%, -50%) scale(1.6) !important;
+            background-color: rgba(200, 169, 126, 0.15) !important;
+            border-color: rgba(255, 255, 255, 0.9) !important;
+            filter: drop-shadow(0 0 10px var(--accent-gold)) drop-shadow(0 0 5px #fff) !important;
+        }
 
-        /* 背景呼吸燈 */
-        .ambient-breathe {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -2; 
-            pointer-events: none;
-            background: radial-gradient(
-                circle at center, 
-                rgba(200, 169, 126, 0.15) 0%, 
-                rgba(0, 0, 0, 0) 70%
-            );
-            will-change: opacity;
-            animation: full-breathe 4s cubic-bezier(0.4, 0, 0.6, 1) infinite alternate;
-        }
-        
-        @keyframes full-breathe {
-            0% { opacity: 0.1; }   
-            100% { opacity: 1; } 
-        }
+        /* 背景呼吸燈 */
+        .ambient-breathe {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -2; 
+            pointer-events: none;
+            background: radial-gradient(circle at center, rgba(200, 169, 126, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+            will-change: opacity;
+            animation: full-breathe 4s cubic-bezier(0.4, 0, 0.6, 1) infinite alternate;
+        }
+        
+        @keyframes full-breathe {
+            0% { opacity: 0.1; }   
+            100% { opacity: 1; } 
+        }
 
-        /* --- 自動化光軌畫布 --- */
-        #pathway-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            opacity: 0.85; /* 控制光軌整體的亮度 */
-            pointer-events: none;
-        }
-        
-        .btn-capsule {
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s, border-color 0.3s;
-        }
-        
-        .btn-capsule:hover {
-            border-color: rgba(255, 255, 255, 0.4);
-            background: rgba(255, 255, 255, 0.05);
-            box-shadow: 0 0 15px rgba(200, 169, 126, 0.2);
-        }
+        /* --- 電影級懸浮微塵容器與濾鏡 --- */
+        .dust-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+        }
 
-        .watermark-title {
-            position: relative;
-            color: rgba(255, 255, 255, 0.08); 
-            user-select: none;
-        }
+        #dust-canvas {
+            width: 100%;
+            height: 100%;
+            opacity: 0.7;
+        }
 
-        .watermark-title::before {
-            content: attr(data-text);
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            color: var(--accent-gold);
-            clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
-            transition: clip-path 0.8s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s ease;
-            z-index: 1;
-            filter: drop-shadow(0 0 0px rgba(200, 169, 126, 0));
-        }
+        /* 景深虛化層：讓部分微塵產生 Bokeh 光圈效果 */
+        .bokeh-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            backdrop-filter: blur(1.5px);
+            -webkit-backdrop-filter: blur(1.5px);
+            pointer-events: none;
+        }
+        
+        .btn-capsule {
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s, border-color 0.3s;
+        }
+        
+        .btn-capsule:hover {
+            border-color: rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 15px rgba(200, 169, 126, 0.2);
+        }
 
-        .watermark-title:hover::before {
-            clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-            filter: drop-shadow(0 0 15px rgba(200, 169, 126, 0.3));
-        }
-    </style>
+        .watermark-title {
+            position: relative;
+            color: rgba(255, 255, 255, 0.08); 
+            user-select: none;
+        }
+
+        .watermark-title::before {
+            content: attr(data-text);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            color: var(--accent-gold);
+            clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
+            transition: clip-path 0.8s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s ease;
+            z-index: 1;
+            filter: drop-shadow(0 0 0px rgba(200, 169, 126, 0));
+        }
+
+        .watermark-title:hover::before {
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+            filter: drop-shadow(0 0 15px rgba(200, 169, 126, 0.3));
+        }
+    </style>
 </head>
 <body class="min-h-screen flex flex-col relative selection:bg-white/20 selection:text-white">
 
-    <div class="ambient-breathe"></div>
+    <div class="ambient-breathe"></div>
 
-    <div id="cursor-dot" class="hidden md:block pointer-events-none fixed top-0 left-0 w-2 h-2 bg-[#c8a97e] rounded-full z-[100] transform -translate-x-1/2 -translate-y-1/2 transition-transform duration-100"></div>
-    <div id="cursor-ring" class="hidden md:block pointer-events-none fixed top-0 left-0 w-10 h-10 border border-[#c8a97e]/50 rounded-full z-[99] transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ease-out"></div>
+    <div id="cursor-dot" class="hidden md:block pointer-events-none fixed top-0 left-0 w-2 h-2 bg-[#c8a97e] rounded-full z-[100] transform -translate-x-1/2 -translate-y-1/2 transition-transform duration-100"></div>
+    <div id="cursor-ring" class="hidden md:block pointer-events-none fixed top-0 left-0 w-10 h-10 border border-[#c8a97e]/50 rounded-full z-[99] transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ease-out"></div>
 
-    <canvas id="pathway-canvas"></canvas>
+    <div class="dust-container">
+        <canvas id="dust-canvas"></canvas>
+        <div class="bokeh-overlay"></div>
+    </div>
 
-    <main class="flex-grow flex items-center justify-center px-8 relative z-10 min-h-screen w-full"> 
-        <div class="w-full px-8 lg:px-20 mx-auto flex flex-col items-center justify-center text-center"> 
-            <div class="text-xs md:text-sm font-bold tracking-[0.5em] text-white/80 mb-6 md:mb-10 pl-[0.5em]">K U A N . 2 0 2 6</div>
+    <main class="flex-grow flex items-center justify-center px-8 relative z-10 min-h-screen w-full"> 
+        <div class="w-full px-8 lg:px-20 mx-auto flex flex-col items-center justify-center text-center"> 
+            <div class="text-xs md:text-sm font-bold tracking-[0.5em] text-white/80 mb-6 md:mb-10 pl-[0.5em]">K U A N . 2 0 2 6</div>
 
-            <div class="overflow-visible w-full flex items-center justify-center">
-                <h1 class="watermark-title inline-block px-[6vw] text-[4vw] sm:text-[6vw] md:text-[10vw] lg:text-[14vw] font-black leading-none tracking-tighter overflow-visible mb-12 md:mb-20" data-text="ROY">
-                    ROY
-                </h1>
-            </div>
-            <p class="text-xs md:text-sm lg:text-base text-white/60 tracking-[0.15em] md:tracking-[0.2em] font-light mt-6 md:mt-10 lg:mt-12 z-10 px-4">
-                電腦視覺 · 流程自動化 · 影音工程<br>
-                「從實務現場跨越至演算法開發，以精準的自動化邏輯，重構視覺工程的無限可能。」
-            </p>
+            <div class="overflow-visible w-full flex items-center justify-center">
+                <h1 class="watermark-title inline-block px-[6vw] text-[4vw] sm:text-[6vw] md:text-[10vw] lg:text-[14vw] font-black leading-none tracking-tighter overflow-visible mb-22 md:mb-30" data-text="ROY">
+                    ROY
+                </h1>
+            </div>
+            <p class="text-xs md:text-sm lg:text-base text-white/60 tracking-[0.15em] md:tracking-[0.2em] font-light mt-6 md:mt-10 lg:mt-12 z-10 px-4">
+                電腦視覺 · 流程自動化 · 影音工程<br>
+                「從實務現場跨越至演算法開發，以精準的自動化邏輯，重構視覺工程的無限可能。」
+            </p>
 
-            <div class="pt-16 md:pt-24 flex flex-col items-center space-y-6 z-10">
-                <a href="#works" class="btn-capsule group inline-flex items-center justify-center px-10 py-3 md:py-4 rounded-full text-sm font-medium tracking-[0.2em] transition-all duration-300">
-                    <span class="pl-[0.2em]">進入系統</span>
-                    <span class="ml-4 font-inter text-lg group-hover:translate-x-1 transition-transform duration-300">→</span>
-                </a>
-                
-                <div class="text-[9px] md:text-[10px] tracking-[0.3em] font-inter text-[#c8a97e]/60 pl-[0.3em]">
-                    * ENTER EXPERIENCE
-                </div>
-            </div>
+            <div class="pt-16 md:pt-24 flex flex-col items-center space-y-6 z-10">
+                <a href="#works" class="btn-capsule group inline-flex items-center justify-center px-10 py-3 md:py-4 rounded-full text-sm font-medium tracking-[0.2em] transition-all duration-300">
+                    <span class="pl-[0.2em]">進入系統</span>
+                    <span class="ml-4 font-inter text-lg group-hover:translate-x-1 transition-transform duration-300">→</span>
+                </a>
+                
+                <div class="text-[9px] md:text-[10px] tracking-[0.3em] font-inter text-[#c8a97e]/60 pl-[0.3em]">
+                    * ENTER EXPERIENCE
+                </div>
+            </div>
 
-        </div>
-    </main>
-    
+        </div>
+    </main>
+    
 <script>
-    // ==========================================
-    // 1. 自動化光軌特效 (Algorithmic Pathways)
-    // ==========================================
-    const canvas = document.getElementById('pathway-canvas');
-    const ctx = canvas.getContext('2d');
-    
-    let w, h;
-    let pathways = [];
-    const mouse = { x: null, y: null };
+    // ==========================================
+    // 1. 電影級懸浮微塵特效 (Cinematic Bokeh Dust)
+    // ==========================================
+    const canvas = document.getElementById('dust-canvas');
+    const ctx = canvas.getContext('2d');
+    
+    let w, h;
+    let dustArray = [];
+    const mouse = { x: null, y: null };
 
-    window.addEventListener('mousemove', (e) => {
-        mouse.x = e.clientX;
-        mouse.y = e.clientY;
-    });
+    window.addEventListener('mousemove', (e) => {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+    });
 
-    window.addEventListener('mouseout', () => {
-        mouse.x = null;
-        mouse.y = null;
-    });
+    window.addEventListener('resize', () => {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+        initDust();
+    });
 
-    window.addEventListener('resize', () => {
-        w = canvas.width = window.innerWidth;
-        h = canvas.height = window.innerHeight;
-        initPathways();
-    });
+    class DustParticle {
+        constructor() {
+            this.x = Math.random() * w;
+            this.y = Math.random() * h;
+            // z 軸決定深度：z 越小越清晰細小，z 越大則越靠近螢幕且模糊放大
+            this.z = Math.random() * 200; 
+            this.size = Math.random() * 1.5 + 0.5 + (this.z / 50);
+            this.speedX = (Math.random() - 0.5) * 0.2;
+            this.speedY = Math.random() * 0.2 + 0.1; 
+            this.baseOpacity = Math.random() * 0.3 + 0.1;
+            this.opacity = this.baseOpacity;
+            this.twinkleFactor = Math.random() * 0.005;
+        }
 
-    class Pathway {
-        constructor() {
-            this.reset();
-        }
+        update() {
+            this.x += this.speedX;
+            this.y += this.speedY;
 
-        reset() {
-            // 光軌起點
-            this.x = Math.random() * w;
-            this.y = Math.random() * h;
-            
-            // 強制對齊虛擬網格 (20px)，讓折線更具機械規律感
-            this.gridSize = 20;
-            this.x = Math.floor(this.x / this.gridSize) * this.gridSize;
-            this.y = Math.floor(this.y / this.gridSize) * this.gridSize;
-            
-            this.history = []; // 儲存光束走過的軌跡
-            this.maxLength = Math.floor(Math.random() * 40 + 15); // 光束尾巴長度
-            this.speed = 2; // 移動速度
-            
-            this.setRandomOrthogonalDirection();
-            
-            this.baseOpacity = Math.random() * 0.3 + 0.1;
-            this.opacity = this.baseOpacity;
-            this.turnChance = 0.02; // 轉彎的機率
-            
-            this.life = 0;
-            this.maxLife = Math.random() * 300 + 100; // 每條光束的壽命
-        }
+            // 3D 視差效果：滑鼠移動時，深淺不同的微塵位移速度不同
+            if (mouse.x && mouse.y) {
+                let dx = (mouse.x - w / 2) * 0.01 * (this.z / 100);
+                let dy = (mouse.y - h / 2) * 0.01 * (this.z / 100);
+                this.x -= dx * 0.1;
+                this.y -= dy * 0.1;
+            }
 
-        setRandomOrthogonalDirection() {
-            // 只允許 90 度直線移動 (上下左右)
-            const dirs = [
-                {dx: 1, dy: 0}, {dx: -1, dy: 0}, 
-                {dx: 0, dy: 1}, {dx: 0, dy: -1}
-            ];
-            const dir = dirs[Math.floor(Math.random() * dirs.length)];
-            this.dx = dir.dx * this.speed;
-            this.dy = dir.dy * this.speed;
-        }
+            // 邊界檢查
+            if (this.y > h) this.y = -10;
+            if (this.x > w) this.x = 0;
+            if (this.x < 0) this.x = w;
 
-        update() {
-            this.life++;
-            if (this.life > this.maxLife) {
-                this.reset();
-                return;
-            }
+            // 隨機微閃爍
+            this.opacity = this.baseOpacity + Math.sin(Date.now() * this.twinkleFactor) * 0.1;
+            this.draw();
+        }
 
-            // 紀錄軌跡以畫出漸隱線條
-            this.history.push({x: this.x, y: this.y});
-            if (this.history.length > this.maxLength) {
-                this.history.shift();
-            }
+        draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(200, 169, 126, ${this.opacity})`;
+            ctx.fill();
+        }
+    }
 
-            this.x += this.dx;
-            this.y += this.dy;
+    function initDust() {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+        dustArray = [];
+        let density = (w * h) / 8000; // 微塵密度
+        for (let i = 0; i < density; i++) {
+            dustArray.push(new DustParticle());
+        }
+    }
 
-            // 轉彎邏輯
-            if (Math.random() < this.turnChance) {
-                // 轉彎前，強制鎖定回網格，確保直角精準
-                this.x = Math.floor(this.x / this.gridSize) * this.gridSize;
-                this.y = Math.floor(this.y / this.gridSize) * this.gridSize;
-                
-                // 執行 90 度轉向
-                if (this.dx !== 0) {
-                    this.dy = Math.random() < 0.5 ? this.speed : -this.speed;
-                    this.dx = 0;
-                } else {
-                    this.dx = Math.random() < 0.5 ? this.speed : -this.speed;
-                    this.dy = 0;
-                }
-            }
+    function animateDust() {
+        ctx.clearRect(0, 0, w, h);
+        dustArray.forEach(particle => particle.update());
+        requestAnimationFrame(animateDust);
+    }
 
-            // 超出螢幕時重置
-            if (this.x < 0 || this.x > w || this.y < 0 || this.y > h) {
-                this.reset();
-            }
-        }
+    initDust();
+    animateDust();
 
-        draw() {
-            if (this.history.length < 2) return;
+    // ==========================================
+    // 2. 自訂發光延遲游標
+    // ==========================================
+    const cursorDot = document.getElementById('cursor-dot');
+    const cursorRing = document.getElementById('cursor-ring');
+    let cursorX = window.innerWidth / 2;
+    let cursorY = window.innerHeight / 2;
+    let ringX = cursorX;
+    let ringY = cursorY;
 
-            // 計算與滑鼠的距離
-            let distToMouse = 9999;
-            if (mouse.x && mouse.y) {
-                let mdx = this.x - mouse.x;
-                let mdy = this.y - mouse.y;
-                distToMouse = Math.sqrt(mdx * mdx + mdy * mdy);
-            }
+    window.addEventListener('mousemove', (e) => {
+        cursorX = e.clientX;
+        cursorY = e.clientY;
+        if(cursorDot) {
+            cursorDot.style.left = `${cursorX}px`;
+            cursorDot.style.top = `${cursorY}px`;
+        }
+    });
 
-            // 當滑鼠靠近時，光軌會「感知」並大幅增亮
-            let currentOpacity = this.baseOpacity;
-            if (distToMouse < 150) {
-                currentOpacity = Math.min(1, currentOpacity + (150 - distToMouse) * 0.008);
-            }
+    function animateCursor() {
+        ringX += (cursorX - ringX) * 0.15;
+        ringY += (cursorY - ringY) * 0.15;
+        if(cursorRing) {
+            cursorRing.style.left = `${ringX}px`;
+            cursorRing.style.top = `${ringY}px`;
+        }
+        requestAnimationFrame(animateCursor);
+    }
+    animateCursor();
 
-            // 繪製漸隱尾跡
-            ctx.beginPath();
-            ctx.moveTo(this.history[0].x, this.history[0].y);
-            for (let i = 1; i < this.history.length; i++) {
-                ctx.lineTo(this.history[i].x, this.history[i].y);
-            }
-            ctx.lineTo(this.x, this.y);
+    const interactables = document.querySelectorAll('a, button');
+    interactables.forEach(el => {
+        el.addEventListener('mouseenter', () => {
+            if(cursorRing) cursorRing.classList.add('cursor-hover-active');
+            if(cursorDot) {
+                cursorDot.style.transform = 'translate(-50%, -50%) scale(0.6)';
+                cursorDot.style.backgroundColor = '#c8a97e'; 
+                cursorDot.style.boxShadow = '0 0 10px #fff, 0 0 20px #c8a97e, 0 0 30px #c8a97e';
+            }
+        });
+        el.addEventListener('mouseleave', () => {
+            if(cursorRing) cursorRing.classList.remove('cursor-hover-active');
+            if(cursorDot) {
+                cursorDot.style.transform = 'translate(-50%, -50%) scale(1)';
+                cursorDot.style.backgroundColor = '#fff';
+                cursorDot.style.boxShadow = '0 0 5px #fff, 0 0 10px #c8a97e, 0 0 20px #c8a97e, 0 0 30px rgba(200, 169, 126, 0.5)';
+            }
+        });
+    });
 
-            // 漸層上色 (從透明漸變到前端的最亮點)
-            let grad = ctx.createLinearGradient(this.history[0].x, this.history[0].y, this.x, this.y);
-            grad.addColorStop(0, 'rgba(200, 169, 126, 0)');
-            grad.addColorStop(1, `rgba(200, 169, 126, ${currentOpacity})`);
+    // ==========================================
+    // 3. 磁性吸附按鈕
+    // ==========================================
+    const magneticBtn = document.querySelector('.btn-capsule');
+    if(magneticBtn) {
+        magneticBtn.addEventListener('mousemove', (e) => {
+            const rect = magneticBtn.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+            magneticBtn.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+        });
 
-            ctx.strokeStyle = grad;
-            ctx.lineWidth = 1.2;
-            ctx.stroke();
-
-            // 繪製前端的數據節點 (發光點)
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(200, 169, 126, ${currentOpacity + 0.3})`;
-            ctx.fill();
-        }
-    }
-
-    function initPathways() {
-        w = canvas.width = window.innerWidth;
-        h = canvas.height = window.innerHeight;
-        pathways = [];
-        // 根據螢幕尺寸決定光束數量
-        let density = (w * h) / 12000; 
-        for (let i = 0; i < density; i++) {
-            pathways.push(new Pathway());
-        }
-    }
-
-    function animatePathways() {
-        ctx.clearRect(0, 0, w, h);
-        pathways.forEach(pathway => {
-            pathway.update();
-            pathway.draw();
-        });
-        requestAnimationFrame(animatePathways);
-    }
-
-    initPathways();
-    animatePathways();
-
-    // ==========================================
-    // 2. 自訂發光延遲游標
-    // ==========================================
-    const cursorDot = document.getElementById('cursor-dot');
-    const cursorRing = document.getElementById('cursor-ring');
-    let cursorX = window.innerWidth / 2;
-    let cursorY = window.innerHeight / 2;
-    let ringX = cursorX;
-    let ringY = cursorY;
-
-    window.addEventListener('mousemove', (e) => {
-        cursorX = e.clientX;
-        cursorY = e.clientY;
-        if(cursorDot) {
-            cursorDot.style.left = `${cursorX}px`;
-            cursorDot.style.top = `${cursorY}px`;
-        }
-    });
-
-    function animateCursor() {
-        ringX += (cursorX - ringX) * 0.15;
-        ringY += (cursorY - ringY) * 0.15;
-        if(cursorRing) {
-            cursorRing.style.left = `${ringX}px`;
-            cursorRing.style.top = `${ringY}px`;
-        }
-        requestAnimationFrame(animateCursor);
-    }
-    animateCursor();
-
-    const interactables = document.querySelectorAll('a, button');
-    interactables.forEach(el => {
-        el.addEventListener('mouseenter', () => {
-            if(cursorRing) cursorRing.classList.add('cursor-hover-active');
-            if(cursorDot) {
-                cursorDot.style.transform = 'translate(-50%, -50%) scale(0.6)';
-                cursorDot.style.backgroundColor = '#c8a97e'; 
-                cursorDot.style.boxShadow = '0 0 10px #fff, 0 0 20px #c8a97e, 0 0 30px #c8a97e';
-            }
-        });
-        el.addEventListener('mouseleave', () => {
-            if(cursorRing) cursorRing.classList.remove('cursor-hover-active');
-            if(cursorDot) {
-                cursorDot.style.transform = 'translate(-50%, -50%) scale(1)';
-                cursorDot.style.backgroundColor = '#fff';
-                cursorDot.style.boxShadow = '0 0 5px #fff, 0 0 10px #c8a97e, 0 0 20px #c8a97e, 0 0 30px rgba(200, 169, 126, 0.5)';
-            }
-        });
-    });
-
-    // ==========================================
-    // 3. 磁性吸附按鈕
-    // ==========================================
-    const magneticBtn = document.querySelector('.btn-capsule');
-    if(magneticBtn) {
-        magneticBtn.addEventListener('mousemove', (e) => {
-            const rect = magneticBtn.getBoundingClientRect();
-            const x = e.clientX - rect.left - rect.width / 2;
-            const y = e.clientY - rect.top - rect.height / 2;
-            magneticBtn.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
-        });
-
-        magneticBtn.addEventListener('mouseleave', () => {
-            magneticBtn.style.transform = `translate(0px, 0px)`;
-        });
-    }
+        magneticBtn.addEventListener('mouseleave', () => {
+            magneticBtn.style.transform = `translate(0px, 0px)`;
+        });
+    }
 </script>
 </body>
 </html>
