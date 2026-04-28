@@ -172,15 +172,17 @@
     
 <script>
     // ==========================================
-    // 1. 背景粒子特效
+    // 1. 流體力學擾流特效 (Flow Field / Curl Noise)
     // ==========================================
     const canvas = document.getElementById('particle-canvas');
     const ctx = canvas.getContext('2d');
     
     let particlesArray = [];
     let w, h;
+    let time = 0; // 用來讓流場隨著時間緩慢變化
 
-    const mouse = { x: null, y: null, radius: 150 };
+    // 加大滑鼠的影響範圍，讓擾流感更強烈
+    const mouse = { x: null, y: null, radius: 250 };
 
     window.addEventListener('mousemove', (event) => {
         mouse.x = event.x;
@@ -199,20 +201,63 @@
     });
 
     class Particle {
-        constructor(x, y, directionX, directionY, size, color) {
-            this.x = x; this.y = y; this.directionX = directionX; this.directionY = directionY; this.size = size; this.color = color;
+        constructor() {
+            this.x = Math.random() * w;
+            this.y = Math.random() * h;
+            this.prevX = this.x;
+            this.prevY = this.y;
+            this.speed = Math.random() * 0.8 + 0.2; // 緩慢且優雅的流動速度
+            this.size = Math.random() * 1.5 + 0.5;
+            // 讓每條絲線的金色透明度都不太一樣，增加層次感
+            let alpha = Math.random() * 0.4 + 0.1;
+            this.color = `rgba(200, 169, 126, ${alpha})`;
         }
+
+        update() {
+            this.prevX = this.x;
+            this.prevY = this.y;
+
+            // 核心演算法：利用三角函數創造出類似水流的力場向量
+            let zoom = 0.002;
+            let angle = (Math.sin(this.x * zoom + time) + Math.cos(this.y * zoom + time)) * Math.PI * 2;
+
+            // 加入滑鼠擾流 (Turbulence)
+            if (mouse.x != null && mouse.y != null) {
+                let dx = mouse.x - this.x;
+                let dy = mouse.y - this.y;
+                let dist = Math.sqrt(dx * dx + dy * dy);
+                
+                if (dist < mouse.radius) {
+                    // 計算滑鼠影響力，越靠近越強
+                    let force = (mouse.radius - dist) / mouse.radius;
+                    // 加 90 度 (Math.PI / 2) 可以製造出繞著滑鼠轉的「漩渦感」
+                    let pushAngle = Math.atan2(dy, dx) + Math.PI / 2; 
+                    // 將原本的水流角度與滑鼠擾流角度進行混合
+                    angle = angle * (1 - force) + pushAngle * force;
+                }
+            }
+
+            // 根據最終角度更新位置
+            this.x += Math.cos(angle) * this.speed;
+            this.y += Math.sin(angle) * this.speed;
+
+            // 邊界處理：超出螢幕時從另一端出現，並立刻重置 prevX/Y 避免拉出一條橫跨螢幕的直線
+            if (this.x < 0 || this.x > w || this.y < 0 || this.y > h) {
+                this.x = this.x < 0 ? w : (this.x > w ? 0 : this.x);
+                this.y = this.y < 0 ? h : (this.y > h ? 0 : this.y);
+                this.prevX = this.x;
+                this.prevY = this.y;
+            }
+        }
+
         draw() {
             ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
-            ctx.fillStyle = this.color;
-            ctx.fill();
-        }
-        update() {
-            if (this.x > w || this.x < 0) this.directionX = -this.directionX;
-            if (this.y > h || this.y < 0) this.directionY = -this.directionY;
-            this.x += this.directionX; this.y += this.directionY;
-            this.draw();
+            ctx.moveTo(this.prevX, this.prevY);
+            ctx.lineTo(this.x, this.y);
+            ctx.strokeStyle = this.color;
+            ctx.lineWidth = this.size;
+            ctx.lineCap = 'round';
+            ctx.stroke();
         }
     }
 
@@ -220,58 +265,26 @@
         particlesArray = [];
         w = canvas.width = window.innerWidth;
         h = canvas.height = window.innerHeight;
-        let numberOfParticles = (w * h) / 12000;
+        // 流體特效需要多一點粒子才能看出漂亮的軌跡，這裡我們把密度提高
+        let numberOfParticles = (w * h) / 3500; 
         for (let i = 0; i < numberOfParticles; i++) {
-            let size = (Math.random() * 1.5) + 0.5; 
-            let x = (Math.random() * ((w - size * 2) - (size * 2)) + size * 2);
-            let y = (Math.random() * ((h - size * 2) - (size * 2)) + size * 2);
-            let directionX = (Math.random() - 0.5) * 0.6; 
-            let directionY = (Math.random() - 0.5) * 0.6;
-            let color = 'rgba(200, 169, 126, 0.8)'; 
-            particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
-        }
-    }
-
-    function connect() {
-        let opacityValue = 1;
-        for (let a = 0; a < particlesArray.length; a++) {
-            for (let b = a; b < particlesArray.length; b++) {
-                let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x))
-                             + ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
-                if (distance < (w / 15) * (h / 15)) {
-                    opacityValue = 1 - (distance / 20000);
-                    ctx.strokeStyle = `rgba(200, 169, 126, ${opacityValue})`;
-                    ctx.lineWidth = 0.5;
-                    ctx.beginPath();
-                    ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
-                    ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
-                    ctx.stroke();
-                }
-            }
-            if (mouse.x != null && mouse.y != null) {
-                let dx = particlesArray[a].x - mouse.x;
-                let dy = particlesArray[a].y - mouse.y;
-                let mouseDistance = Math.sqrt(dx * dx + dy * dy);
-                if (mouseDistance < mouse.radius) {
-                    let mouseOpacity = 1 - (mouseDistance / mouse.radius);
-                    ctx.strokeStyle = `rgba(200, 169, 126, ${mouseOpacity})`;
-                    ctx.lineWidth = 0.8;
-                    ctx.beginPath();
-                    ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
-                    ctx.lineTo(mouse.x, mouse.y);
-                    ctx.stroke();
-                }
-            }
+            particlesArray.push(new Particle());
         }
     }
 
     function animate() {
         requestAnimationFrame(animate);
-        ctx.clearRect(0, 0, w, h);
+        time += 0.001; // 控制整個大流場「變形」的速度
+        
+        // 關鍵神技：不要用 clearRect 清空畫布，而是鋪上一層「極低透明度的黑色」
+        // 這樣上一幀的殘影就會慢慢消散，形成絕美的「拖影」與「墨韻拉絲」感
+        ctx.fillStyle = 'rgba(5, 5, 5, 0.08)'; // #050505 的 RGB 版本
+        ctx.fillRect(0, 0, w, h);
+
         for (let i = 0; i < particlesArray.length; i++) {
             particlesArray[i].update();
+            particlesArray[i].draw();
         }
-        connect();
     }
 
     init();
