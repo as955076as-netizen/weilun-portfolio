@@ -54,6 +54,36 @@
             filter: drop-shadow(0 0 10px var(--accent-gold)) drop-shadow(0 0 5px #fff) !important;
         }
 
+        /* --- 背景光影掃過特效 --- */
+        .ambient-sweep {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -2; /* 放在粒子畫布 (-1) 的更底層 */
+            pointer-events: none; /* 確保不影響滑鼠點擊 */
+            
+            /* 設定一道傾斜的溫潤金漸層光束 */
+            background: linear-gradient(
+                120deg,
+                transparent 0%,
+                transparent 40%,
+                rgba(200, 169, 126, 0.06) 50%, /* 光束核心亮度（數字越大越亮） */
+                transparent 60%,
+                transparent 100%
+            );
+            background-size: 300% 300%;
+            /* 12s 控制掃過的速度，infinite 讓它無限循環 */
+            animation: sweep-light 12s linear infinite;
+        }
+
+        /* 控制光束從右下角掃向左上角的動畫 */
+        @keyframes sweep-light {
+            0% { background-position: 200% 100%; }
+            100% { background-position: -100% -100%; }
+        }
+
         #particle-canvas {
             position: absolute;
             top: 0;
