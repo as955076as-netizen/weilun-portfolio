@@ -178,20 +178,20 @@
     
 <script>
     // ==========================================
-    // 1. 動態數據點陣網格 (Interactive Data Grid)
+    // 1. 緩動聲波 / 等高線特效 (Topographical Waveforms)
     // ==========================================
     const canvas = document.getElementById('particle-canvas');
     const ctx = canvas.getContext('2d');
     
-    let gridPoints = [];
     let w, h;
-    const spacing = 35; // 網格的間距 (數字越小越密集，越大越空曠)
+    let time = 0;
 
-    const mouse = { x: null, y: null, radius: 200 }; // 滑鼠喚醒點陣的感應半徑
+    const mouse = { x: null, y: null };
 
+    // 追蹤滑鼠位置，用於產生波浪干擾
     window.addEventListener('mousemove', (event) => {
-        mouse.x = event.x;
-        mouse.y = event.y;
+        mouse.x = event.clientX;
+        mouse.y = event.clientY;
     });
 
     window.addEventListener('mouseout', () => {
@@ -199,83 +199,71 @@
         mouse.y = null;
     });
 
+    // 視窗縮放時自動重置畫布大小
     window.addEventListener('resize', () => {
         w = canvas.width = window.innerWidth;
         h = canvas.height = window.innerHeight;
-        initGrid();
     });
 
-    class GridPoint {
-        constructor(x, y) {
-            this.x = x;
-            this.y = y;
-            this.baseSize = 0.8; // 平時未點亮的基準大小 (極細小)
-            this.currentSize = 0.8;
-            this.targetSize = 0.8;
-            this.baseOpacity = 0.03; // 平時未點亮的基準透明度 (幾乎隱形)
-            this.currentOpacity = 0.03;
-            this.targetOpacity = 0.03;
-        }
+    // 初始化設定
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
 
-        update() {
-            // 計算這個網格點與滑鼠的距離
-            let dx = mouse.x - this.x;
-            let dy = mouse.y - this.y;
-            let distance = Math.sqrt(dx * dx + dy * dy);
+    // 定義 5 條不同頻率、振幅與透明度的金色波浪
+    const waves = [
+        { amplitude: 40, frequency: 0.0015, speed: 0.008, color: 'rgba(200, 169, 126, 0.15)', lineWidth: 1.5, yOffset: 0 },
+        { amplitude: 70, frequency: 0.001,  speed: 0.005, color: 'rgba(200, 169, 126, 0.08)', lineWidth: 1,   yOffset: 30 },
+        { amplitude: 30, frequency: 0.0025, speed: 0.012, color: 'rgba(200, 169, 126, 0.2)',  lineWidth: 0.5, yOffset: -20 },
+        { amplitude: 90, frequency: 0.0008, speed: 0.004, color: 'rgba(200, 169, 126, 0.04)', lineWidth: 2,   yOffset: -50 },
+        { amplitude: 50, frequency: 0.002,  speed: 0.009, color: 'rgba(200, 169, 126, 0.1)',  lineWidth: 1,   yOffset: 60 }
+    ];
 
-            // 如果滑鼠在畫面上，且靠近這個點
-            if (mouse.x != null && distance < mouse.radius) {
-                // 計算感應強度 (越靠近中心，intensity 越接近 1)
-                let intensity = 1 - (distance / mouse.radius);
-                
-                // 喚醒狀態：放大並變亮
-                this.targetSize = this.baseSize + intensity * 1.5; 
-                this.targetOpacity = this.baseOpacity + intensity * 0.8; 
-            } else {
-                // 恢復休眠狀態
-                this.targetSize = this.baseSize;
-                this.targetOpacity = this.baseOpacity;
-            }
-
-            // 【物理平滑過渡】讓點的變化有「呼吸延遲感」，而不是瞬間變換
-            this.currentSize += (this.targetSize - this.currentSize) * 0.1;
-            this.currentOpacity += (this.targetOpacity - this.currentOpacity) * 0.1;
-        }
-
-        draw() {
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.currentSize, 0, Math.PI * 2);
-            // 使用你的主題金色
-            ctx.fillStyle = `rgba(200, 169, 126, ${this.currentOpacity})`;
-            ctx.fill();
-        }
-    }
-
-    function initGrid() {
-        gridPoints = [];
-        w = canvas.width = window.innerWidth;
-        h = canvas.height = window.innerHeight;
-        
-        // 雙層迴圈：以固定的 spacing 間距鋪滿整個螢幕，建立網格矩陣
-        for (let x = 0; x <= w; x += spacing) {
-            for (let y = 0; y <= h; y += spacing) {
-                gridPoints.push(new GridPoint(x, y));
-            }
-        }
-    }
-
-    function animate() {
-        requestAnimationFrame(animate);
+    function drawWaves() {
+        // 清空畫布
         ctx.clearRect(0, 0, w, h);
+        time += 1;
+
+        waves.forEach((wave, index) => {
+            ctx.beginPath();
+            ctx.strokeStyle = wave.color;
+            ctx.lineWidth = wave.lineWidth;
+            
+            // 每 5px 繪製一個點，連成平滑曲線
+            for (let x = 0; x <= w; x += 5) {
+                // 疊加雙重正弦波，創造不規則的自然等高線感
+                let baseSine = Math.sin(x * wave.frequency + time * wave.speed);
+                let secondarySine = Math.sin(x * wave.frequency * 2.3 - time * wave.speed * 1.3);
+                
+                let y = (h / 2) + wave.yOffset + (baseSine * wave.amplitude) + (secondarySine * wave.amplitude * 0.4);
+                
+                // 滑鼠互動：當滑鼠靠近波浪時，產生排斥與聲波震盪效應
+                if (mouse.x != null && mouse.y != null) {
+                    let dx = x - mouse.x;
+                    let dy = y - mouse.y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    // 影響半徑設定為 250px
+                    if (distance < 250) {
+                        let influence = (250 - distance) / 250;
+                        // 讓波浪在滑鼠周圍產生高頻微震
+                        y += Math.sin(x * 0.05 + time * 0.1) * influence * 25; 
+                    }
+                }
+
+                if (x === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+            ctx.stroke();
+        });
         
-        for (let i = 0; i < gridPoints.length; i++) {
-            gridPoints[i].update();
-            gridPoints[i].draw();
-        }
+        requestAnimationFrame(drawWaves);
     }
 
-    initGrid();
-    animate();
+    // 啟動動畫
+    drawWaves();
     
     // ==========================================
     // 2. 自訂發光延遲游標
