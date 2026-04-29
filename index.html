@@ -195,6 +195,85 @@
 
         </div>
     </main>
+    <!-- ==========================================
+         內容展示區塊 (Content Section)
+         ========================================== -->
+    <section id="works" class="w-full min-h-screen relative z-10 bg-[#050505] py-24 md:py-40">
+        <div class="max-w-7xl mx-auto px-8 lg:px-20">
+            
+            <!-- 區塊標題 -->
+            <div class="mb-20 md:mb-32">
+                <div class="text-[10px] tracking-[0.3em] text-[#c8a97e] mb-4">01 / CAPABILITIES</div>
+                <h2 class="text-3xl md:text-5xl font-black tracking-tight text-white/90">系統核心模組</h2>
+            </div>
+
+            <!-- 核心模組 (3 Column Grid) -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10 mb-32 md:mb-48">
+                
+                <!-- Module 1 -->
+                <div class="border border-white/10 bg-white/[0.02] p-8 md:p-10 backdrop-blur-sm group hover:border-[#c8a97e]/50 transition-colors duration-500">
+                    <div class="text-3xl text-white/20 font-light mb-6 group-hover:text-[#c8a97e] transition-colors duration-500">01</div>
+                    <h3 class="text-xl font-bold mb-4 tracking-wide">Computer Vision</h3>
+                    <p class="text-sm text-white/50 leading-relaxed font-light tracking-wide">
+                        基於 YOLO 架構與深度學習模型，開發即時影像辨識與追蹤系統。專注於模型輕量化、推論加速，並將 AI 視覺技術落地應用於實際場域。
+                    </p>
+                </div>
+
+                <!-- Module 2 -->
+                <div class="border border-white/10 bg-white/[0.02] p-8 md:p-10 backdrop-blur-sm group hover:border-[#c8a97e]/50 transition-colors duration-500">
+                    <div class="text-3xl text-white/20 font-light mb-6 group-hover:text-[#c8a97e] transition-colors duration-500">02</div>
+                    <h3 class="text-xl font-bold mb-4 tracking-wide">Workflow Automation</h3>
+                    <p class="text-sm text-white/50 leading-relaxed font-light tracking-wide">
+                        精通 n8n 等自動化工具，串接各類 API 建立高效的工作流。將複雜的開發流程、警報系統與資料處理自動化，打造如神經網絡般的無縫整合架構。
+                    </p>
+                </div>
+
+                <!-- Module 3 -->
+                <div class="border border-white/10 bg-white/[0.02] p-8 md:p-10 backdrop-blur-sm group hover:border-[#c8a97e]/50 transition-colors duration-500">
+                    <div class="text-3xl text-white/20 font-light mb-6 group-hover:text-[#c8a97e] transition-colors duration-500">03</div>
+                    <h3 class="text-xl font-bold mb-4 tracking-wide">Audio-Visual Engineering</h3>
+                    <p class="text-sm text-white/50 leading-relaxed font-light tracking-wide">
+                        結合傳播媒體實務經驗與音樂幕後工程背景，深諳影音訊號處理與多媒體系統整合。能以工程邏輯解構藝術創作，實現從訊號源到終端展示的完美傳遞。
+                    </p>
+                </div>
+            </div>
+
+            <!-- 區塊標題 2 -->
+            <div class="mb-16 md:mb-24">
+                <div class="text-[10px] tracking-[0.3em] text-[#c8a97e] mb-4">02 / ARCHIVES</div>
+                <h2 class="text-3xl md:text-5xl font-black tracking-tight text-white/90">精選專案實績</h2>
+            </div>
+
+            <!-- 專案卡片區塊 (Stack Layout) -->
+            <div class="flex flex-col space-y-16 md:space-y-32">
+                
+                <!-- Project Card 1 -->
+                <div class="relative w-full aspect-video md:aspect-[21/9] bg-[#0a0a0a] border border-white/5 overflow-hidden group">
+                    <!-- 專案背景圖 (目前用漸層代替，之後可以換成實際截圖) -->
+                    <div class="absolute inset-0 bg-gradient-to-br from-black/80 to-[#c8a97e]/10 group-hover:scale-105 transition-transform duration-700 ease-out"></div>
+                    
+                    <!-- 專案資訊 -->
+                    <div class="absolute bottom-0 left-0 w-full p-8 md:p-16 flex flex-col justify-end bg-gradient-to-t from-[#050505] via-[#050505]/80 to-transparent">
+                        <div class="flex items-center space-x-3 mb-4">
+                            <span class="text-[10px] border border-[#c8a97e]/30 text-[#c8a97e] px-2 py-1 rounded-sm tracking-wider">YOLOv8</span>
+                            <span class="text-[10px] border border-[#c8a97e]/30 text-[#c8a97e] px-2 py-1 rounded-sm tracking-wider">n8n</span>
+                        </div>
+                        <h3 class="text-2xl md:text-4xl font-bold text-white mb-4">Smart Safety Care System</h3>
+                        <p class="text-sm md:text-base text-white/60 max-w-2xl font-light tracking-wide">
+                            基於邊緣計算的 AI 居家安全監控系統。透過輕量化 YOLO 模型實現跌倒偵測，並結合 n8n 工作流，在異常發生時自動觸發即時群組通報機制。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Project Card 2 (預留位置) -->
+                <div class="relative w-full aspect-video md:aspect-[21/9] bg-[#0a0a0a] border border-white/5 flex items-center justify-center">
+                    <div class="text-white/20 tracking-widest text-sm">[ PROJECT DATA LOADING ... ]</div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
     
 <script>
     // ==========================================
