@@ -127,22 +127,15 @@
     <canvas id="pathway-canvas"></canvas>
 
     <main class="flex-grow flex items-center justify-center px-8 relative z-10 min-h-screen w-full"> 
-        <!-- [修改 1：位置往下調] 這裡加上了 mt-24 md:mt-40，將整個內容區塊往下推移 -->
-        <div class="w-full px-8 lg:px-20 mx-auto flex flex-col items-center justify-center text-center mt-24 md:mt-40"> 
-            
+        <div class="w-full px-8 lg:px-20 mx-auto flex flex-col items-center justify-center text-center"> 
             <div class="text-xs md:text-sm font-bold tracking-[0.5em] text-white/80 mb-6 md:mb-10 pl-[0.5em]">K U A N . 2 0 2 6</div>
 
-            <!-- [修改重點] 
-                 1. 加上 relative top-10 md:top-20：讓它單獨往下位移，不影響上下元素
-                 2. 縮小 text-[大小] 數值，並把 px 改回 px-4
-            -->
-            <div class="overflow-visible w-full flex items-center justify-center relative top-10 md:top-20">
-                <h1 class="watermark-title inline-block px-4 py-2 text-[5rem] sm:text-[7rem] md:text-[9rem] lg:text-[11rem] font-black leading-none tracking-tighter overflow-visible mb-12 md:mb-20" data-text="ROY">
+            <div class="overflow-visible w-full flex items-center justify-center">
+                <h1 class="watermark-title inline-block px-[6vw] text-[4vw] sm:text-[6vw] md:text-[10vw] lg:text-[14vw] font-black leading-none tracking-tighter overflow-visible mb-12 md:mb-20" data-text="ROY">
                     ROY
                 </h1>
             </div>
-            
-            <p class="text-xs md:text-sm lg:text-base text-white/60 tracking-[0.15em] md:tracking-[0.2em] font-light mt-4 md:mt-6 z-10 px-4">
+            <p class="text-xs md:text-sm lg:text-base text-white/60 tracking-[0.15em] md:tracking-[0.2em] font-light mt-6 md:mt-10 lg:mt-12 z-10 px-4">
                 電腦視覺 · 流程自動化 · 影音工程<br>
                 「從實務現場跨越至演算法開發，以精準的自動化邏輯，重構視覺工程的無限可能。」
             </p>
