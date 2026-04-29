@@ -59,6 +59,7 @@
             background: radial-gradient(circle at center, rgba(200, 169, 126, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
             will-change: opacity;
             animation: full-breathe 4s cubic-bezier(0.4, 0, 0.6, 1) infinite alternate;
+            transition: opacity 0.5s ease; /* 加入淡出轉場 */
         }
         
         @keyframes full-breathe {
@@ -66,8 +67,20 @@
             100% { opacity: 1; } 
         }
 
-        /* 光軌畫布 */
+        /* 第一頁：光軌畫布 */
         #pathway-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.8;
+            pointer-events: none;
+        }
+
+        /* 第二頁：視覺鎖定畫布 */
+        #cv-canvas {
             position: absolute;
             top: 0;
             left: 0;
@@ -130,14 +143,8 @@
            網頁載入進場動畫 (Fade In Up)
            ========================================== */
         @keyframes fadeInUp {
-            0% {
-                opacity: 0;
-                transform: translateY(40px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            0% { opacity: 0; transform: translateY(40px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
 
         .animate-fade-in-up {
@@ -151,7 +158,7 @@
         .delay-700 { animation-delay: 0.7s; }
 
         /* ==========================================
-           [新增] 電影級無縫轉場 (Page Transition)
+           電影級無縫轉場 (Page Transition)
            ========================================== */
         #page-transition {
             position: fixed;
@@ -160,7 +167,7 @@
             width: 100%;
             height: 100vh;
             background-color: #050505; 
-            z-index: 90; /* 設為 90，確保蓋住頁面內容，但保持在游標 (z-100) 之下 */
+            z-index: 90; 
             transform: scaleY(0);
             transform-origin: bottom;
             transition: transform 0.6s cubic-bezier(0.85, 0, 0.15, 1);
@@ -184,17 +191,18 @@
 </head>
 <body class="min-h-screen flex flex-col relative selection:bg-white/20 selection:text-white">
 
-    <div class="ambient-breathe"></div>
+    <!-- [修改] 加上 id 讓 JavaScript 可以控制 -->
+    <div id="ambient-breathe" class="ambient-breathe"></div>
     
-    <!-- [新增] 轉場專用黑幕遮罩 -->
     <div id="page-transition"></div>
 
     <div id="cursor-dot" class="hidden md:block pointer-events-none fixed top-0 left-0 w-2 h-2 bg-[#c8a97e] rounded-full z-[100] transform -translate-x-1/2 -translate-y-1/2 transition-transform duration-100"></div>
     <div id="cursor-ring" class="hidden md:block pointer-events-none fixed top-0 left-0 w-10 h-10 border border-[#c8a97e]/50 rounded-full z-[99] transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ease-out"></div>
 
+    <!-- 兩塊畫布：一塊第一頁用，一塊第二頁用 -->
     <canvas id="pathway-canvas"></canvas>
+    <canvas id="cv-canvas" class="hidden-page"></canvas>
 
-    <!-- [修改] 加上 id="page-hero" 以便轉場時控制隱藏 -->
     <main id="page-hero" class="flex-grow flex items-center justify-center px-8 relative z-10 min-h-screen w-full"> 
         <div class="w-full px-8 lg:px-20 mx-auto flex flex-col items-center justify-center text-center"> 
             
@@ -212,7 +220,6 @@
             </p>
 
             <div class="animate-fade-in-up delay-700 pt-16 md:pt-24 flex flex-col items-center space-y-6 z-10">
-                <!-- [修改] 將 <a> 改為 <button id="enter-btn"> -->
                 <button id="enter-btn" class="btn-capsule group inline-flex items-center justify-center px-10 py-3 md:py-4 rounded-full text-sm font-medium tracking-[0.2em] transition-all duration-300">
                     <span class="pl-[0.2em]">進入系統</span>
                     <span class="ml-4 font-inter text-lg group-hover:translate-x-1 transition-transform duration-300">→</span>
@@ -226,19 +233,15 @@
         </div>
     </main>
     
-    <!-- [修改] 加上 hidden-page，讓這區塊一開始是隱藏的 -->
     <section id="works" class="w-full min-h-screen relative z-10 bg-[#050505] py-24 md:py-40 hidden-page">
         <div class="max-w-7xl mx-auto px-8 lg:px-20">
             
-            <!-- 區塊標題 -->
             <div class="mb-20 md:mb-32">
                 <div class="text-[10px] tracking-[0.3em] text-[#c8a97e] mb-4">01 / CAPABILITIES</div>
                 <h2 class="text-3xl md:text-5xl font-black tracking-tight text-white/90">系統核心模組</h2>
             </div>
 
-            <!-- 核心模組 (3 Column Grid) -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10 mb-32 md:mb-48">
-                
                 <div class="border border-white/10 bg-white/[0.02] p-8 md:p-10 backdrop-blur-sm group hover:border-[#c8a97e]/50 transition-colors duration-500">
                     <div class="text-3xl text-white/20 font-light mb-6 group-hover:text-[#c8a97e] transition-colors duration-500">01</div>
                     <h3 class="text-xl font-bold mb-4 tracking-wide">Computer Vision</h3>
@@ -264,18 +267,14 @@
                 </div>
             </div>
 
-            <!-- 區塊標題 2 -->
             <div class="mb-16 md:mb-24">
                 <div class="text-[10px] tracking-[0.3em] text-[#c8a97e] mb-4">02 / ARCHIVES</div>
                 <h2 class="text-3xl md:text-5xl font-black tracking-tight text-white/90">精選專案實績</h2>
             </div>
 
-            <!-- 專案卡片區塊 (Stack Layout) -->
             <div class="flex flex-col space-y-16 md:space-y-32">
-                
                 <div class="relative w-full aspect-video md:aspect-[21/9] bg-[#0a0a0a] border border-white/5 overflow-hidden group">
                     <div class="absolute inset-0 bg-gradient-to-br from-black/80 to-[#c8a97e]/10 group-hover:scale-105 transition-transform duration-700 ease-out"></div>
-                    
                     <div class="absolute bottom-0 left-0 w-full p-8 md:p-16 flex flex-col justify-end bg-gradient-to-t from-[#050505] via-[#050505]/80 to-transparent">
                         <div class="flex items-center space-x-3 mb-4">
                             <span class="text-[10px] border border-[#c8a97e]/30 text-[#c8a97e] px-2 py-1 rounded-sm tracking-wider">YOLOv8</span>
@@ -291,7 +290,6 @@
                 <div class="relative w-full aspect-video md:aspect-[21/9] bg-[#0a0a0a] border border-white/5 flex items-center justify-center">
                     <div class="text-white/20 tracking-widest text-sm">[ PROJECT DATA LOADING ... ]</div>
                 </div>
-
             </div>
 
         </div>
@@ -299,130 +297,96 @@
     
 <script>
     // ==========================================
-    // 1. 自動化光軌特效 (Algorithmic Pathways)
+    // 動畫狀態控制器 (決定目前播放哪種特效)
+    // ==========================================
+    let isPathsActive = true; 
+    let isCVActive = false;
+
+    // ==========================================
+    // 游標全域變數 (供兩種特效追蹤位置)
+    // ==========================================
+    let cursorX = window.innerWidth / 2;
+    let cursorY = window.innerHeight / 2;
+
+    window.addEventListener('mousemove', (e) => {
+        cursorX = e.clientX;
+        cursorY = e.clientY;
+    });
+
+    window.addEventListener('resize', () => {
+        if(isPathsActive) initPaths();
+        if(isCVActive) initCV();
+    });
+
+    // ==========================================
+    // 1. 首頁特效：自動化光軌 (Algorithmic Pathways)
     // ==========================================
     const canvas = document.getElementById('pathway-canvas');
     const ctx = canvas.getContext('2d');
-    
-    let w, h;
     let paths = [];
-    const GRID_SIZE = 30; // 決定光軌轉折的網格大小
-
-    window.addEventListener('resize', () => {
-        w = canvas.width = window.innerWidth;
-        h = canvas.height = window.innerHeight;
-        initPaths();
-    });
+    const GRID_SIZE = 30; 
 
     class Pathway {
-        constructor() {
-            this.reset();
-        }
-
+        constructor() { this.reset(); }
         reset() {
-            this.x = Math.floor(Math.random() * (w / GRID_SIZE)) * GRID_SIZE;
-            this.y = Math.floor(Math.random() * (h / GRID_SIZE)) * GRID_SIZE;
+            this.x = Math.floor(Math.random() * (canvas.width / GRID_SIZE)) * GRID_SIZE;
+            this.y = Math.floor(Math.random() * (canvas.height / GRID_SIZE)) * GRID_SIZE;
             this.history = [{x: this.x, y: this.y}];
             this.maxLength = Math.floor(Math.random() * 40 + 20); 
             this.speed = 2; 
-            
             this.setRandomDirection();
-            
             this.age = 0;
             this.maxAge = Math.random() * 200 + 100; 
             this.dead = false;
             this.opacity = Math.random() * 0.4 + 0.1; 
         }
-
         setRandomDirection() {
-            const dirs = [
-                {vx: this.speed, vy: 0},
-                {vx: -this.speed, vy: 0},
-                {vx: 0, vy: this.speed},
-                {vx: 0, vy: -this.speed}
-            ];
+            const dirs = [{vx: this.speed, vy: 0}, {vx: -this.speed, vy: 0}, {vx: 0, vy: this.speed}, {vx: 0, vy: -this.speed}];
             const dir = dirs[Math.floor(Math.random() * dirs.length)];
-            this.vx = dir.vx;
-            this.vy = dir.vy;
+            this.vx = dir.vx; this.vy = dir.vy;
         }
-
         update() {
             if (this.dead) {
-                if (this.history.length > 0) {
-                    this.history.shift();
-                } else {
-                    this.reset();
-                }
+                if (this.history.length > 0) this.history.shift(); else this.reset();
                 return;
             }
-
             this.age++;
-            if (this.age > this.maxAge || this.x < 0 || this.x > w || this.y < 0 || this.y > h) {
-                this.dead = true;
-                return;
+            if (this.age > this.maxAge || this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
+                this.dead = true; return;
             }
-
             if (this.x % GRID_SIZE === 0 && this.y % GRID_SIZE === 0) {
                 if (Math.random() < 0.25) { 
-                    if (this.vx !== 0) {
-                        this.vx = 0;
-                        this.vy = Math.random() < 0.5 ? this.speed : -this.speed;
-                    } else {
-                        this.vy = 0;
-                        this.vx = Math.random() < 0.5 ? this.speed : -this.speed;
-                    }
+                    if (this.vx !== 0) { this.vx = 0; this.vy = Math.random() < 0.5 ? this.speed : -this.speed; } 
+                    else { this.vy = 0; this.vx = Math.random() < 0.5 ? this.speed : -this.speed; }
                 }
             }
-
-            this.x += this.vx;
-            this.y += this.vy;
+            this.x += this.vx; this.y += this.vy;
             this.history.push({x: this.x, y: this.y});
-
-            if (this.history.length > this.maxLength) {
-                this.history.shift();
-            }
+            if (this.history.length > this.maxLength) this.history.shift();
         }
-
         draw() {
             if (this.history.length < 2) return;
-
             ctx.lineWidth = 1.5;
-            
             for (let i = 1; i < this.history.length; i++) {
-                ctx.beginPath();
-                ctx.moveTo(this.history[i-1].x, this.history[i-1].y);
-                ctx.lineTo(this.history[i].x, this.history[i].y);
-                
+                ctx.beginPath(); ctx.moveTo(this.history[i-1].x, this.history[i-1].y); ctx.lineTo(this.history[i].x, this.history[i].y);
                 let tailFade = i / this.history.length; 
                 let currentOpacity = this.opacity * tailFade;
-                
-                if (this.age > this.maxAge - 30 && !this.dead) {
-                    currentOpacity *= (this.maxAge - this.age) / 30; 
-                }
-
-                ctx.strokeStyle = `rgba(200, 169, 126, ${currentOpacity})`;
-                ctx.stroke();
+                if (this.age > this.maxAge - 30 && !this.dead) currentOpacity *= (this.maxAge - this.age) / 30; 
+                ctx.strokeStyle = `rgba(200, 169, 126, ${currentOpacity})`; ctx.stroke();
             }
-
             if (!this.dead) {
                 const head = this.history[this.history.length - 1];
-                ctx.beginPath();
-                ctx.arc(head.x, head.y, 2, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity * 2})`;
-                
-                ctx.shadowBlur = 8;
-                ctx.shadowColor = 'rgba(200, 169, 126, 0.8)';
-                ctx.fill();
-                ctx.shadowBlur = 0; 
+                ctx.beginPath(); ctx.arc(head.x, head.y, 2, 0, Math.PI * 2); ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity * 2})`;
+                ctx.shadowBlur = 8; ctx.shadowColor = 'rgba(200, 169, 126, 0.8)'; ctx.fill(); ctx.shadowBlur = 0; 
             }
         }
     }
 
     function initPaths() {
-        w = canvas.width = window.innerWidth;
-        h = canvas.height = window.innerHeight;
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
         paths = [];
-        let density = (w * h) / 25000; 
+        let density = (canvas.width * canvas.height) / 25000; 
         for (let i = 0; i < density; i++) {
             paths.push(new Pathway());
             paths[i].age = Math.random() * paths[i].maxAge; 
@@ -430,43 +394,123 @@
     }
 
     function animatePaths() {
-        ctx.clearRect(0, 0, w, h);
-        paths.forEach(path => {
-            path.update();
-            path.draw();
-        });
+        if(!isPathsActive) return; // 控制器：如果是關閉狀態就停止重繪
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        paths.forEach(path => { path.update(); path.draw(); });
         requestAnimationFrame(animatePaths);
     }
-
+    
+    // 初始化首頁特效
     initPaths();
     animatePaths();
 
     // ==========================================
-    // 2. 自訂發光延遲游標
+    // 2. 第二頁特效：幾何視覺鎖定 (Vision Tracking Nodes)
+    // ==========================================
+    const cvCanvas = document.getElementById('cv-canvas');
+    const cvCtx = cvCanvas.getContext('2d');
+    let cvTargets = [];
+    const scanner = { x: window.innerWidth / 2, y: window.innerHeight / 2, size: 50 };
+
+    function lerp(start, end, amt) { return (1 - amt) * start + amt * end; }
+    
+    function drawCorners(x, y, size, color) {
+        cvCtx.strokeStyle = color; cvCtx.lineWidth = 1.5;
+        const l = size / 3.5; const s = size / 2;
+        cvCtx.beginPath();
+        cvCtx.moveTo(x - s, y - s + l); cvCtx.lineTo(x - s, y - s); cvCtx.lineTo(x - s + l, y - s);
+        cvCtx.moveTo(x + s - l, y - s); cvCtx.lineTo(x + s, y - s); cvCtx.lineTo(x + s, y - s + l);
+        cvCtx.moveTo(x + s, y + s - l); cvCtx.lineTo(x + s, y + s); cvCtx.lineTo(x + s - l, y + s);
+        cvCtx.moveTo(x - s + l, y + s); cvCtx.lineTo(x - s, y + s); cvCtx.lineTo(x - s, y + s - l);
+        cvCtx.stroke();
+    }
+
+    function drawCross(x, y, size, color) {
+        cvCtx.strokeStyle = color; cvCtx.lineWidth = 1;
+        cvCtx.beginPath();
+        cvCtx.moveTo(x - size/2, y); cvCtx.lineTo(x + size/2, y);
+        cvCtx.moveTo(x, y - size/2); cvCtx.lineTo(x, y + size/2);
+        cvCtx.stroke();
+    }
+
+    class VisionTarget {
+        constructor() {
+            this.x = Math.random() * cvCanvas.width;
+            this.y = Math.random() * cvCanvas.height;
+            this.vx = (Math.random() - 0.5) * 0.3; 
+            this.vy = (Math.random() - 0.5) * 0.3;
+            this.size = Math.random() * 15 + 15; 
+            this.lockProgress = 0; 
+            this.id = Math.floor(Math.random() * 9999).toString().padStart(4, '0');
+        }
+        update() {
+            this.x += this.vx; this.y += this.vy;
+            if(this.x < 0 || this.x > cvCanvas.width) this.vx *= -1;
+            if(this.y < 0 || this.y > cvCanvas.height) this.vy *= -1;
+
+            let dx = this.x - scanner.x; let dy = this.y - scanner.y;
+            let dist = Math.sqrt(dx * dx + dy * dy);
+
+            if(dist < 250) this.lockProgress = Math.min(1, this.lockProgress + 0.05);
+            else this.lockProgress = Math.max(0, this.lockProgress - 0.02);
+
+            this.draw();
+        }
+        draw() {
+            drawCross(this.x, this.y, 4, 'rgba(255, 255, 255, 0.1)');
+            if(this.lockProgress > 0) {
+                let currentBoxSize = this.size + (1 - this.lockProgress) * 30; 
+                drawCorners(this.x, this.y, currentBoxSize, `rgba(200, 169, 126, ${this.lockProgress * 0.7})`);
+
+                cvCtx.beginPath(); cvCtx.moveTo(scanner.x, scanner.y); cvCtx.lineTo(this.x, this.y);
+                cvCtx.strokeStyle = `rgba(200, 169, 126, ${this.lockProgress * 0.3})`;
+                cvCtx.setLineDash([2, 4]); cvCtx.stroke(); cvCtx.setLineDash([]);
+
+                cvCtx.font = "9px Inter, monospace"; cvCtx.fillStyle = `rgba(200, 169, 126, ${this.lockProgress * 0.9})`;
+                cvCtx.fillText(`OBJ_${this.id}`, this.x + currentBoxSize/2 + 4, this.y - currentBoxSize/2 + 2);
+                cvCtx.fillText(`CONF: ${(this.lockProgress * 99).toFixed(0)}%`, this.x + currentBoxSize/2 + 4, this.y - currentBoxSize/2 + 14);
+            }
+        }
+    }
+
+    function initCV() {
+        cvCanvas.width = window.innerWidth;
+        cvCanvas.height = window.innerHeight;
+        cvTargets = [];
+        let numTargets = (cvCanvas.width * cvCanvas.height) / 40000; 
+        for(let i = 0; i < numTargets; i++) cvTargets.push(new VisionTarget());
+    }
+
+    function animateCV() {
+        if(!isCVActive) return; // 控制器：關閉狀態停止重繪
+        requestAnimationFrame(animateCV);
+        cvCtx.clearRect(0, 0, cvCanvas.width, cvCanvas.height);
+
+        scanner.x = lerp(scanner.x, cursorX, 0.1);
+        scanner.y = lerp(scanner.y, cursorY, 0.1);
+
+        for (let i = 0; i < cvTargets.length; i++) cvTargets[i].update();
+
+        drawCorners(scanner.x, scanner.y, scanner.size, 'rgba(200, 169, 126, 0.6)');
+        drawCross(scanner.x, scanner.y, 12, 'rgba(200, 169, 126, 0.4)');
+    }
+
+
+    // ==========================================
+    // 3. 自訂發光延遲游標
     // ==========================================
     const cursorDot = document.getElementById('cursor-dot');
     const cursorRing = document.getElementById('cursor-ring');
-    let cursorX = window.innerWidth / 2;
-    let cursorY = window.innerHeight / 2;
-    let ringX = cursorX;
-    let ringY = cursorY;
+    let ringX = cursorX; let ringY = cursorY;
 
-    window.addEventListener('mousemove', (e) => {
-        cursorX = e.clientX;
-        cursorY = e.clientY;
-        if(cursorDot) {
-            cursorDot.style.left = `${cursorX}px`;
-            cursorDot.style.top = `${cursorY}px`;
-        }
+    // (游標座標已改由全域 mousemove 更新)
+    window.addEventListener('mousemove', () => {
+        if(cursorDot) { cursorDot.style.left = `${cursorX}px`; cursorDot.style.top = `${cursorY}px`; }
     });
 
     function animateCursor() {
-        ringX += (cursorX - ringX) * 0.15;
-        ringY += (cursorY - ringY) * 0.15;
-        if(cursorRing) {
-            cursorRing.style.left = `${ringX}px`;
-            cursorRing.style.top = `${ringY}px`;
-        }
+        ringX += (cursorX - ringX) * 0.15; ringY += (cursorY - ringY) * 0.15;
+        if(cursorRing) { cursorRing.style.left = `${ringX}px`; cursorRing.style.top = `${ringY}px`; }
         requestAnimationFrame(animateCursor);
     }
     animateCursor();
@@ -492,7 +536,7 @@
     });
 
     // ==========================================
-    // 3. 磁性吸附按鈕
+    // 4. 磁性吸附按鈕
     // ==========================================
     const magneticBtn = document.querySelector('.btn-capsule');
     if(magneticBtn) {
@@ -509,30 +553,44 @@
     }
 
     // ==========================================
-    // 4. [新增] 無縫切換頁面邏輯 (SPA Transition)
+    // 5. 無縫切換頁面與特效控制 (SPA Transition)
     // ==========================================
     const enterBtn = document.getElementById('enter-btn');
     const pageHero = document.getElementById('page-hero');
     const pageWorks = document.getElementById('works');
+    const ambientBreathe = document.getElementById('ambient-breathe');
+    const pathwayCanvas = document.getElementById('pathway-canvas');
+    const visionCanvas = document.getElementById('cv-canvas');
 
     if(enterBtn) {
         enterBtn.addEventListener('click', (e) => {
             e.preventDefault();
             
-            // 1. 啟動轉場遮罩 (黑幕由下往上蓋住畫面)
+            // 1. 啟動黑幕遮罩轉場
             document.body.classList.add('transition-active');
 
-            // 2. 等待 600 毫秒（等黑幕完全蓋住後），在背後瞬間切換內容
+            // 2. 黑幕蓋住時（600毫秒後），執行畫面與特效替換
             setTimeout(() => {
-                pageHero.classList.add('hidden-page');      // 隱藏首頁
-                pageWorks.classList.remove('hidden-page');  // 顯示下一頁
-                window.scrollTo(0, 0);                      // 確保畫面回到最頂端
+                pageHero.classList.add('hidden-page');      
+                pageWorks.classList.remove('hidden-page');  
+                window.scrollTo(0, 0);                      
 
-                // 3. 準備打開遮罩 (黑幕由上往下消失)
+                // --- 特效切換核心邏輯 ---
+                // 關閉：呼吸燈、自動化光軌
+                ambientBreathe.classList.add('hidden-page');
+                pathwayCanvas.classList.add('hidden-page');
+                isPathsActive = false; // 停止光軌運算節省效能
+
+                // 啟動：幾何視覺鎖定
+                visionCanvas.classList.remove('hidden-page');
+                isCVActive = true; 
+                initCV();      // 初始化 CV 畫布與座標
+                animateCV();   // 開始執行 CV 特效
+
+                // 3. 準備打開遮罩
                 document.body.classList.remove('transition-active');
                 document.body.classList.add('transition-out');
 
-                // 4. 再等 600 毫秒動畫跑完，清除狀態
                 setTimeout(() => {
                     document.body.classList.remove('transition-out');
                 }, 600);
