@@ -81,7 +81,8 @@
 
         /* 第二頁：視覺鎖定畫布 */
         #cv-canvas {
-            position: absolute;
+            /* 【修正 1】改為 fixed，這樣網頁往下滑動時特效才不會跑掉或消失 */
+            position: fixed; 
             top: 0;
             left: 0;
             width: 100%;
@@ -191,7 +192,6 @@
 </head>
 <body class="min-h-screen flex flex-col relative selection:bg-white/20 selection:text-white">
 
-    <!-- [修改] 加上 id 讓 JavaScript 可以控制 -->
     <div id="ambient-breathe" class="ambient-breathe"></div>
     
     <div id="page-transition"></div>
@@ -199,7 +199,6 @@
     <div id="cursor-dot" class="hidden md:block pointer-events-none fixed top-0 left-0 w-2 h-2 bg-[#c8a97e] rounded-full z-[100] transform -translate-x-1/2 -translate-y-1/2 transition-transform duration-100"></div>
     <div id="cursor-ring" class="hidden md:block pointer-events-none fixed top-0 left-0 w-10 h-10 border border-[#c8a97e]/50 rounded-full z-[99] transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ease-out"></div>
 
-    <!-- 兩塊畫布：一塊第一頁用，一塊第二頁用 -->
     <canvas id="pathway-canvas"></canvas>
     <canvas id="cv-canvas" class="hidden-page"></canvas>
 
@@ -233,7 +232,8 @@
         </div>
     </main>
     
-    <section id="works" class="w-full min-h-screen relative z-10 bg-[#050505] py-24 md:py-40 hidden-page">
+    <!-- 【修正 2】移除了 bg-[#050505] 讓背景透明，特效才能透出來 -->
+    <section id="works" class="w-full min-h-screen relative z-10 py-24 md:py-40 hidden-page">
         <div class="max-w-7xl mx-auto px-8 lg:px-20">
             
             <div class="mb-20 md:mb-32">
