@@ -132,9 +132,12 @@
             
             <div class="text-xs md:text-sm font-bold tracking-[0.5em] text-white/80 mb-6 md:mb-10 pl-[0.5em]">K U A N . 2 0 2 6</div>
 
-            <div class="overflow-visible w-full flex items-center justify-center">
-                <!-- [修改 2：縮小字體] 將字體改為較小的 text-[5rem] 到 text-[10rem]，並使用 px-4 保持左右對稱置中 -->
-                <h1 class="watermark-title inline-block px-4 py-2 text-[5rem] sm:text-[7rem] md:text-[8.5rem] lg:text-[10rem] font-black leading-none tracking-tighter overflow-visible mb-10 md:mb-16" data-text="ROY">
+            <!-- [修改重點] 
+                 1. 加上 relative top-10 md:top-20：讓它單獨往下位移，不影響上下元素
+                 2. 縮小 text-[大小] 數值，並把 px 改回 px-4
+            -->
+            <div class="overflow-visible w-full flex items-center justify-center relative top-10 md:top-20">
+                <h1 class="watermark-title inline-block px-4 py-2 text-[5rem] sm:text-[7rem] md:text-[9rem] lg:text-[11rem] font-black leading-none tracking-tighter overflow-visible mb-12 md:mb-20" data-text="ROY">
                     ROY
                 </h1>
             </div>
