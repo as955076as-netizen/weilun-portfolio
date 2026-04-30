@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智慧安全照護 (Smart Safety Care) | 專案展示</title>
+    <style>
+        /* 基礎重置與變數 */
+        :root {
+            --bg-color: #ffffff;
+            --text-main: #37352f;
+            --text-muted: #787774;
+            --border-color: #ededed;
+            --accent-bg: #f1f1ef;
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            font-family: var(--font-family);
+            color: var(--text-main);
+            background-color: #fafafa;
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px 20px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* 內容容器 - 模擬 Notion / Apple 的卡片質感 */
+        .container {
+            max-width: 760px;
+            margin: 0 auto;
+            background-color: var(--bg-color);
+            padding: 60px;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(0,0,0,0.02);
+        }
+
+        /* 標題與文字排版 */
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-top: 0;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2em;
+            margin-bottom: 1em;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        p {
+            font-size: 1.05rem;
+            color: var(--text-main);
+            margin-bottom: 1.5em;
+        }
+
+        /* 標籤設計 (Tags) */
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 32px;
+        }
+
+        .tag {
+            background-color: var(--accent-bg);
+            color: var(--text-muted);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        /* 列表設計 */
+        ul {
+            padding-left: 20px;
+            margin-bottom: 2em;
+        }
+
+        li {
+            font-size: 1.05rem;
+            margin-bottom: 12px;
+        }
+
+        strong {
+            font-weight: 600;
+            color: #111;
+        }
+
+        /* 響應式設計 */
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>智慧安全照護<br><span style="font-size: 0.6em; color: var(--text-muted);">Smart Safety Care (SSC)</span></h1>
+        
+        <div class="tags">
+            <span class="tag">YOLOv8</span>
+            <span class="tag">電腦視覺</span>
+            <span class="tag">邊緣運算</span>
+            <span class="tag">n8n 自動化</span>
+        </div>
+
+        <p>「智慧安全照護」（Smart Safety Care, SSC）專案是一個由 AI 驅動的監控系統，旨在透過辨識對兒童或長者等脆弱族群的潛在風險，來提升居家安全。</p>
+
+        <h2>核心功能與技術</h2>
+        <ul>
+            <li><strong>AI 驅動偵測：</strong> 系統採用 YOLO 架構進行即時的物件偵測。經過訓練，它可以辨識人物以及可能構成危險的特定家用物品（例如刀具或剪刀）。</li>
+            <li><strong>風險評估：</strong> 系統會根據被辨識出的人物與標記危險物品之間的空間距離及互動持續時間，來計算風險分數。當超過預先設定的安全閾值時，系統便會觸發即時反應。</li>
+            <li><strong>工作流程自動化：</strong> 系統運用 n8n 將通知流程自動化，能透過 LINE 或電子郵件等管道，直接發送包含影像證據的即時警報。</li>
+            <li><strong>邊緣運算最佳化與部署：</strong> 開發過程的核心重點之一為模型最佳化，成功將模型大小從 <strong>49.7MB 壓縮至 6MB</strong>，以確保其能在邊緣運算裝置上高效運行。</li>
+            <li><strong>基礎架構：</strong> 系統包含一個用於監控的客製化圖形使用者介面（GUI），以及完善的事件日誌記錄功能，以利進行事後分析和效能測試。</li>
+        </ul>
+    </div>
+
+</body>
+</html>
