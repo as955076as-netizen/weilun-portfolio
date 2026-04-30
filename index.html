@@ -273,19 +273,20 @@
             </div>
 
             <div class="flex flex-col space-y-16 md:space-y-32">
-                <div class="relative w-full aspect-video md:aspect-[21/9] bg-[#0a0a0a] border border-white/5 overflow-hidden group">
+                <!-- 修改這裡：將 div 替換成 a 標籤，並加上 href -->
+                <a href="./portfolio/ssc.html" class="relative block w-full aspect-video md:aspect-[21/9] bg-[#0a0a0a] border border-white/5 overflow-hidden group cursor-pointer">
                     <div class="absolute inset-0 bg-gradient-to-br from-black/80 to-[#c8a97e]/10 group-hover:scale-105 transition-transform duration-700 ease-out"></div>
                     <div class="absolute bottom-0 left-0 w-full p-8 md:p-16 flex flex-col justify-end bg-gradient-to-t from-[#050505] via-[#050505]/80 to-transparent">
                         <div class="flex items-center space-x-3 mb-4">
                             <span class="text-[10px] border border-[#c8a97e]/30 text-[#c8a97e] px-2 py-1 rounded-sm tracking-wider">YOLOv8</span>
                             <span class="text-[10px] border border-[#c8a97e]/30 text-[#c8a97e] px-2 py-1 rounded-sm tracking-wider">n8n</span>
                         </div>
-                        <h3 class="text-2xl md:text-4xl font-bold text-white mb-4">Smart Safety Care System</h3>
+                        <h3 class="text-2xl md:text-4xl font-bold text-white mb-4 group-hover:text-[#c8a97e] transition-colors duration-300">Smart Safety Care System</h3>
                         <p class="text-sm md:text-base text-white/60 max-w-2xl font-light tracking-wide">
                             基於邊緣計算的 AI 居家安全監控系統。透過輕量化 YOLO 模型實現跌倒偵測，並結合 n8n 工作流，在異常發生時自動觸發即時群組通報機制。
                         </p>
                     </div>
-                </div>
+                </a>
 
                 <div class="relative w-full aspect-video md:aspect-[21/9] bg-[#0a0a0a] border border-white/5 flex items-center justify-center">
                     <div class="text-white/20 tracking-widest text-sm">[ PROJECT DATA LOADING ... ]</div>
