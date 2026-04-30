@@ -489,6 +489,26 @@
         scanner.x = lerp(scanner.x, cursorX, 0.1);
         scanner.y = lerp(scanner.y, cursorY, 0.1);
 
+        // ==========================================
+        // ✨ 新增：探照燈 (Spotlight) 背景光暈效果
+        // ==========================================
+        // 創建跟隨游標 (scanner 帶有平滑延遲效果) 的放射狀漸層
+        const spotRadius = 450; // 探照燈擴散半徑，可自行調整大小
+        const spotlight = cvCtx.createRadialGradient(
+            scanner.x, scanner.y, 0, 
+            scanner.x, scanner.y, spotRadius
+        );
+        
+        // 使用主題色 (#c8a97e) 設定光暈亮度向外遞減
+        spotlight.addColorStop(0, 'rgba(200, 169, 126, 0.12)'); // 光源中心亮度
+        spotlight.addColorStop(0.4, 'rgba(200, 169, 126, 0.04)'); // 光暈中段
+        spotlight.addColorStop(1, 'rgba(5, 5, 5, 0)');            // 邊緣融入黑暗背景
+
+        // 將光暈繪製到畫布上 (這層光暈會在所有幾何圖形的下方)
+        cvCtx.fillStyle = spotlight;
+        cvCtx.fillRect(0, 0, cvCanvas.width, cvCanvas.height);
+        // ==========================================
+
         for (let i = 0; i < cvTargets.length; i++) cvTargets[i].update();
 
         drawCorners(scanner.x, scanner.y, scanner.size, 'rgba(200, 169, 126, 0.6)');
