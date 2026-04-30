@@ -3,131 +3,956 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>智慧安全照護 (Smart Safety Care) | 專案展示</title>
+    <title>安全居家照護系統 | 專題簡報</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', '"Noto Sans TC"', 'sans-serif'] },
+                    colors: {
+                        primary: { DEFAULT: '#22d3ee', light: '#164e63', border: '#0891b2', deep: '#06b6d4' }, // Cyan themes
+                        darkbg: '#0f172a', // slate-900
+                        cardbg: '#1e293b', // slate-800
+                        muted: '#94a3b8',  // slate-400
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        /* 基礎重置與變數 */
-        :root {
-            --bg-color: #ffffff;
-            --text-main: #37352f;
-            --text-muted: #787774;
-            --border-color: #ededed;
-            --accent-bg: #f1f1ef;
-            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        body { background-color: #0f172a; color: #f8fafc; overflow: hidden; }
+        .slide { display: none; width: 100%; height: 100%; animation: fadeIn 0.4s ease-out; }
+        .slide.active { display: flex; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-
-        body {
-            font-family: var(--font-family);
-            color: var(--text-main);
-            background-color: #fafafa;
-            line-height: 1.6;
-            margin: 0;
-            padding: 40px 20px;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        /* 內容容器 - 模擬 Notion / Apple 的卡片質感 */
-        .container {
-            max-width: 760px;
-            margin: 0 auto;
-            background-color: var(--bg-color);
-            padding: 60px;
-            border-radius: 16px;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
-            border: 1px solid rgba(0,0,0,0.02);
-        }
-
-        /* 標題與文字排版 */
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            letter-spacing: -0.02em;
-            margin-top: 0;
-            margin-bottom: 16px;
-            line-height: 1.2;
-        }
-
-        h2 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-top: 2em;
-            margin-bottom: 1em;
-            padding-bottom: 8px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        p {
-            font-size: 1.05rem;
-            color: var(--text-main);
-            margin-bottom: 1.5em;
-        }
-
-        /* 標籤設計 (Tags) */
-        .tags {
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* 深色模式下的圖片佔位符 */
+        .img-placeholder {
+            background-color: #0f172a; /* slate-900 */
+            border: 1px dashed #334155; /* slate-700 */
             display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 32px;
+            align-items: center;
+            justify-content: center;
+            color: #475569; /* slate-600 */
+            font-size: 0.875rem;
+            position: relative;
+            overflow: hidden;
         }
-
-        .tag {
-            background-color: var(--accent-bg);
-            color: var(--text-muted);
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
-
-        /* 列表設計 */
-        ul {
-            padding-left: 20px;
-            margin-bottom: 2em;
-        }
-
-        li {
-            font-size: 1.05rem;
-            margin-bottom: 12px;
-        }
-
-        strong {
-            font-weight: 600;
-            color: #111;
-        }
-
-        /* 響應式設計 */
-        @media (max-width: 600px) {
-            .container {
-                padding: 30px 20px;
-            }
-            h1 {
-                font-size: 2rem;
-            }
+        /* 發光特效 */
+        .glow-effect {
+            box-shadow: 0 0 15px rgba(34, 211, 238, 0.15);
         }
     </style>
 </head>
-<body>
+<body class="text-slate-50 h-screen relative selection:bg-primary selection:text-darkbg">
 
-    <div class="container">
-        <h1>智慧安全照護<br><span style="font-size: 0.6em; color: var(--text-muted);">Smart Safety Care (SSC)</span></h1>
-        
-        <div class="tags">
-            <span class="tag">YOLOv8</span>
-            <span class="tag">電腦視覺</span>
-            <span class="tag">邊緣運算</span>
-            <span class="tag">n8n 自動化</span>
+    <!-- 右上角 裝飾標籤 -->
+    <div class="fixed top-6 right-8 z-50">
+        <div class="flex items-center gap-2 border border-slate-700 rounded-lg py-1.5 px-3 bg-slate-800/80 backdrop-blur-sm shadow-sm">
+            <div class="w-2 h-2 bg-primary rounded-full animate-pulse shadow-[0_0_8px_#22d3ee]"></div>
+            <span class="text-xs font-semibold text-slate-300 tracking-wider font-mono">SYS.ONLINE</span>
         </div>
-
-        <p>「智慧安全照護」（Smart Safety Care, SSC）專案是一個由 AI 驅動的監控系統，旨在透過辨識對兒童或長者等脆弱族群的潛在風險，來提升居家安全。</p>
-
-        <h2>核心功能與技術</h2>
-        <ul>
-            <li><strong>AI 驅動偵測：</strong> 系統採用 YOLO 架構進行即時的物件偵測。經過訓練，它可以辨識人物以及可能構成危險的特定家用物品（例如刀具或剪刀）。</li>
-            <li><strong>風險評估：</strong> 系統會根據被辨識出的人物與標記危險物品之間的空間距離及互動持續時間，來計算風險分數。當超過預先設定的安全閾值時，系統便會觸發即時反應。</li>
-            <li><strong>工作流程自動化：</strong> 系統運用 n8n 將通知流程自動化，能透過 LINE 或電子郵件等管道，直接發送包含影像證據的即時警報。</li>
-            <li><strong>邊緣運算最佳化與部署：</strong> 開發過程的核心重點之一為模型最佳化，成功將模型大小從 <strong>49.7MB 壓縮至 6MB</strong>，以確保其能在邊緣運算裝置上高效運行。</li>
-            <li><strong>基礎架構：</strong> 系統包含一個用於監控的客製化圖形使用者介面（GUI），以及完善的事件日誌記錄功能，以利進行事後分析和效能測試。</li>
-        </ul>
     </div>
 
+    <!-- 簡報內容區 -->
+    <div id="presentation" class="w-full h-full flex flex-col justify-center items-center px-12 pb-24 pt-12 bg-cardbg m-4 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.5)] border border-slate-700 relative overflow-hidden" style="width: calc(100% - 2rem); height: calc(100% - 2rem);">
+        
+        <!-- 背景裝飾光暈 -->
+        <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-primary/5 blur-[120px] pointer-events-none"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-indigo-500/5 blur-[120px] pointer-events-none"></div>
+
+        <!-- ==================== Slide 1: 封面 ==================== -->
+        <div class="slide flex-col items-center justify-center text-center relative z-10">
+            <div class="mb-12 flex gap-2 justify-center items-center">
+                <div class="w-12 h-1.5 bg-primary rounded-full shadow-[0_0_10px_#22d3ee]"></div>
+                <div class="w-3 h-1.5 bg-primary-light rounded-full"></div>
+            </div>
+            
+            <div class="mb-6 inline-block bg-primary/10 text-primary border border-primary/30 px-5 py-1.5 rounded-full text-sm font-semibold tracking-wide">
+                <span class="mr-1">⚡</span> Senior Project Presentation
+            </div>
+            <h1 class="text-6xl md:text-7xl font-black tracking-tight mb-6 text-white drop-shadow-lg">
+                安全居家照護<span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400">系統</span>
+            </h1>
+            <h2 class="text-2xl text-slate-300 font-medium mb-4 uppercase tracking-widest font-mono">Smart Home Safety System</h2>
+            <p class="text-lg text-slate-500 font-light tracking-widest">基於 YOLOv8 物件偵測與即時風險評估的智慧居家安全守護方案</p>
+        </div>
+
+        <!-- ==================== Slide 2: 專題動機 ==================== -->
+        <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
+            <div class="mb-8">
+                <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ Motivation</div>
+                <h2 class="text-4xl font-black text-white">專題動機</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mt-4">
+                <div class="space-y-8">
+                    <div class="flex gap-4">
+                        <div class="w-12 h-12 bg-slate-800 border border-slate-700 rounded-xl flex items-center justify-center text-2xl flex-shrink-0 shadow-inner">👴</div>
+                        <div>
+                            <h3 class="text-lg font-bold mb-1 text-slate-100">高齡化社會</h3>
+                            <p class="text-sm text-slate-400">獨居長者易誤觸危險物品，缺乏即時看護</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="w-12 h-12 bg-slate-800 border border-slate-700 rounded-xl flex items-center justify-center text-2xl flex-shrink-0 shadow-inner">⚡</div>
+                        <div>
+                            <h3 class="text-lg font-bold mb-1 text-slate-100">風險運算缺失</h3>
+                            <p class="text-sm text-slate-400">無法自動判斷是否正在發生危險行為</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="w-12 h-12 bg-slate-800 border border-slate-700 rounded-xl flex items-center justify-center text-2xl flex-shrink-0 shadow-inner">📹</div>
+                        <div>
+                            <h3 class="text-lg font-bold mb-1 text-slate-100">被動式監控</h3>
+                            <p class="text-sm text-slate-400">傳統攝影機僅錄影，無即時提醒警示功能</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-6">
+                    <div class="bg-slate-800/80 border border-slate-700 rounded-xl p-8 relative overflow-hidden backdrop-blur-sm">
+                        <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-primary shadow-[0_0_10px_#22d3ee]"></div>
+                        <h4 class="text-sm font-bold text-primary mb-3 flex items-center gap-2">💡 使用情境</h4>
+                        <p class="text-slate-300 leading-relaxed">
+                            系統偵測到<strong class="text-white">人靠近危險物品</strong> → 即時計算危險分數 → <strong class="text-red-400">自動通報警告</strong>，成功阻止意外。
+                        </p>
+                    </div>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center shadow-sm">
+                            <div class="text-4xl font-black text-red-400 mb-1">24<span class="text-lg text-slate-500 font-medium">/7</span></div>
+                            <div class="text-xs text-slate-400 font-medium">全天候監控</div>
+                        </div>
+                        <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center shadow-sm">
+                            <div class="text-4xl font-black text-primary mb-1">&lt;1<span class="text-lg text-slate-500 font-medium">s</span></div>
+                            <div class="text-xs text-slate-400 font-medium">反應時間</div>
+                        </div>
+                        <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center shadow-sm">
+                            <div class="text-4xl font-black text-emerald-400 mb-1">3<span class="text-lg text-slate-500 font-medium">ch</span></div>
+                            <div class="text-xs text-slate-400 font-medium">通知管道</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== Slide 3: 專題目標 & 系統架構 ==================== -->
+        <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
+            <div class="mb-8">
+                <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ Objectives & Architecture</div>
+                <h2 class="text-4xl font-black text-white">專題目標 & 系統架構</h2>
+            </div>
+            <div class="grid grid-cols-4 gap-6 mb-12">
+                <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-sm hover:border-primary/50 transition">
+                    <div class="w-10 h-10 bg-primary/20 text-primary rounded-lg flex items-center justify-center text-xl mb-4">🔍</div>
+                    <h3 class="font-bold mb-2 text-slate-100">即時物件偵測</h3>
+                    <p class="text-xs text-slate-400">精準識別人物與危險物品</p>
+                </div>
+                <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-sm hover:border-orange-400/50 transition">
+                    <div class="w-10 h-10 bg-orange-500/20 text-orange-400 rounded-lg flex items-center justify-center text-xl mb-4">📐</div>
+                    <h3 class="font-bold mb-2 text-slate-100">動態風險評估</h3>
+                    <p class="text-xs text-slate-400">計算人與危險物的風險指數</p>
+                </div>
+                <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-sm hover:border-purple-400/50 transition">
+                    <div class="w-10 h-10 bg-purple-500/20 text-purple-400 rounded-lg flex items-center justify-center text-xl mb-4">⚙️</div>
+                    <h3 class="font-bold mb-2 text-slate-100">自動化系統</h3>
+                    <p class="text-xs text-slate-400">即時通知 + 資料庫存儲</p>
+                </div>
+                <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-sm hover:border-emerald-400/50 transition">
+                    <div class="w-10 h-10 bg-emerald-500/20 text-emerald-400 rounded-lg flex items-center justify-center text-xl mb-4">📱</div>
+                    <h3 class="font-bold mb-2 text-slate-100">APP 應用</h3>
+                    <p class="text-xs text-slate-400">即時接收警報與查看現場</p>
+                </div>
+            </div>
+            <div class="flex items-center justify-between gap-2">
+                <div class="flex-1 border-2 border-slate-600 bg-slate-800/50 rounded-xl py-6 text-center">
+                    <div class="text-2xl mb-2">📷</div>
+                    <div class="text-sm font-bold text-slate-200">影像來源</div>
+                    <div class="text-[10px] text-slate-500 mt-1 font-mono">4K Camera</div>
+                </div>
+                <div class="text-slate-600 font-bold">→</div>
+                <div class="flex-1 border-2 border-primary/60 bg-primary/5 rounded-xl py-6 text-center shadow-[0_0_15px_rgba(34,211,238,0.1)]">
+                    <div class="text-2xl mb-2">🤖</div>
+                    <div class="text-sm font-bold text-primary">YOLO 偵測</div>
+                    <div class="text-[10px] text-primary/70 mt-1 font-mono">Jetson Orin Nano</div>
+                </div>
+                <div class="text-slate-600 font-bold">→</div>
+                <div class="flex-1 border-2 border-orange-400/60 bg-orange-400/5 rounded-xl py-6 text-center">
+                    <div class="text-2xl mb-2">⚠️</div>
+                    <div class="text-sm font-bold text-orange-400">危險分數</div>
+                    <div class="text-[10px] text-orange-400/70 mt-1 font-mono">多因子演算</div>
+                </div>
+                <div class="text-slate-600 font-bold">→</div>
+                <div class="flex-1 border-2 border-red-500/60 bg-red-500/5 rounded-xl py-6 text-center">
+                    <div class="text-2xl mb-2">🔔</div>
+                    <div class="text-sm font-bold text-red-400">事件觸發</div>
+                    <div class="text-[10px] text-red-400/70 mt-1 font-mono">Webhook → n8n</div>
+                </div>
+                <div class="text-slate-600 font-bold">→</div>
+                <div class="flex-1 border-2 border-emerald-500/60 bg-emerald-500/5 rounded-xl py-6 text-center">
+                    <div class="text-2xl mb-2">📤</div>
+                    <div class="text-sm font-bold text-emerald-400">通知</div>
+                    <div class="text-[10px] text-emerald-400/70 mt-1 font-mono">LINE / Email / DB</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== Slide 4: 硬體與資料處理 ==================== -->
+        <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
+            <div class="mb-8">
+                <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ Hardware & Data</div>
+                <h2 class="text-4xl font-black text-white">硬體與資料處理</h2>
+            </div>
+            <div class="grid grid-cols-2 gap-8">
+                <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm flex flex-col">
+                    <div class="h-64 relative bg-[#0a0f1d] border-b border-slate-700 flex items-center justify-center">
+                        <span class="text-slate-700 font-mono text-sm z-10 border border-slate-700 px-4 py-2 rounded bg-slate-900/50">[ Jetson Orin Module Image ]</span>
+                        <div class="absolute bottom-4 left-6 text-white z-10">
+                            <div class="text-2xl font-black italic tracking-wider text-slate-200">JETSON ORIN™ NANO</div>
+                            <div class="text-sm font-light text-slate-500 font-mono">Developer Kit</div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-900/50 py-2 text-center text-xs text-primary border-b border-slate-700 font-mono">
+                        NVIDIA Jetson Orin Nano — 1024 CUDA Cores
+                    </div>
+                    <div class="p-6 space-y-4 flex-grow bg-slate-800">
+                        <div class="flex gap-4 items-center">
+                            <div class="w-10 h-10 bg-primary/20 text-primary rounded-lg flex items-center justify-center text-xl border border-primary/30">⚡</div>
+                            <div>
+                                <div class="font-bold text-sm text-slate-100">GPU 平行運算</div>
+                                <div class="text-xs text-slate-400 mt-1">本地端推論，隱私安全</div>
+                            </div>
+                        </div>
+                        <div class="flex gap-4 items-center">
+                            <div class="w-10 h-10 bg-emerald-500/20 text-emerald-400 rounded-lg flex items-center justify-center text-xl border border-emerald-500/30">📦</div>
+                            <div>
+                                <div class="font-bold text-sm text-slate-100">低功耗小體積</div>
+                                <div class="text-xs text-slate-400 mt-1">適合智慧居家部署</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-6">
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl p-8 shadow-sm">
+                        <h3 class="font-bold mb-4 text-slate-100">資料來源 — 共 7,091 張</h3>
+                        <div class="flex gap-2 mb-6 text-[10px] font-bold">
+                            <span class="bg-slate-700 text-slate-300 border border-slate-600 px-3 py-1 rounded-md">Roboflow</span>
+                            <span class="bg-slate-700 text-slate-300 border border-slate-600 px-3 py-1 rounded-md">COCO</span>
+                            <span class="bg-slate-700 text-slate-300 border border-slate-600 px-3 py-1 rounded-md">AI 生成</span>
+                            <span class="bg-slate-700 text-slate-300 border border-slate-600 px-3 py-1 rounded-md">相機實拍</span>
+                        </div>
+                        <div class="w-full h-6 rounded-md overflow-hidden flex mb-2 text-[10px] text-slate-900 text-center leading-6 font-semibold">
+                            <div class="bg-primary w-[78%]">78%</div>
+                            <div class="bg-blue-400 w-[15%]">15%</div>
+                            <div class="bg-indigo-400 w-[7%]">7%</div>
+                        </div>
+                        <div class="flex gap-4 text-[10px] text-slate-400 font-medium">
+                            <span class="flex items-center gap-1"><div class="w-2 h-2 bg-primary rounded-full"></div>訓練 5,521</span>
+                            <span class="flex items-center gap-1"><div class="w-2 h-2 bg-blue-400 rounded-full"></div>測試 1,048</span>
+                            <span class="flex items-center gap-1"><div class="w-2 h-2 bg-indigo-400 rounded-full"></div>驗證 486</span>
+                        </div>
+                    </div>
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl p-8 shadow-sm flex-grow">
+                        <h3 class="font-bold mb-6 text-slate-100">標註類別 — LabelImg</h3>
+                        <div class="grid grid-cols-3 gap-4">
+                            <div class="bg-slate-900/50 border border-slate-700 rounded-lg py-6 text-center">
+                                <div class="text-3xl mb-2">🧑</div>
+                                <div class="text-sm font-bold text-slate-300">0 — 人</div>
+                            </div>
+                            <div class="bg-slate-900/50 border border-slate-700 rounded-lg py-6 text-center">
+                                <div class="text-3xl mb-2">🔪</div>
+                                <div class="text-sm font-bold text-slate-300">1 — 刀具</div>
+                            </div>
+                            <div class="bg-slate-900/50 border border-slate-700 rounded-lg py-6 text-center">
+                                <div class="text-3xl mb-2">✂️</div>
+                                <div class="text-sm font-bold text-slate-300">2 — 剪刀</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== Slide 5: YOLOv8 模型訓練 ==================== -->
+        <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
+            <div class="mb-8">
+                <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ YOLOv8 Training</div>
+                <h2 class="text-4xl font-black text-white">YOLOv8 模型訓練</h2>
+            </div>
+            <div class="grid grid-cols-12 gap-8">
+                <div class="col-span-5">
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm">
+                        <table class="w-full text-sm text-left">
+                            <thead class="bg-slate-900/80 text-slate-400 uppercase text-xs font-semibold">
+                                <tr>
+                                    <th class="px-6 py-4 border-b border-slate-700">參數</th>
+                                    <th class="px-6 py-4 border-b border-slate-700">設定值</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-700/50 text-slate-300">
+                                <tr><td class="px-6 py-5 font-medium">模型</td><td class="px-6 py-5"><span class="bg-primary/20 border border-primary/30 text-primary px-2 py-1 rounded-md text-xs font-bold">YOLOv8m</span></td></tr>
+                                <tr><td class="px-6 py-5 font-medium">影像尺寸</td><td class="px-6 py-5 font-mono text-xs text-primary-light">960 × 960</td></tr>
+                                <tr><td class="px-6 py-5 font-medium">訓練回合</td><td class="px-6 py-5"><strong class="font-bold text-white">400</strong> epochs</td></tr>
+                                <tr><td class="px-6 py-5 font-medium">學習率</td><td class="px-6 py-5 font-mono text-xs text-primary-light">0.0001</td></tr>
+                                <tr><td class="px-6 py-5 font-medium">優化器</td><td class="px-6 py-5"><span class="bg-slate-700 text-slate-200 border border-slate-600 px-2 py-1 rounded-md text-xs font-bold">AdamW</span></td></tr>
+                                <tr><td class="px-6 py-5 font-medium">批次大小</td><td class="px-6 py-5 font-mono text-xs text-primary-light">-1 (auto)</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-span-7 flex flex-col gap-6">
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-sm">
+                        <h3 class="font-bold mb-4 text-slate-100">資料增強策略</h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-slate-900/50 border border-slate-700/50 rounded-md px-4 py-2 text-sm flex justify-between"><span class="font-bold text-slate-300">Mosaic</span> <span class="text-primary font-mono">1.0</span></div>
+                            <div class="bg-slate-900/50 border border-slate-700/50 rounded-md px-4 py-2 text-sm flex justify-between"><span class="font-bold text-slate-300">Mixup</span> <span class="text-primary font-mono">0.1</span></div>
+                            <div class="bg-slate-900/50 border border-slate-700/50 rounded-md px-4 py-2 text-sm flex justify-between"><span class="font-bold text-slate-300">Degrees</span> <span class="text-primary font-mono">15.0</span></div>
+                            <div class="bg-slate-900/50 border border-slate-700/50 rounded-md px-4 py-2 text-sm flex justify-between"><span class="font-bold text-slate-300">FlipLR</span> <span class="text-primary font-mono">0.5</span></div>
+                            <div class="bg-slate-900/50 border border-slate-700/50 rounded-md px-4 py-2 text-sm flex justify-between"><span class="font-bold text-slate-300">Scale</span> <span class="text-primary font-mono">0.5</span></div>
+                            <div class="bg-slate-900/50 border border-slate-700/50 rounded-md px-4 py-2 text-sm flex justify-between"><span class="font-bold text-slate-300">Translate</span> <span class="text-primary font-mono">0.2</span></div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm flex-grow flex flex-col">
+                        <div class="flex-grow img-placeholder relative min-h-[200px]">
+                            <span>[ LabelImg View ]</span>
+                        </div>
+                        <div class="bg-slate-900/80 py-3 text-center text-xs text-slate-500 border-t border-slate-700 font-medium font-mono">LabelImg 標註畫面</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== Slide 6: 初版模型問題分析 ==================== -->
+        <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
+            <div class="mb-8 flex items-center gap-4">
+                <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest uppercase font-mono">/ Model Analysis</div>
+            </div>
+            <div class="flex items-center gap-4 mb-6">
+                <span class="bg-slate-700 border border-slate-600 text-slate-300 px-3 py-1 rounded-md text-sm font-mono font-bold">v1.0</span>
+                <h2 class="text-4xl font-black text-white">初版模型問題分析</h2>
+            </div>
+            <div class="grid grid-cols-2 gap-8">
+                <div class="flex flex-col gap-6">
+                    <div class="border-l-4 border-red-500 bg-slate-800 border border-slate-700 rounded-r-xl p-8 shadow-sm">
+                        <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><span class="text-red-400">🐛 問題：</span>人物辨識率低</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed mb-2">持刀照片中人物經常無法被偵測。</p>
+                        <p class="text-slate-400 text-sm">Person mAP@50 僅 <strong class="text-red-400">0.492</strong>，整體 mAP = 0.607</p>
+                    </div>
+                    <div class="border-l-4 border-emerald-500 bg-slate-800 border border-slate-700 rounded-r-xl p-8 shadow-sm">
+                        <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><span class="text-emerald-400">✅ 優化：</span>增加人物資料多樣性</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed">加入不同姿態、光線、角度的人物資料集</p>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-6">
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm">
+                        <div class="h-48 img-placeholder"><span>[ v1.0 Confusion Matrix ]</span></div>
+                        <div class="bg-slate-900/80 py-2 text-center text-xs text-slate-500 border-t border-slate-700 font-mono">v1.0 Confusion Matrix — Person 僅 0.36</div>
+                    </div>
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm">
+                        <div class="h-48 img-placeholder"><span>[ v1.0 PR Curve ]</span></div>
+                        <div class="bg-slate-900/80 py-2 text-center text-xs text-slate-500 border-t border-slate-700 font-mono">v1.0 PR Curve — mAP@0.5 = 0.607</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== Slide 7: 偵測樣本圖 ==================== -->
+        <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
+            <div class="mb-8">
+                <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ Detection Samples</div>
+                <div class="flex items-center gap-4">
+                    <span class="bg-slate-700 border border-slate-600 text-slate-300 px-3 py-1 rounded-md text-sm font-mono font-bold">v1.0</span>
+                    <h2 class="text-4xl font-black text-white">偵測樣本圖</h2>
+                </div>
+            </div>
+            <div class="grid grid-cols-3 gap-6">
+                <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm">
+                    <div class="h-72 img-placeholder"><span>[ Sample 1 ]</span></div>
+                    <div class="bg-slate-900/80 py-3 text-center text-xs text-slate-400 border-t border-slate-700 font-medium">偵測樣本 1</div>
+                </div>
+                <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm">
+                    <div class="h-72 img-placeholder"><span>[ Sample 2 ]</span></div>
+                    <div class="bg-slate-900/80 py-3 text-center text-xs text-slate-400 border-t border-slate-700 font-medium">偵測樣本 2</div>
+                </div>
+                <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm">
+                    <div class="h-72 img-placeholder"><span>[ Sample 3 ]</span></div>
+                    <div class="bg-slate-900/80 py-3 text-center text-xs text-slate-400 border-t border-slate-700 font-medium">偵測樣本 3</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== Slide 8: 優化成效 ==================== -->
+        <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
+            <div class="mb-8 flex items-center gap-4">
+                <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest uppercase font-mono">/ Performance Lift</div>
+            </div>
+            <div class="flex items-center gap-4 mb-10">
+                <span class="bg-primary/20 border border-primary/40 text-primary px-3 py-1 rounded-md text-sm font-mono font-bold shadow-[0_0_10px_rgba(34,211,238,0.2)]">v2.0</span>
+                <h2 class="text-4xl font-black text-white">優化成效</h2>
+            </div>
+            <div class="grid grid-cols-2 gap-12 items-center">
+                <div class="space-y-8 bg-slate-800 p-8 rounded-xl border border-slate-700">
+                    <div>
+                        <div class="flex items-center gap-4 mb-2">
+                            <span class="w-16 font-bold text-sm text-slate-300">Person</span>
+                            <div class="flex-grow flex flex-col gap-1.5">
+                                <div class="w-[49%] bg-slate-600 h-5 rounded flex items-center justify-end px-2 text-slate-300 text-[10px] font-mono">0.49</div>
+                                <div class="w-[80%] bg-primary h-5 rounded flex items-center justify-end px-2 text-slate-900 text-[10px] font-bold font-mono shadow-[0_0_10px_#22d3ee]">0.80</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-4 mb-2">
+                            <span class="w-16 font-bold text-sm text-slate-300">Knife</span>
+                            <div class="flex-grow flex flex-col gap-1.5">
+                                <div class="w-[60%] bg-slate-600 h-5 rounded flex items-center justify-end px-2 text-slate-300 text-[10px] font-mono">0.60</div>
+                                <div class="w-[70%] bg-primary h-5 rounded flex items-center justify-end px-2 text-slate-900 text-[10px] font-bold font-mono shadow-[0_0_10px_#22d3ee]">0.70</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-4 mb-2">
+                            <span class="w-16 font-bold text-sm text-slate-300">Scissors</span>
+                            <div class="flex-grow flex flex-col gap-1.5">
+                                <div class="w-[73%] bg-slate-600 h-5 rounded flex items-center justify-end px-2 text-slate-300 text-[10px] font-mono">0.73</div>
+                                <div class="w-[78%] bg-primary h-5 rounded flex items-center justify-end px-2 text-slate-900 text-[10px] font-bold font-mono shadow-[0_0_10px_#22d3ee]">0.78</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex gap-4 text-xs text-slate-400 pt-4 border-t border-slate-700 font-medium mt-4">
+                        <div class="flex items-center gap-1.5"><div class="w-3 h-3 bg-slate-600 rounded-sm"></div> v1.0</div>
+                        <div class="flex items-center gap-1.5"><div class="w-3 h-3 bg-primary rounded-sm shadow-[0_0_8px_#22d3ee]"></div> v2.0</div>
+                    </div>
+                </div>
+                <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm h-full flex flex-col">
+                    <div class="flex-grow img-placeholder"><span>[ v2.0 Confusion Matrix ]</span></div>
+                    <div class="bg-slate-900/80 py-3 text-center text-xs text-slate-400 border-t border-slate-700 font-mono">v2.0 Confusion Matrix — Person 提升至 0.79</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== Slide 9: PR Curve & 偵測樣本 ==================== -->
+        <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
+            <div class="mb-8">
+                <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ PR Curve & Samples</div>
+                <div class="flex items-center gap-4">
+                    <span class="bg-primary/20 border border-primary/40 text-primary px-3 py-1 rounded-md text-sm font-mono font-bold shadow-[0_0_10px_rgba(34,211,238,0.2)]">v2.0</span>
+                    <h2 class="text-4xl font-black text-white">PR Curve & 偵測樣本</h2>
+                </div>
+            </div>
+            <div class="grid grid-cols-12 gap-8">
+                <div class="col-span-5">
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm h-full flex flex-col">
+                        <div class="flex-grow img-placeholder min-h-[300px]"><span>[ v2.0 PR Curve ]</span></div>
+                        <div class="bg-slate-900/80 py-3 text-center text-xs text-slate-400 border-t border-slate-700 font-mono">v2.0 PR Curve — mAP@0.5 = 0.758</div>
+                    </div>
+                </div>
+                <div class="col-span-7 flex flex-col gap-6">
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm flex-1">
+                        <div class="h-[180px] img-placeholder"><span>[ v2.0 Sample 1 ]</span></div>
+                        <div class="bg-slate-900/80 py-2 text-center text-xs text-slate-400 border-t border-slate-700 font-medium">偵測樣本 1</div>
+                    </div>
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm flex-1">
+                        <div class="h-[180px] img-placeholder"><span>[ v2.0 Sample 2 ]</span></div>
+                        <div class="bg-slate-900/80 py-2 text-center text-xs text-slate-400 border-t border-slate-700 font-medium">偵測樣本 2</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== Slide 10: 前後版本性能比較 ==================== -->
+        <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
+            <div class="mb-8">
+                <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ Radar Comparison</div>
+                <h2 class="text-4xl font-black text-white">前後版本性能比較</h2>
+            </div>
+            <div class="grid grid-cols-2 gap-8">
+                <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm">
+                    <div class="h-[360px] img-placeholder"><span>[ Radar Chart ]</span></div>
+                    <div class="bg-slate-900/80 py-3 text-center text-xs text-slate-400 border-t border-slate-700 font-medium">前後版本性能雷達圖 — 各指標全面提升</div>
+                </div>
+                <div class="flex flex-col gap-6 justify-center">
+                    <div class="bg-slate-800 border border-primary/30 rounded-xl p-8 text-center glow-effect">
+                        <div class="text-sm font-bold text-primary-light mb-2 uppercase tracking-wider">整體 mAP@0.5 提升</div>
+                        <div class="text-6xl font-black text-primary drop-shadow-[0_0_10px_rgba(34,211,238,0.8)]">+0.15</div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center shadow-sm">
+                            <div class="text-3xl font-black text-white mb-1">0.76</div>
+                            <div class="text-xs text-slate-500 font-bold font-mono">mAP@0.5</div>
+                        </div>
+                        <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center shadow-sm">
+                            <div class="text-3xl font-black text-primary mb-1">0.80</div>
+                            <div class="text-xs text-slate-500 font-bold font-mono">Person AP</div>
+                        </div>
+                        <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center shadow-sm">
+                            <div class="text-3xl font-black text-slate-300 mb-1">0.78</div>
+                            <div class="text-xs text-slate-500 font-bold font-mono">Scissors AP</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== Slide 11: 動態風險評估 ==================== -->
+        <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
+            <div class="mb-8">
+                <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ Risk Assessment Algorithm</div>
+                <h2 class="text-4xl font-black text-white">動態風險評估模型</h2>
+            </div>
+            
+            <div class="grid grid-cols-12 gap-8">
+                <div class="col-span-5 flex flex-col gap-6">
+                    <div class="border-l-4 border-primary bg-slate-800 border-y border-r border-slate-700 rounded-r-xl p-6 shadow-sm">
+                        <h3 class="text-lg font-bold mb-3 text-white">距離計算邏輯 (Euclidean Distance)</h3>
+                        <p class="text-sm text-slate-400 mb-4 leading-relaxed">透過提取 YOLOv8 偵測框的中心點座標，計算人體與危險物品之間的像素距離 $D$。</p>
+                        <div class="bg-slate-900 border border-slate-700 p-4 rounded-lg font-mono text-sm text-center text-primary shadow-inner">
+                            D = &radic;<span class="border-t border-primary px-1">(x<sub>p</sub> - x<sub>k</sub>)&sup2; + (y<sub>p</sub> - y<sub>k</sub>)&sup2;</span>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-sm flex-grow">
+                        <h3 class="text-lg font-bold mb-4 text-white">風險等級判定</h3>
+                        <ul class="space-y-4">
+                            <li class="flex items-center gap-3">
+                                <span class="w-3 h-3 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981]"></span>
+                                <div>
+                                    <div class="font-bold text-sm text-slate-200">安全 (Safe)</div>
+                                    <div class="text-xs text-slate-500">距離 &gt; 閾值 (Threshold)</div>
+                                </div>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <span class="w-3 h-3 rounded-full bg-amber-400 shadow-[0_0_8px_#fbbf24]"></span>
+                                <div>
+                                    <div class="font-bold text-sm text-slate-200">警告 (Warning)</div>
+                                    <div class="text-xs text-slate-500">距離靠近，且持續時間達 1 秒</div>
+                                </div>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <span class="w-3 h-3 rounded-full bg-red-500 shadow-[0_0_10px_#ef4444] animate-pulse"></span>
+                                <div>
+                                    <div class="font-bold text-sm text-slate-200">危險 (Danger)</div>
+                                    <div class="text-xs text-slate-500">發生觸碰或交疊 (IoU &gt; 0)，立即觸發警報</div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="col-span-7 bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm flex flex-col">
+                    <div class="flex-grow img-placeholder relative min-h-[350px]">
+                        <span>[ Risk Calculation Visualization ]</span>
+                    </div>
+                    <div class="bg-slate-900/80 py-3 text-center text-xs text-slate-400 border-t border-slate-700 font-medium">
+                        紅線代表計算出的相對距離，低於安全閾值即變色警告。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== Slide 12: n8n 自動化工作流 ==================== -->
+        <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
+            <div class="mb-8">
+                <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ Automation Workflow</div>
+                <h2 class="text-4xl font-black text-white">n8n 自動化警報工作流</h2>
+            </div>
+            
+            <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-8 shadow-sm mb-6 backdrop-blur-md">
+                <div class="flex justify-between items-center relative">
+                    <!-- 連接線 -->
+                    <div class="absolute top-1/2 left-0 w-full h-1 bg-slate-700 -z-10 -translate-y-1/2"></div>
+                    
+                    <!-- 節點 1 -->
+                    <div class="bg-slate-900 border-2 border-indigo-500/50 rounded-xl p-6 w-1/4 text-center shadow-lg z-10 hover:-translate-y-1 transition-transform">
+                        <div class="text-3xl mb-3">📡</div>
+                        <h4 class="font-bold text-sm mb-1 text-slate-100">Webhook 接收</h4>
+                        <p class="text-[10px] text-slate-500">Jetson Orin 傳送 JSON</p>
+                    </div>
+                    
+                    <!-- 節點 2 -->
+                    <div class="bg-slate-900 border-2 border-primary/50 rounded-xl p-6 w-1/4 text-center shadow-lg z-10 hover:-translate-y-1 transition-transform">
+                        <div class="text-3xl mb-3">⚙️</div>
+                        <h4 class="font-bold text-sm mb-1 text-slate-100">條件判斷</h4>
+                        <p class="text-[10px] text-slate-500">過濾風險等級 (Danger)</p>
+                    </div>
+
+                    <!-- 節點 3 -->
+                    <div class="bg-slate-900 border-2 border-emerald-500/50 rounded-xl p-6 w-1/4 text-center shadow-lg z-10 hover:-translate-y-1 transition-transform">
+                        <div class="text-3xl mb-3">💬</div>
+                        <h4 class="font-bold text-sm mb-1 text-slate-100">LINE Notify</h4>
+                        <p class="text-[10px] text-slate-500">推播圖文警報訊息</p>
+                    </div>
+                    
+                    <!-- 節點 4 -->
+                    <div class="bg-slate-900 border-2 border-orange-500/50 rounded-xl p-6 w-1/4 text-center shadow-lg z-10 ml-4 hover:-translate-y-1 transition-transform">
+                        <div class="text-3xl mb-3">🗄️</div>
+                        <h4 class="font-bold text-sm mb-1 text-slate-100">寫入資料庫</h4>
+                        <p class="text-[10px] text-slate-500">Supabase / Firebase</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm flex flex-col h-64">
+                <div class="flex-grow img-placeholder">
+                    <span>[ n8n Workflow Screenshot ]</span>
+                </div>
+                <div class="bg-slate-900/80 py-2 text-center text-xs text-slate-400 border-t border-slate-700 font-medium">
+                    透過 n8n 實現低代碼 (Low-Code) 的 API 串接與邏輯控制
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== Slide 13: 警報通知與 APP 介面 ==================== -->
+        <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
+            <div class="mb-8">
+                <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ User Interfaces</div>
+                <h2 class="text-4xl font-black text-white">終端應用：LINE & 手機 APP</h2>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-12">
+                <!-- 左側：LINE Notify -->
+                <div class="flex gap-6 items-center bg-slate-800/80 border border-slate-700 rounded-2xl p-6 shadow-sm backdrop-blur-sm">
+                    <div class="w-[200px] h-[400px] border-[6px] border-slate-900 rounded-[2rem] overflow-hidden bg-slate-800 flex flex-col shadow-2xl relative flex-shrink-0">
+                        <div class="bg-emerald-600 text-white text-center py-2 text-xs font-bold">LINE</div>
+                        <div class="p-3 flex flex-col gap-2 flex-grow bg-slate-700">
+                            <div class="bg-slate-800 rounded-lg p-3 text-xs shadow-md self-start max-w-[90%] leading-relaxed text-slate-200 border border-slate-600">
+                                <span class="text-red-400">⚠️ <b>緊急通知</b></span><br>
+                                偵測到危險行為！<br>
+                                <span class="text-[10px] text-slate-400">時間：2023/11/05 14:30</span><br>
+                                <span class="text-[10px] text-slate-400">觸發物：刀具 (Knife)</span>
+                                <div class="mt-2 w-full h-20 bg-slate-900 flex items-center justify-center text-[10px] text-slate-500 rounded border border-slate-700">
+                                    [ Photo ]
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-xl flex items-center justify-center text-2xl mb-4 border border-emerald-500/30">💬</div>
+                        <h3 class="text-xl font-bold mb-2 text-slate-100">LINE Notify 即時推播</h3>
+                        <p class="text-sm text-slate-400 leading-relaxed">
+                            發生危險時，系統會自動擷取當下畫面，並附帶時間、物件資訊，透過 LINE 發送給家屬或照護人員。
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- 右側：APP -->
+                <div class="flex gap-6 items-center bg-slate-800/80 border border-slate-700 rounded-2xl p-6 shadow-sm backdrop-blur-sm">
+                    <div class="w-[200px] h-[400px] border-[6px] border-slate-900 rounded-[2rem] overflow-hidden bg-slate-800 flex flex-col shadow-2xl relative flex-shrink-0">
+                        <div class="bg-slate-950 text-primary text-center py-2 text-xs font-bold tracking-wider font-mono border-b border-slate-800">HOME.APP</div>
+                        <div class="p-3 flex flex-col gap-4 flex-grow bg-slate-900">
+                            <div class="w-full h-28 bg-slate-800 rounded-lg flex items-center justify-center text-[10px] text-slate-500 relative border border-slate-700 shadow-inner">
+                                <span class="flex items-center gap-1 font-bold"><div class="w-2 h-2 bg-red-500 rounded-full animate-pulse shadow-[0_0_5px_#ef4444]"></div> Live Cam</span>
+                            </div>
+                            <div>
+                                <div class="font-bold text-[10px] mb-2 text-slate-500 font-mono">HISTORY ALERTS</div>
+                                <div class="space-y-2">
+                                    <div class="bg-slate-800 border-l-2 border-red-500 p-2 rounded shadow-sm text-[9px] text-slate-300">
+                                        <span class="font-bold text-red-400">14:30</span> - 客廳發現刀具
+                                    </div>
+                                    <div class="bg-slate-800 border-l-2 border-amber-500 p-2 rounded shadow-sm text-[9px] text-slate-300">
+                                        <span class="font-bold text-amber-400">09:15</span> - 廚房人員跌倒
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="w-12 h-12 bg-primary/20 text-primary rounded-xl flex items-center justify-center text-2xl mb-4 border border-primary/30">📱</div>
+                        <h3 class="text-xl font-bold mb-2 text-slate-100">專屬 APP 監控儀表板</h3>
+                        <p class="text-sm text-slate-400 leading-relaxed">
+                            除了接收推播，家屬亦可透過 App 即時查看家中攝影機畫面，並調閱過去的警報歷史紀錄與圖表。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== Slide 14: 系統實測展示 ==================== -->
+        <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
+            <div class="mb-8">
+                <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ Live Demonstration</div>
+                <h2 class="text-4xl font-black text-white">系統實測與場景展示</h2>
+            </div>
+            
+            <div class="w-full bg-slate-800 border border-slate-700 rounded-2xl p-2 shadow-lg relative">
+                <div class="flex items-center gap-2 px-4 py-3 bg-slate-900/80 border-b border-slate-700 rounded-t-xl">
+                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-amber-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-emerald-500"></div>
+                    <div class="ml-4 text-xs font-mono text-slate-400 flex items-center gap-2">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+                        Live_Inference_Stream.mp4
+                    </div>
+                </div>
+                
+                <div class="h-[450px] w-full bg-[#050b14] rounded-b-xl flex flex-col items-center justify-center text-white relative overflow-hidden">
+                    <span class="text-slate-600 mb-4 font-mono text-sm">Waiting for video stream...</span>
+                    
+                    <div class="absolute w-[150px] h-[300px] border-2 border-primary left-[20%] top-[10%] rounded flex items-start p-1 shadow-[0_0_15px_rgba(34,211,238,0.4)] bg-primary/5">
+                        <span class="bg-primary text-slate-900 text-[10px] px-1.5 py-0.5 rounded font-bold font-mono">Person 0.85</span>
+                    </div>
+                    <div class="absolute w-[50px] h-[50px] border-2 border-red-500 left-[25%] top-[50%] rounded flex items-start p-1 shadow-[0_0_15px_rgba(239,68,68,0.4)] bg-red-500/5">
+                        <span class="bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded font-bold font-mono">Knife 0.91</span>
+                    </div>
+                    
+                    <button class="flex items-center gap-2 px-6 py-2 bg-slate-800/80 hover:bg-primary hover:text-slate-900 rounded-full transition-all border border-slate-600 hover:border-primary backdrop-blur-md font-medium text-slate-300">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> 播放展示影片
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== Slide 15: 專題結論 ==================== -->
+        <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
+            <div class="mb-8 text-center">
+                <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ Conclusion</div>
+                <h2 class="text-4xl font-black text-white">專題結論與成果</h2>
+            </div>
+            
+            <div class="grid grid-cols-3 gap-8 mt-6">
+                <div class="bg-slate-800 border-t-4 border-primary p-8 shadow-md rounded-b-xl hover:shadow-[0_0_20px_rgba(34,211,238,0.15)] transition">
+                    <div class="text-4xl mb-4">🎯</div>
+                    <h3 class="text-xl font-bold mb-3 text-slate-100">高精準度辨識</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        成功訓練 YOLOv8 模型，針對人物與刀具、剪刀等危險物品的辨識率（mAP@0.5）優化提升至 <strong class="text-primary font-mono drop-shadow-[0_0_5px_#22d3ee]">76%+</strong>，滿足實際場域需求。
+                    </p>
+                </div>
+                
+                <div class="bg-slate-800 border-t-4 border-emerald-400 p-8 shadow-md rounded-b-xl hover:shadow-[0_0_20px_rgba(52,211,153,0.15)] transition">
+                    <div class="text-4xl mb-4">⚡</div>
+                    <h3 class="text-xl font-bold mb-3 text-slate-100">邊緣運算即時性</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        將系統成功部署於 <strong class="text-slate-200 font-mono">Jetson Orin Nano</strong> 邊緣設備，實現本地端即時推論，從偵測到發送警報延遲時間小於 1 秒。
+                    </p>
+                </div>
+                
+                <div class="bg-slate-800 border-t-4 border-indigo-400 p-8 shadow-md rounded-b-xl hover:shadow-[0_0_20px_rgba(129,140,248,0.15)] transition">
+                    <div class="text-4xl mb-4">🔗</div>
+                    <h3 class="text-xl font-bold mb-3 text-slate-100">完整生態系整合</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        結合 <strong class="text-slate-200 font-mono">n8n</strong> 自動化腳本，完美串接硬體推論、LINE 即時通報與雲端資料庫，建構出完整的 AIoT 居家安全守護網。
+                    </p>
+                </div>
+            </div>
+
+            <div class="mt-12 bg-slate-900/80 border border-slate-700 rounded-xl p-6 flex justify-between items-center shadow-sm">
+                <div>
+                    <h4 class="font-bold text-lg mb-1 text-primary flex items-center gap-2"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg> 未來展望 (Future Work)</h4>
+                    <ul class="text-sm text-slate-400 space-y-1 list-disc list-inside ml-2">
+                        <li>加入姿態辨識 (Pose Estimation) 以偵測長者跌倒行為。</li>
+                        <li>整合語音警報模組，於現場同步發出警告聲音。</li>
+                        <li>擴增更多危險物品類別（如：熱水瓶、藥物）。</li>
+                    </ul>
+                </div>
+                <div class="text-6xl opacity-10 filter grayscale">🔭</div>
+            </div>
+        </div>
+
+        <!-- ==================== Slide 16: Q&A ==================== -->
+        <div class="slide flex-col items-center justify-center text-center relative z-10">
+            <div class="mb-8 text-6xl opacity-80">🙌</div>
+            <h1 class="text-7xl font-black tracking-tight mb-6 text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">
+                Q & A
+            </h1>
+            <h2 class="text-3xl text-primary font-medium mb-8 uppercase tracking-widest font-mono">Thanks for Listening</h2>
+            <div class="flex gap-4 items-center justify-center text-sm text-slate-400 font-medium">
+                <span class="bg-slate-800 border border-slate-700 px-4 py-2 rounded-full shadow-sm">指導教授：[教授名稱]</span>
+                <span class="bg-slate-800 border border-slate-700 px-4 py-2 rounded-full shadow-sm">組員：[組員 1], [組員 2], [組員 3]</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 底部導覽控制列 -->
+    <div class="fixed bottom-8 left-1/2 -translate-x-1/2 z-50">
+        <div class="flex justify-center gap-4 text-[10px] text-slate-500 mb-2 font-mono font-semibold tracking-wider uppercase">
+            <span>&larr; Prev</span><span>&rarr; Next</span><span>|</span><span>Spacebar</span>
+        </div>
+        
+        <div class="bg-slate-800 border border-slate-700 shadow-[0_8px_30px_rgb(0,0,0,0.5)] rounded-full flex items-center px-6 py-3 gap-6 backdrop-blur-md">
+            <button class="text-slate-500 hover:text-primary transition" onclick="goToSlide(0)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M5 12L12 19M5 12L12 5M2 5V19"></path></svg>
+            </button>
+            <button class="text-slate-500 hover:text-primary transition" onclick="prevSlide()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M5 12L12 19M5 12L12 5"></path></svg>
+            </button>
+            
+            <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center cursor-default shadow-[0_0_15px_rgba(34,211,238,0.4)] transform transition-transform hover:scale-105">
+                <span class="text-sm font-bold text-slate-900 font-mono"><span id="current-page">1</span></span>
+            </div>
+            <span class="text-sm text-slate-500 font-semibold font-mono -ml-4">/ <span id="total-pages">16</span></span>
+            
+            <button class="text-slate-500 hover:text-primary transition ml-2" onclick="nextSlide()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12H19M19 12L12 5M19 12L12 19"></path></svg>
+            </button>
+            <button class="text-slate-500 hover:text-primary transition" onclick="goToSlide(totalSlides - 1)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12H19M19 12L12 5M19 12L12 19M22 5V19"></path></svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- AI 助手面板 (Gemini Integration) -->
+    <div id="ai-assistant" class="fixed right-8 bottom-28 w-80 bg-slate-800 border border-slate-700 shadow-[0_10px_40px_rgba(0,0,0,0.6)] rounded-2xl z-50 transform transition-transform translate-x-[120%] opacity-0 flex flex-col overflow-hidden max-h-[60vh]">
+        <div class="bg-slate-900 text-white px-4 py-3 flex justify-between items-center border-b border-slate-700">
+            <span class="font-bold text-sm flex items-center gap-2 font-mono text-primary"><span class="animate-pulse">🤖</span> Gemini Assistant</span>
+            <button onclick="toggleAIAssistant()" class="text-slate-500 hover:text-primary transition">✕</button>
+        </div>
+        <div class="p-4 flex flex-col gap-2 border-b border-slate-700 bg-slate-800/50">
+            <button onclick="generateAIContent('script')" class="w-full text-left px-3 py-2 text-xs font-bold text-primary bg-primary/10 border border-primary/30 rounded-md hover:bg-primary/20 transition shadow-sm">
+                ✨ 產生當頁講稿
+            </button>
+            <button onclick="generateAIContent('summary')" class="w-full text-left px-3 py-2 text-xs font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 rounded-md hover:bg-emerald-500/20 transition shadow-sm">
+                ✨ 萃取重點摘要
+            </button>
+            <button onclick="generateAIContent('qa')" class="w-full text-left px-3 py-2 text-xs font-bold text-purple-400 bg-purple-500/10 border border-purple-500/30 rounded-md hover:bg-purple-500/20 transition shadow-sm">
+                ✨ 預測觀眾 Q&A
+            </button>
+        </div>
+        <div class="p-4 flex-grow overflow-y-auto no-scrollbar relative bg-slate-800">
+            <div id="ai-loading" class="hidden absolute inset-0 bg-slate-800/80 flex items-center justify-center z-10 backdrop-blur-sm">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary shadow-[0_0_10px_#22d3ee]"></div>
+            </div>
+            <div id="ai-response" class="text-sm text-slate-300 whitespace-pre-wrap leading-relaxed">
+                點擊上方按鈕，AI 將根據當前投影片內容為您提供輔助。
+            </div>
+        </div>
+    </div>
+
+    <!-- 浮動 AI 按鈕 -->
+    <button onclick="toggleAIAssistant()" class="fixed right-8 bottom-8 z-50 w-14 h-14 bg-slate-800 text-primary border border-slate-700 rounded-full shadow-[0_0_20px_rgba(34,211,238,0.2)] flex items-center justify-center hover:bg-slate-700 hover:scale-110 hover:shadow-[0_0_25px_rgba(34,211,238,0.4)] transition-all">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path></svg>
+    </button>
+
+    <!-- 控制邏輯 -->
+    <script>
+        let currentIdx = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        document.getElementById('total-pages').innerText = totalSlides; 
+
+        function showSlide(index) {
+            slides.forEach(s => s.classList.remove('active'));
+            slides[index].classList.add('active');
+            document.getElementById('current-page').innerText = index + 1;
+        }
+
+        function nextSlide() {
+            if (currentIdx < totalSlides - 1) {
+                currentIdx++;
+                showSlide(currentIdx);
+            }
+        }
+
+        function prevSlide() {
+            if (currentIdx > 0) {
+                currentIdx--;
+                showSlide(currentIdx);
+            }
+        }
+
+        function goToSlide(index) {
+            currentIdx = index;
+            showSlide(currentIdx);
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+        });
+
+        // ==================== Gemini API 整合邏輯 ====================
+        const apiKey = ""; 
+
+        function toggleAIAssistant() {
+            const panel = document.getElementById('ai-assistant');
+            if (panel.classList.contains('translate-x-[120%]')) {
+                panel.classList.remove('translate-x-[120%]', 'opacity-0');
+            } else {
+                panel.classList.add('translate-x-[120%]', 'opacity-0');
+            }
+        }
+
+        function getCurrentSlideText() {
+            const activeSlide = slides[currentIdx];
+            const clone = activeSlide.cloneNode(true);
+            return clone.innerText.trim();
+        }
+
+        async function fetchWithRetry(url, options, retries = 5) {
+            const delays = [1000, 2000, 4000, 8000, 16000];
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+                    return await response.json();
+                } catch (error) {
+                    if (i === retries - 1) throw error;
+                    await new Promise(res => setTimeout(res, delays[i]));
+                }
+            }
+        }
+
+        async function generateAIContent(type) {
+            const slideText = getCurrentSlideText();
+            if (!slideText) {
+                document.getElementById('ai-response').innerText = "當前投影片似乎沒有足夠的文字內容來進行分析。";
+                return;
+            }
+
+            document.getElementById('ai-loading').classList.remove('hidden');
+            document.getElementById('ai-response').innerText = "";
+
+            let prompt = "";
+            if (type === 'script') {
+                prompt = `請扮演一位專業的簡報指導員。根據以下投影片內容，為講者撰寫一段約 1 分鐘的自然、專業演講稿，不需要提及投影片的編排，直接給出演講內容即可：\n\n${slideText}`;
+            } else if (type === 'summary') {
+                prompt = `請將以下投影片內容，總結成 3 個精簡、有力的列點重點（Bullet points），幫助觀眾快速抓住核心概念：\n\n${slideText}`;
+            } else if (type === 'qa') {
+                prompt = `根據以下投影片內容，預測台下觀眾最有可能提出的 3 個問題，並針對每個問題提供講者一段簡短的專業回答：\n\n${slideText}`;
+            }
+
+            try {
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+                const payload = {
+                    contents: [{ parts: [{ text: prompt }] }],
+                    systemInstruction: { parts: [{ text: "你是一位精通各類專業領域的 AI 簡報輔助專家。請一律使用繁體中文（zh-TW）回答，語氣專業且友善。" }] }
+                };
+
+                const result = await fetchWithRetry(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (text) {
+                    document.getElementById('ai-response').innerText = text;
+                } else {
+                    document.getElementById('ai-response').innerText = "抱歉，無法產生內容。";
+                }
+            } catch (error) {
+                console.error(error);
+                document.getElementById('ai-response').innerText = "連線失敗或發生錯誤，請稍後再試。";
+            } finally {
+                document.getElementById('ai-loading').classList.add('hidden');
+            }
+        }
+
+        const originalShowSlide = showSlide;
+        showSlide = function(index) {
+            originalShowSlide(index);
+            const aiResponse = document.getElementById('ai-response');
+            if (aiResponse && aiResponse.innerText !== "點擊上方按鈕，AI 將根據當前投影片內容為您提供輔助。") {
+                aiResponse.innerText = "點擊上方按鈕，AI 將根據當前投影片內容為您提供輔助。";
+            }
+        };
+
+        showSlide(currentIdx);
+    </script>
 </body>
 </html>
