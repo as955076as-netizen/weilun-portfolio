@@ -499,7 +499,91 @@
             </div>
         </div>
 
-        <!-- ==================== Slide 11: 動態風險評估 ==================== -->
+        <!-- ==================== Slide 11: 蒸餾模型驗證 ==================== -->
+        <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
+            <div class="mb-8">
+                <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ Distillation Result</div>
+                <div class="flex items-center gap-4">
+                    <span class="bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 px-3 py-1 rounded-md text-sm font-mono font-bold shadow-[0_0_10px_rgba(16,185,129,0.2)]">v3.0</span>
+                    <h2 class="text-4xl font-black text-white">蒸餾模型驗證</h2>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-12 gap-10 items-center">
+                <!-- 左側：Confusion Matrix -->
+                <div class="col-span-5">
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm flex flex-col h-full">
+                        <div class="flex-grow img-placeholder min-h-[300px]">
+                            <span></span>
+                        </div>
+                        <div class="bg-slate-900/80 py-3 text-center text-xs text-slate-400 border-t border-slate-700 font-mono">
+                            v3.0 蒸餾後 Confusion Matrix
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 右側：數據面板 -->
+                <div class="col-span-7 flex flex-col gap-8">
+                    <!-- 模型比較 -->
+                    <div class="flex justify-center items-center gap-6">
+                        <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center w-40 shadow-sm relative">
+                            <div class="text-xs text-slate-400 font-mono mb-2">Teacher</div>
+                            <div class="text-4xl font-black text-white">49.7<span class="text-sm text-slate-500 ml-1">MB</span></div>
+                            <div class="text-xs text-slate-500 mt-2 font-mono">YOLOv8m</div>
+                        </div>
+                        
+                        <div class="flex flex-col items-center justify-center text-emerald-400">
+                            <div class="text-2xl font-bold">→</div>
+                            <div class="text-xs font-bold tracking-widest mt-1">蒸餾</div>
+                        </div>
+                        
+                        <div class="bg-slate-800 border-2 border-emerald-500/50 rounded-xl p-6 text-center w-40 shadow-[0_0_15px_rgba(16,185,129,0.15)] relative overflow-hidden">
+                            <div class="absolute inset-0 bg-emerald-500/5"></div>
+                            <div class="relative z-10">
+                                <div class="text-xs text-emerald-400 font-mono mb-2 font-bold">Student</div>
+                                <div class="text-4xl font-black text-emerald-400">6<span class="text-sm text-emerald-500/70 ml-1">MB</span></div>
+                                <div class="text-xs text-slate-400 mt-2 font-mono">Final</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 成效指標 -->
+                    <div class="grid grid-cols-3 gap-4 mt-2">
+                        <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center shadow-sm">
+                            <div class="text-4xl font-black text-emerald-400 mb-2 drop-shadow-[0_0_8px_rgba(16,185,129,0.6)]">88<span class="text-xl text-emerald-500/70">%</span></div>
+                            <div class="text-sm text-slate-400 font-bold">壓縮率</div>
+                        </div>
+                        <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center shadow-sm">
+                            <div class="text-4xl font-black text-amber-400 mb-2 drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]">8.3<span class="text-xl text-amber-500/70">×</span></div>
+                            <div class="text-sm text-slate-400 font-bold">體積縮小</div>
+                        </div>
+                        <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center shadow-sm">
+                            <div class="text-4xl font-black text-purple-400 mb-2 drop-shadow-[0_0_8px_rgba(168,85,247,0.6)]">Edge</div>
+                            <div class="text-sm text-slate-400 font-bold">邊緣部署</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== Slide 12: 訓練過程指標 ==================== -->
+        <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
+            <div class="mb-8">
+                <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ Training Metrics</div>
+                <h2 class="text-4xl font-black text-white">訓練過程指標</h2>
+            </div>
+            
+            <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm flex flex-col h-[500px]">
+                <div class="flex-grow img-placeholder bg-slate-900">
+                    <span></span>
+                </div>
+                <div class="bg-slate-900/80 py-3 text-center text-xs text-slate-400 border-t border-slate-700 font-mono">
+                    訓練過程 Loss / Precision / Recall / mAP 指標
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== Slide 13: 動態風險評估 ==================== -->
         <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
             <div class="mb-8">
                 <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ Risk Assessment Algorithm</div>
@@ -753,80 +837,67 @@
             </div>
         </div>
 
-        <!-- ==================== Slide 16: Q&A ==================== -->
+        <!-- ==================== Slide 18: 結尾 ==================== -->
         <div class="slide flex-col items-center justify-center text-center relative z-10">
-            <div class="mb-8 text-6xl opacity-80">🙌</div>
-            <h1 class="text-7xl font-black tracking-tight mb-6 text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">
-                Q & A
+            <div class="mb-6">
+                <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest uppercase font-mono shadow-sm">/ Conclusion</div>
+            </div>
+            <h1 class="text-7xl font-black tracking-tight mb-4 text-white drop-shadow-lg">
+                Thank <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400">You</span>
             </h1>
-            <h2 class="text-3xl text-primary font-medium mb-8 uppercase tracking-widest font-mono">Thanks for Listening</h2>
-            <div class="flex gap-4 items-center justify-center text-sm text-slate-400 font-medium">
-                <span class="bg-slate-800 border border-slate-700 px-4 py-2 rounded-full shadow-sm">指導教授：[教授名稱]</span>
-                <span class="bg-slate-800 border border-slate-700 px-4 py-2 rounded-full shadow-sm">組員：[組員 1], [組員 2], [組員 3]</span>
+            <h2 class="text-xl text-slate-400 font-medium mb-16 tracking-widest">以 AI 守護每一個家庭的安全</h2>
+            
+            <div class="grid grid-cols-3 gap-6 max-w-4xl w-full">
+                <!-- Card 1 -->
+                <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-8 shadow-sm hover:shadow-[0_0_20px_rgba(34,211,238,0.15)] transition-all backdrop-blur-sm group hover:-translate-y-1">
+                    <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">🎯</div>
+                    <h3 class="text-lg font-bold text-slate-100 mb-2">精準偵測</h3>
+                    <p class="text-xs text-slate-400 font-mono">YOLOv8 + 知識蒸餾</p>
+                </div>
+                <!-- Card 2 -->
+                <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-8 shadow-sm hover:shadow-[0_0_20px_rgba(251,191,36,0.15)] transition-all backdrop-blur-sm group hover:-translate-y-1">
+                    <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">⚡</div>
+                    <h3 class="text-lg font-bold text-slate-100 mb-2">即時反應</h3>
+                    <p class="text-xs text-slate-400 font-mono">邊緣運算 + 自動化</p>
+                </div>
+                <!-- Card 3 -->
+                <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-8 shadow-sm hover:shadow-[0_0_20px_rgba(16,185,129,0.15)] transition-all backdrop-blur-sm group hover:-translate-y-1">
+                    <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">🛡️</div>
+                    <h3 class="text-lg font-bold text-slate-100 mb-2">全方位守護</h3>
+                    <p class="text-xs text-slate-400 font-mono">多管道通知系統</p>
+                </div>
             </div>
         </div>
 
     </div>
 
     <!-- 底部導覽控制列 -->
-    <div class="fixed bottom-8 left-1/2 -translate-x-1/2 z-50">
-        <div class="flex justify-center gap-4 text-[10px] text-slate-500 mb-2 font-mono font-semibold tracking-wider uppercase">
+    <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
+        <div class="flex justify-center gap-3 text-[9px] text-slate-500 mb-1.5 font-mono font-semibold tracking-wider uppercase">
             <span>&larr; Prev</span><span>&rarr; Next</span><span>|</span><span>Spacebar</span>
         </div>
         
-        <div class="bg-slate-800 border border-slate-700 shadow-[0_8px_30px_rgb(0,0,0,0.5)] rounded-full flex items-center px-6 py-3 gap-6 backdrop-blur-md">
+        <div class="bg-slate-800 border border-slate-700 shadow-[0_8px_30px_rgb(0,0,0,0.5)] rounded-full flex items-center px-4 py-2 gap-4 backdrop-blur-md">
             <button class="text-slate-500 hover:text-primary transition" onclick="goToSlide(0)">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M5 12L12 19M5 12L12 5M2 5V19"></path></svg>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M5 12L12 19M5 12L12 5M2 5V19"></path></svg>
             </button>
             <button class="text-slate-500 hover:text-primary transition" onclick="prevSlide()">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M5 12L12 19M5 12L12 5"></path></svg>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M5 12L12 19M5 12L12 5"></path></svg>
             </button>
             
-            <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center cursor-default shadow-[0_0_15px_rgba(34,211,238,0.4)] transform transition-transform hover:scale-105">
-                <span class="text-sm font-bold text-slate-900 font-mono"><span id="current-page">1</span></span>
+            <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center cursor-default shadow-[0_0_15px_rgba(34,211,238,0.4)] transform transition-transform hover:scale-105">
+                <span class="text-xs font-bold text-slate-900 font-mono"><span id="current-page">1</span></span>
             </div>
-            <span class="text-sm text-slate-500 font-semibold font-mono -ml-4">/ <span id="total-pages">16</span></span>
+            <span class="text-xs text-slate-500 font-semibold font-mono -ml-2">/ <span id="total-pages">18</span></span>
             
-            <button class="text-slate-500 hover:text-primary transition ml-2" onclick="nextSlide()">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12H19M19 12L12 5M19 12L12 19"></path></svg>
+            <button class="text-slate-500 hover:text-primary transition ml-1" onclick="nextSlide()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12H19M19 12L12 5M19 12L12 19"></path></svg>
             </button>
             <button class="text-slate-500 hover:text-primary transition" onclick="goToSlide(totalSlides - 1)">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12H19M19 12L12 5M19 12L12 19M22 5V19"></path></svg>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12H19M19 12L12 5M19 12L12 19M22 5V19"></path></svg>
             </button>
         </div>
     </div>
-
-    <!-- AI 助手面板 (Gemini Integration) -->
-    <div id="ai-assistant" class="fixed right-8 bottom-28 w-80 bg-slate-800 border border-slate-700 shadow-[0_10px_40px_rgba(0,0,0,0.6)] rounded-2xl z-50 transform transition-transform translate-x-[120%] opacity-0 flex flex-col overflow-hidden max-h-[60vh]">
-        <div class="bg-slate-900 text-white px-4 py-3 flex justify-between items-center border-b border-slate-700">
-            <span class="font-bold text-sm flex items-center gap-2 font-mono text-primary"><span class="animate-pulse">🤖</span> Gemini Assistant</span>
-            <button onclick="toggleAIAssistant()" class="text-slate-500 hover:text-primary transition">✕</button>
-        </div>
-        <div class="p-4 flex flex-col gap-2 border-b border-slate-700 bg-slate-800/50">
-            <button onclick="generateAIContent('script')" class="w-full text-left px-3 py-2 text-xs font-bold text-primary bg-primary/10 border border-primary/30 rounded-md hover:bg-primary/20 transition shadow-sm">
-                ✨ 產生當頁講稿
-            </button>
-            <button onclick="generateAIContent('summary')" class="w-full text-left px-3 py-2 text-xs font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 rounded-md hover:bg-emerald-500/20 transition shadow-sm">
-                ✨ 萃取重點摘要
-            </button>
-            <button onclick="generateAIContent('qa')" class="w-full text-left px-3 py-2 text-xs font-bold text-purple-400 bg-purple-500/10 border border-purple-500/30 rounded-md hover:bg-purple-500/20 transition shadow-sm">
-                ✨ 預測觀眾 Q&A
-            </button>
-        </div>
-        <div class="p-4 flex-grow overflow-y-auto no-scrollbar relative bg-slate-800">
-            <div id="ai-loading" class="hidden absolute inset-0 bg-slate-800/80 flex items-center justify-center z-10 backdrop-blur-sm">
-                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary shadow-[0_0_10px_#22d3ee]"></div>
-            </div>
-            <div id="ai-response" class="text-sm text-slate-300 whitespace-pre-wrap leading-relaxed">
-                點擊上方按鈕，AI 將根據當前投影片內容為您提供輔助。
-            </div>
-        </div>
-    </div>
-
-    <!-- 浮動 AI 按鈕 -->
-    <button onclick="toggleAIAssistant()" class="fixed right-8 bottom-8 z-50 w-14 h-14 bg-slate-800 text-primary border border-slate-700 rounded-full shadow-[0_0_20px_rgba(34,211,238,0.2)] flex items-center justify-center hover:bg-slate-700 hover:scale-110 hover:shadow-[0_0_25px_rgba(34,211,238,0.4)] transition-all">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path></svg>
-    </button>
 
     <!-- 控制邏輯 -->
     <script>
@@ -864,93 +935,6 @@
             if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
             if (e.key === 'ArrowLeft') prevSlide();
         });
-
-        // ==================== Gemini API 整合邏輯 ====================
-        const apiKey = ""; 
-
-        function toggleAIAssistant() {
-            const panel = document.getElementById('ai-assistant');
-            if (panel.classList.contains('translate-x-[120%]')) {
-                panel.classList.remove('translate-x-[120%]', 'opacity-0');
-            } else {
-                panel.classList.add('translate-x-[120%]', 'opacity-0');
-            }
-        }
-
-        function getCurrentSlideText() {
-            const activeSlide = slides[currentIdx];
-            const clone = activeSlide.cloneNode(true);
-            return clone.innerText.trim();
-        }
-
-        async function fetchWithRetry(url, options, retries = 5) {
-            const delays = [1000, 2000, 4000, 8000, 16000];
-            for (let i = 0; i < retries; i++) {
-                try {
-                    const response = await fetch(url, options);
-                    if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
-                    return await response.json();
-                } catch (error) {
-                    if (i === retries - 1) throw error;
-                    await new Promise(res => setTimeout(res, delays[i]));
-                }
-            }
-        }
-
-        async function generateAIContent(type) {
-            const slideText = getCurrentSlideText();
-            if (!slideText) {
-                document.getElementById('ai-response').innerText = "當前投影片似乎沒有足夠的文字內容來進行分析。";
-                return;
-            }
-
-            document.getElementById('ai-loading').classList.remove('hidden');
-            document.getElementById('ai-response').innerText = "";
-
-            let prompt = "";
-            if (type === 'script') {
-                prompt = `請扮演一位專業的簡報指導員。根據以下投影片內容，為講者撰寫一段約 1 分鐘的自然、專業演講稿，不需要提及投影片的編排，直接給出演講內容即可：\n\n${slideText}`;
-            } else if (type === 'summary') {
-                prompt = `請將以下投影片內容，總結成 3 個精簡、有力的列點重點（Bullet points），幫助觀眾快速抓住核心概念：\n\n${slideText}`;
-            } else if (type === 'qa') {
-                prompt = `根據以下投影片內容，預測台下觀眾最有可能提出的 3 個問題，並針對每個問題提供講者一段簡短的專業回答：\n\n${slideText}`;
-            }
-
-            try {
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-                const payload = {
-                    contents: [{ parts: [{ text: prompt }] }],
-                    systemInstruction: { parts: [{ text: "你是一位精通各類專業領域的 AI 簡報輔助專家。請一律使用繁體中文（zh-TW）回答，語氣專業且友善。" }] }
-                };
-
-                const result = await fetchWithRetry(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
-                if (text) {
-                    document.getElementById('ai-response').innerText = text;
-                } else {
-                    document.getElementById('ai-response').innerText = "抱歉，無法產生內容。";
-                }
-            } catch (error) {
-                console.error(error);
-                document.getElementById('ai-response').innerText = "連線失敗或發生錯誤，請稍後再試。";
-            } finally {
-                document.getElementById('ai-loading').classList.add('hidden');
-            }
-        }
-
-        const originalShowSlide = showSlide;
-        showSlide = function(index) {
-            originalShowSlide(index);
-            const aiResponse = document.getElementById('ai-response');
-            if (aiResponse && aiResponse.innerText !== "點擊上方按鈕，AI 將根據當前投影片內容為您提供輔助。") {
-                aiResponse.innerText = "點擊上方按鈕，AI 將根據當前投影片內容為您提供輔助。";
-            }
-        };
 
         showSlide(currentIdx);
     </script>
