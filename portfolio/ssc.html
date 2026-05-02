@@ -235,29 +235,24 @@
             </div>
             <div class="grid grid-cols-2 gap-8">
                 <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm flex flex-col">
-                    <div class="h-64 relative bg-[#0a0f1d] border-b border-slate-700 flex items-center justify-center overflow-hidden">
-                        
-                        <!-- 您的圖片：加上了 absolute, w-full, h-full, object-cover, object-center -->
-                        <img src="JETSON ORIN™ NANO.jpg" class="absolute inset-0 w-full h-full object-cover object-center opacity-80" alt="Jetson Orin">
-                        
-                        <div class="absolute bottom-4 left-6 text-white z-10 drop-shadow-lg">
-                            <div class="text-2xl font-black italic tracking-wider text-slate-200">JETSON ORIN™ NANO</div>
-                            <div class="text-sm font-light text-slate-300 font-mono">Developer Kit</div>
-                        </div>
+                    <!-- 調整為 h-[340px] 大面積展示，並移除多餘的 HTML 文字與透明度 -->
+                    <div class="h-[340px] relative bg-[#0a0f1d] border-b border-slate-700 flex items-center justify-center overflow-hidden">
+                        <img src="JETSON ORIN™ NANO.jpg" class="absolute inset-0 w-full h-full object-cover object-center" alt="Jetson Orin">
                     </div>
-                    <div class="bg-slate-900/50 py-2 text-center text-xs text-primary border-b border-slate-700 font-mono">
+                    
+                    <div class="bg-slate-900/50 py-3 text-center text-xs text-primary border-b border-slate-700 font-mono">
                         NVIDIA Jetson Orin Nano — 1024 CUDA Cores
                     </div>
-                    <div class="p-6 space-y-4 flex-grow bg-slate-800">
+                    <div class="p-6 space-y-6 flex-grow bg-slate-800 flex flex-col justify-center">
                         <div class="flex gap-4 items-center">
-                            <div class="w-10 h-10 bg-primary/20 text-primary rounded-lg flex items-center justify-center text-xl border border-primary/30">⚡</div>
+                            <div class="w-12 h-12 bg-primary/20 text-primary rounded-xl flex items-center justify-center text-2xl border border-primary/30 flex-shrink-0">⚡</div>
                             <div>
                                 <div class="font-bold text-sm text-slate-100">GPU 平行運算</div>
                                 <div class="text-xs text-slate-400 mt-1">本地端推論，隱私安全</div>
                             </div>
                         </div>
                         <div class="flex gap-4 items-center">
-                            <div class="w-10 h-10 bg-emerald-500/20 text-emerald-400 rounded-lg flex items-center justify-center text-xl border border-emerald-500/30">📦</div>
+                            <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-xl flex items-center justify-center text-2xl border border-emerald-500/30 flex-shrink-0">📦</div>
                             <div>
                                 <div class="font-bold text-sm text-slate-100">低功耗小體積</div>
                                 <div class="text-xs text-slate-400 mt-1">適合智慧居家部署</div>
