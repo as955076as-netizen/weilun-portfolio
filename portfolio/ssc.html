@@ -57,16 +57,21 @@
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
         
-        /* 新增：數據圖表與數字動畫 */
+        /* 修正：數據圖表動畫，改用 keyframes 確保 display 變更時能正確觸發 */
         .chart-bar {
-            width: 0 !important;
+            width: 0;
             opacity: 0;
+            overflow: hidden;
+            white-space: nowrap;
         }
-        .active .chart-bar {
-            width: var(--target-width) !important;
-            opacity: 1;
-            transition: width 1s cubic-bezier(0.22, 1, 0.36, 1) var(--anim-delay, 0.4s), opacity 0.5s ease-out calc(var(--anim-delay, 0.4s) - 0.1s);
+        .slide.active .chart-bar {
+            animation: growBar 1s cubic-bezier(0.22, 1, 0.36, 1) var(--anim-delay, 0.4s) forwards;
         }
+        @keyframes growBar {
+            0% { width: 0; opacity: 0; }
+            100% { width: var(--target-width); opacity: 1; }
+        }
+
         .active .venn-left {
             animation: slideVennLeft 1s cubic-bezier(0.16, 1, 0.3, 1) 0.4s backwards;
         }
@@ -185,7 +190,7 @@
                 <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ Motivation</div>
                 <h2 class="text-4xl font-black text-white">專題動機</h2>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mt-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-16 mt-8 items-center">
                 <div class="space-y-8">
                     <div class="flex gap-4">
                         <div class="w-12 h-12 bg-slate-800 border border-slate-700 rounded-xl flex items-center justify-center text-2xl flex-shrink-0 shadow-inner">👴</div>
@@ -241,7 +246,7 @@
                 <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ Objectives & Architecture</div>
                 <h2 class="text-4xl font-black text-white">專題目標 & 系統架構</h2>
             </div>
-            <div class="grid grid-cols-4 gap-6 mb-12">
+            <div class="grid grid-cols-4 gap-8 mb-12 w-full">
                 <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-sm hover:border-primary/50 transition">
                     <div class="w-10 h-10 bg-primary/20 text-primary rounded-lg flex items-center justify-center text-xl mb-4">🔍</div>
                     <h3 class="font-bold mb-2 text-slate-100">即時物件偵測</h3>
@@ -263,7 +268,7 @@
                     <p class="text-xs text-slate-400">即時接收警報與查看現場</p>
                 </div>
             </div>
-            <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center justify-between gap-4 w-full px-4">
                 <div class="flex-1 border-2 border-slate-600 bg-slate-800/50 rounded-xl py-6 text-center">
                     <div class="text-2xl mb-2">📷</div>
                     <div class="text-sm font-bold text-slate-200">影像來源</div>
@@ -302,10 +307,10 @@
                 <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ Hardware & Data</div>
                 <h2 class="text-4xl font-black text-white">硬體與資料處理</h2>
             </div>
-            <div class="grid grid-cols-2 gap-8">
-                <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm flex flex-col">
-                    <!-- 調整為 h-[340px] 大面積展示，並移除多餘的 HTML 文字與透明度 -->
-                    <div class="h-[340px] relative bg-[#0a0f1d] border-b border-slate-700 flex items-center justify-center overflow-hidden">
+            <div class="grid grid-cols-2 gap-10 items-stretch">
+                <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm flex flex-col h-full">
+                    <!-- 調整為 h-64 與 flex-grow 大面積展示，並移除多餘的 HTML 文字與透明度 -->
+                    <div class="h-64 relative bg-[#0a0f1d] border-b border-slate-700 flex items-center justify-center overflow-hidden flex-grow">
                         <img src="pictures/JETSON ORIN™ NANO.jpg" class="absolute inset-0 w-full h-full object-contain object-center" alt="Jetson Orin" onerror="this.style.display='none'">
                         <span class="text-slate-500 font-mono text-sm">圖片佔位符: JETSON ORIN™ NANO.jpg</span>
                     </div>
@@ -699,7 +704,7 @@
                 <h2 class="text-4xl font-black text-white">訓練過程指標</h2>
             </div>
             
-            <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm flex flex-col h-[500px]">
+            <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm flex flex-col h-[500px] w-full">
                 <div class="flex-grow img-placeholder bg-slate-900">
                     <img src="pictures/training metrics.png" class="absolute inset-0 w-full h-full object-contain object-center opacity-90 chart-wipe" style="--anim-delay: 0.3s;" alt="Training Metrics" onerror="this.style.display='none'">
                     <span class="text-slate-500 font-mono text-sm">圖片佔位符</span>
@@ -870,7 +875,7 @@
                 <h2 class="text-4xl font-black text-white">事件觸發與自動化通知</h2>
             </div>
             
-            <div class="flex items-center justify-between gap-4 mb-8">
+            <div class="flex items-center justify-between gap-6 mb-10 w-full px-4">
                 <!-- Step 1 -->
                 <div class="bg-slate-800 border-2 border-red-500/50 rounded-xl p-6 flex-1 text-center shadow-[0_0_15px_rgba(239,68,68,0.2)] group hover:-translate-y-1 transition-transform">
                     <div class="text-3xl mb-3 animate-pulse">⚠️</div>
@@ -933,7 +938,7 @@
                 <h2 class="text-4xl font-black text-white">成果展示</h2>
             </div>
             
-            <div class="grid grid-cols-12 gap-8 h-[420px]">
+            <div class="grid grid-cols-12 gap-10 h-[450px] w-full">
                 <!-- 左側：即時偵測畫面 -->
                 <div class="col-span-6 bg-slate-800 border border-slate-700 rounded-xl overflow-hidden flex flex-col shadow-sm">
                     <div class="flex-grow img-placeholder border-none bg-[#0b1120]">
@@ -992,7 +997,7 @@
                 <h2 class="text-4xl font-black text-white">通知管道 & 數據儲存</h2>
             </div>
             
-            <div class="grid grid-cols-12 gap-8 h-[420px]">
+            <div class="grid grid-cols-12 gap-8 h-[450px] w-full">
                 <!-- LINE 警報通知 -->
                 <div class="col-span-3 bg-slate-800 border border-slate-700 rounded-xl overflow-hidden flex flex-col shadow-sm group hover:border-primary/50 transition-colors">
                     <div class="flex-grow img-placeholder border-none bg-[#0b1120]">
