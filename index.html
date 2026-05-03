@@ -59,7 +59,7 @@
             background: radial-gradient(circle at center, rgba(200, 169, 126, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
             will-change: opacity;
             animation: full-breathe 4s cubic-bezier(0.4, 0, 0.6, 1) infinite alternate;
-            transition: opacity 0.5s ease; /* 加入淡出轉場 */
+            transition: opacity 0.5s ease;
         }
         
         @keyframes full-breathe {
@@ -91,9 +91,7 @@
             pointer-events: none;
         }
         
-        /* ==========================================
-           進入系統按鈕樣式 (含懸停顏色填滿效果)
-           ========================================== */
+        /* 進入系統按鈕 */
         .btn-capsule {
             border: 1px solid rgba(255, 255, 255, 0.15);
             background: rgba(0, 0, 0, 0.3);
@@ -122,11 +120,9 @@
             top: 0;
             width: 100%;
             height: 100%;
-            
             display: flex;
             align-items: center;
             justify-content: center;
-            
             color: var(--accent-gold);
             clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
             transition: clip-path 0.8s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s ease;
@@ -139,9 +135,7 @@
             filter: drop-shadow(0 0 15px rgba(200, 169, 126, 0.3));
         }
 
-        /* ==========================================
-           網頁載入進場動畫 (Fade In Up)
-           ========================================== */
+        /* 網頁進場動畫 */
         @keyframes fadeInUp {
             0% { opacity: 0; transform: translateY(40px); }
             100% { opacity: 1; transform: translateY(0); }
@@ -157,9 +151,7 @@
         .delay-500 { animation-delay: 0.5s; }
         .delay-700 { animation-delay: 0.7s; }
 
-        /* ==========================================
-           電影級無縫轉場 (Page Transition)
-           ========================================== */
+        /* 電影級無縫轉場 */
         #page-transition {
             position: fixed;
             top: 0;
@@ -188,22 +180,15 @@
             display: none !important;
         }
 
-        /* ==========================================
-           【新增】OS 桌面視窗風格 (Dark Mode 黑化版)
-           ========================================== */
+        /* OS 桌面視窗風格 */
         .window-widget {
             border-radius: 12px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
             overflow: hidden;
-            width: 100%;
             background-color: #121212;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
-        }
-        
-        .window-widget:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 25px 50px rgba(200, 169, 126, 0.15); /* 微微的金色陰影 */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
         }
         
         .window-header {
@@ -222,19 +207,22 @@
         }
 
         .window-title {
-            margin-left: 12px;
-            font-size: 12px;
+            font-size: 13px;
             color: #888;
             font-family: 'Inter', sans-serif;
             font-weight: 500;
             letter-spacing: 0.05em;
+        }
+
+        /* 確保彈出視窗時背景不會滾動 */
+        .no-scroll {
+            overflow: hidden;
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col relative selection:bg-white/20 selection:text-white">
 
     <div id="ambient-breathe" class="ambient-breathe"></div>
-    
     <div id="page-transition"></div>
 
     <div id="cursor-dot" class="hidden md:block pointer-events-none fixed top-0 left-0 w-2 h-2 bg-[#c8a97e] rounded-full z-[100] transform -translate-x-1/2 -translate-y-1/2 transition-transform duration-100"></div>
@@ -282,6 +270,7 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10 mb-32 md:mb-48">
+                <!-- 三個核心模組維持不變 -->
                 <div class="border border-white/10 bg-white/[0.02] p-8 md:p-10 backdrop-blur-sm group hover:border-[#c8a97e]/50 transition-colors duration-500">
                     <div class="text-3xl text-white/20 font-light mb-6 group-hover:text-[#c8a97e] transition-colors duration-500">01</div>
                     <h3 class="text-xl font-bold mb-4 tracking-wide">Computer Vision</h3>
@@ -289,7 +278,6 @@
                         基於 YOLO 架構與深度學習模型，開發即時影像辨識與追蹤系統。專注於模型輕量化、推論加速，並將 AI 視覺技術落地應用於實際場域。
                     </p>
                 </div>
-
                 <div class="border border-white/10 bg-white/[0.02] p-8 md:p-10 backdrop-blur-sm group hover:border-[#c8a97e]/50 transition-colors duration-500">
                     <div class="text-3xl text-white/20 font-light mb-6 group-hover:text-[#c8a97e] transition-colors duration-500">02</div>
                     <h3 class="text-xl font-bold mb-4 tracking-wide">Workflow Automation</h3>
@@ -297,7 +285,6 @@
                         精通 n8n 等自動化工具，串接各類 API 建立高效的工作流。將複雜的開發流程、警報系統與資料處理自動化，打造如神經網絡般的無縫整合架構。
                     </p>
                 </div>
-
                 <div class="border border-white/10 bg-white/[0.02] p-8 md:p-10 backdrop-blur-sm group hover:border-[#c8a97e]/50 transition-colors duration-500">
                     <div class="text-3xl text-white/20 font-light mb-6 group-hover:text-[#c8a97e] transition-colors duration-500">03</div>
                     <h3 class="text-xl font-bold mb-4 tracking-wide">Audio-Visual Engineering</h3>
@@ -314,31 +301,29 @@
 
             <div class="flex flex-col space-y-16 md:space-y-32">
                 
-                <div class="relative w-full bg-[#0a0a0a] border border-white/5 overflow-hidden group">
-                    <div class="p-8 md:p-12 pb-6 md:pb-8 flex flex-col justify-end bg-gradient-to-t from-[#050505] to-transparent">
+                <!-- 【按鈕化】點擊這裡將會觸發彈出視窗 -->
+                <a href="javascript:void(0)" id="trigger-presentation" class="relative block w-full aspect-video md:aspect-[21/9] bg-[#0a0a0a] border border-white/5 overflow-hidden group cursor-pointer">
+                    <!-- 背景圖或漸層 -->
+                    <div class="absolute inset-0 bg-gradient-to-br from-black/80 to-[#c8a97e]/10 group-hover:scale-105 transition-transform duration-700 ease-out"></div>
+                    
+                    <div class="absolute bottom-0 left-0 w-full p-8 md:p-16 flex flex-col justify-end bg-gradient-to-t from-[#050505] via-[#050505]/80 to-transparent">
                         <div class="flex items-center space-x-3 mb-4">
                             <span class="text-[10px] border border-[#c8a97e]/30 text-[#c8a97e] px-2 py-1 rounded-sm tracking-wider">YOLOv8</span>
                             <span class="text-[10px] border border-[#c8a97e]/30 text-[#c8a97e] px-2 py-1 rounded-sm tracking-wider">n8n</span>
                         </div>
                         <h3 class="text-2xl md:text-4xl font-bold text-white mb-4 group-hover:text-[#c8a97e] transition-colors duration-300">Smart Safety Care System</h3>
-                        <p class="text-sm md:text-base text-white/60 max-w-2xl font-light tracking-wide">
+                        <p class="text-sm md:text-base text-white/60 max-w-2xl font-light tracking-wide mb-6">
                             基於邊緣計算的 AI 居家安全監控系統。透過輕量化 YOLO 模型實現跌倒偵測，並結合 n8n 工作流，在異常發生時自動觸發即時群組通報機制。
                         </p>
-                    </div>
-
-                    <div class="p-8 md:p-12 pt-0 z-20 relative">
-                        <div class="window-widget">
-                            <div class="window-header">
-                                <span class="dot" style="background:#ff5f56;"></span>
-                                <span class="dot" style="background:#ffbd2e;"></span>
-                                <span class="dot" style="background:#27c93f;"></span>
-                                <span class="window-title">Smart_Safety_Care_System.ppt</span>
-                            </div>
-                            <iframe src="portfolio/ssc.html" width="100%" height="450px" style="border: none; background: #fff;" allowfullscreen></iframe>
+                        
+                        <!-- 提示點擊的 UI -->
+                        <div class="flex items-center text-[#c8a97e] text-sm tracking-widest font-medium opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                            CLICK TO VIEW PRESENTATION <span class="ml-2">→</span>
                         </div>
                     </div>
-                </div>
+                </a>
 
+                <!-- 其他專案區塊 -->
                 <div class="relative w-full aspect-video md:aspect-[21/9] bg-[#0a0a0a] border border-white/5 flex items-center justify-center">
                     <div class="text-white/20 tracking-widest text-sm">[ PROJECT DATA LOADING ... ]</div>
                 </div>
@@ -346,6 +331,38 @@
 
         </div>
     </section>
+    
+    <!-- ==========================================
+         【新增】全螢幕彈出視窗 (Modal Lightbox)
+         ========================================== -->
+    <div id="presentation-modal" class="fixed inset-0 z-[85] hidden items-center justify-center bg-black/90 backdrop-blur-md opacity-0 transition-opacity duration-400">
+        
+        <!-- 關閉按鈕 -->
+        <button id="close-modal-btn" class="absolute top-6 right-6 md:top-10 md:right-10 text-white/50 hover:text-white transition-colors cursor-pointer z-50 p-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+
+        <!-- OS 桌面風格視窗 -->
+        <div id="modal-content" class="w-[95%] md:w-[85%] h-[85vh] max-w-[1200px] window-widget scale-95 transition-transform duration-400 shadow-2xl shadow-[#c8a97e]/10">
+            <div class="window-header">
+                <div class="flex space-x-2">
+                    <span class="dot" style="background:#ff5f56;"></span>
+                    <span class="dot" style="background:#ffbd2e;"></span>
+                    <span class="dot" style="background:#27c93f;"></span>
+                </div>
+                <div class="flex-grow text-center window-title -ml-12">
+                    Smart_Safety_Care_System.ppt
+                </div>
+            </div>
+            
+            <!-- 嵌入簡報，填滿下方空間 -->
+            <div class="flex-grow relative bg-[#f9f9f9]">
+                <iframe src="portfolio/ssc.html" class="absolute inset-0 w-full h-full border-none" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
     
 <script>
     // ==========================================
@@ -559,7 +576,6 @@
         drawCross(scanner.x, scanner.y, 12, 'rgba(200, 169, 126, 0.4)');
     }
 
-
     // ==========================================
     // 3. 自訂發光延遲游標
     // ==========================================
@@ -652,6 +668,55 @@
                     document.body.classList.remove('transition-out');
                 }, 600);
             }, 600);
+        });
+    }
+
+    // ==========================================
+    // 6. 彈出視窗 Lightbox 控制邏輯
+    // ==========================================
+    const modal = document.getElementById('presentation-modal');
+    const modalContent = document.getElementById('modal-content');
+    const closeModalBtn = document.getElementById('close-modal-btn');
+    const triggerPresentation = document.getElementById('trigger-presentation');
+
+    function openModal() {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.classList.add('no-scroll'); // 防止背景網頁可以上下捲動
+        
+        // 延遲一點點讓 display:flex 生效後再執行 opacity 動畫
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            modalContent.classList.remove('scale-95');
+            modalContent.classList.add('scale-100');
+        }, 10);
+    }
+
+    function closeModal() {
+        modal.classList.add('opacity-0');
+        modalContent.classList.remove('scale-100');
+        modalContent.classList.add('scale-95');
+        document.body.classList.remove('no-scroll');
+        
+        // 等待動畫秒數(400ms)結束後再隱藏 DOM
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }, 400); 
+    }
+
+    if(triggerPresentation && modal && closeModalBtn) {
+        // 點擊專案卡片打開
+        triggerPresentation.addEventListener('click', openModal);
+        
+        // 點擊 X 按鈕關閉
+        closeModalBtn.addEventListener('click', closeModal);
+        
+        // 點擊黑色背景遮罩也可以關閉
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
         });
     }
 </script>
