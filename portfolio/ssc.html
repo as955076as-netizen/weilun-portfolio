@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>安全居家照護系統 | 專題簡報</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://gs.jurieo.com/gemini/fonts-googleapis/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -29,14 +29,53 @@
             display: none; 
             width: 100%; 
             height: 100%; 
-            animation: fadeIn 0.4s ease-out; 
+            /* 移除舊的靜態動畫，改用動態添加的 class */
         }
         .slide.active { display: flex; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        
+        /* 新增：帶有方向性的平滑轉場動畫 */
+        .slide-in-right {
+            animation: slideInRight 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .slide-in-left {
+            animation: slideInLeft 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .slide-in-initial {
+            animation: fadeInScale 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(40px) scale(0.98); }
+            to { opacity: 1; transform: translateX(0) scale(1); }
+        }
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-40px) scale(0.98); }
+            to { opacity: 1; transform: translateX(0) scale(1); }
+        }
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: translateY(20px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
         
+        /* 新增：數據圖表與數字動畫 */
+        .chart-bar {
+            width: 0 !important;
+            opacity: 0;
+        }
+        .active .chart-bar {
+            width: var(--target-width) !important;
+            opacity: 1;
+            transition: width 1s cubic-bezier(0.22, 1, 0.36, 1) 0.4s, opacity 0.5s ease-out 0.3s;
+        }
+        .active .venn-left {
+            animation: slideVennLeft 1s cubic-bezier(0.16, 1, 0.3, 1) 0.4s backwards;
+        }
+        .active .venn-right {
+            animation: slideVennRight 1s cubic-bezier(0.16, 1, 0.3, 1) 0.4s backwards;
+        }
+        @keyframes slideVennLeft { from { transform: translateX(-30px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes slideVennRight { from { transform: translateX(30px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
         /* 深色模式下的圖片佔位符 */
         .img-placeholder {
             background-color: #0f172a; /* slate-900 */
@@ -55,7 +94,13 @@
         }
     </style>
 </head>
-<body class="text-slate-50 h-screen relative selection:bg-primary selection:text-darkbg">
+<body class="text-slate-50 h-screen relative selection:bg-primary selection:text-darkbg overflow-hidden">
+
+    <!-- 新增：頂部進度條 -->
+    <div id="progress-bar" class="fixed top-0 left-0 h-1 bg-primary z-[60] transition-all duration-500 ease-out w-0 shadow-[0_0_10px_#22d3ee]"></div>
+
+    <!-- 新增：跟隨滑鼠的環境光暈 -->
+    <div id="mouse-glow" class="fixed w-[800px] h-[800px] rounded-full bg-primary/5 blur-[120px] pointer-events-none transition-all duration-300 ease-out -translate-x-1/2 -translate-y-1/2 z-0 hidden md:block opacity-50 mix-blend-screen"></div>
 
     <!-- 右上角 裝飾標籤 -->
     <div class="fixed top-6 right-8 z-50">
@@ -237,7 +282,8 @@
                 <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm flex flex-col">
                     <!-- 調整為 h-[340px] 大面積展示，並移除多餘的 HTML 文字與透明度 -->
                     <div class="h-[340px] relative bg-[#0a0f1d] border-b border-slate-700 flex items-center justify-center overflow-hidden">
-                        <img src="pictures/JETSON ORIN™ NANO.jpg" class="absolute inset-0 w-full h-full object-contain object-center" alt="Jetson Orin">
+                        <img src="pictures/JETSON ORIN™ NANO.jpg" class="absolute inset-0 w-full h-full object-contain object-center" alt="Jetson Orin" onerror="this.style.display='none'">
+                        <span class="text-slate-500 font-mono text-sm">圖片佔位符: JETSON ORIN™ NANO.jpg</span>
                     </div>
                     
                     <div class="bg-slate-900/50 py-3 text-center text-xs text-primary border-b border-slate-700 font-mono">
@@ -270,9 +316,9 @@
                             <span class="bg-slate-700 text-slate-300 border border-slate-600 px-3 py-1 rounded-md">相機實拍</span>
                         </div>
                         <div class="w-full h-6 rounded-md overflow-hidden flex mb-2 text-[10px] text-slate-900 text-center leading-6 font-semibold">
-                            <div class="bg-primary w-[78%]">78%</div>
-                            <div class="bg-blue-400 w-[15%]">15%</div>
-                            <div class="bg-indigo-400 w-[7%]">7%</div>
+                            <div class="bg-primary chart-bar flex-shrink-0" style="--target-width: 78%;">78%</div>
+                            <div class="bg-blue-400 chart-bar flex-shrink-0" style="--target-width: 15%;">15%</div>
+                            <div class="bg-indigo-400 chart-bar flex-shrink-0" style="--target-width: 7%;">7%</div>
                         </div>
                         <div class="flex gap-4 text-[10px] text-slate-400 font-medium">
                             <span class="flex items-center gap-1"><div class="w-2 h-2 bg-primary rounded-full"></div>訓練 5,521</span>
@@ -342,7 +388,8 @@
                     </div>
                     <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm flex-grow flex flex-col">
                         <div class="flex-grow img-placeholder relative min-h-[200px]">
-                            <img src="pictures/LabelImg View.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="LabelImg View">
+                            <img src="pictures/LabelImg View.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="LabelImg View" onerror="this.style.display='none'">
+                            <span class="text-slate-500 font-mono text-sm">圖片佔位符: LabelImg View.png</span>
                         </div>
                         <div class="bg-slate-900/80 py-3 text-center text-xs text-slate-500 border-t border-slate-700 font-medium font-mono">LabelImg 標註畫面</div>
                     </div>
@@ -378,13 +425,15 @@
                 <div class="flex flex-col gap-6">
                     <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm">
                         <div class="h-48 img-placeholder">
-                            <img src="pictures/v1.0 Confusion Matrix.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="v1.0 Confusion Matrix">
+                            <img src="pictures/v1.0 Confusion Matrix.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="v1.0 Confusion Matrix" onerror="this.style.display='none'">
+                            <span class="text-slate-500 font-mono text-sm">圖片佔位符</span>
                         </div>
                         <div class="bg-slate-900/80 py-2 text-center text-xs text-slate-500 border-t border-slate-700 font-mono">v1.0 Confusion Matrix — Person 僅 0.36</div>
                     </div>
                     <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm">
                         <div class="h-48 img-placeholder">
-                            <img src="pictures/v1.0 PR Curve.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="v1.0 PR Curve">
+                            <img src="pictures/v1.0 PR Curve.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="v1.0 PR Curve" onerror="this.style.display='none'">
+                            <span class="text-slate-500 font-mono text-sm">圖片佔位符</span>
                         </div>
                         <div class="bg-slate-900/80 py-2 text-center text-xs text-slate-500 border-t border-slate-700 font-mono">v1.0 PR Curve — mAP@0.5 = 0.607</div>
                     </div>
@@ -404,19 +453,19 @@
             <div class="grid grid-cols-3 gap-6">
                 <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm">
                     <div class="h-72 img-placeholder">
-                        <img src="pictures/sample 1.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="Sample 1">
+                        <img src="pictures/sample 1.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="Sample 1" onerror="this.style.display='none'">
                     </div>
                     <div class="bg-slate-900/80 py-3 text-center text-xs text-slate-400 border-t border-slate-700 font-medium">偵測樣本 1</div>
                 </div>
                 <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm">
                     <div class="h-72 img-placeholder">
-                        <img src="pictures/sample 2.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="Sample 2">
+                        <img src="pictures/sample 2.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="Sample 2" onerror="this.style.display='none'">
                     </div>
                     <div class="bg-slate-900/80 py-3 text-center text-xs text-slate-400 border-t border-slate-700 font-medium">偵測樣本 2</div>
                 </div>
                 <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm">
                     <div class="h-72 img-placeholder">
-                        <img src="pictures/sample 3.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="Sample 3">
+                        <img src="pictures/sample 3.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="Sample 3" onerror="this.style.display='none'">
                     </div>
                     <div class="bg-slate-900/80 py-3 text-center text-xs text-slate-400 border-t border-slate-700 font-medium">偵測樣本 3</div>
                 </div>
@@ -438,8 +487,8 @@
                         <div class="flex items-center gap-4 mb-2">
                             <span class="w-16 font-bold text-sm text-slate-300">Person</span>
                             <div class="flex-grow flex flex-col gap-1.5">
-                                <div class="w-[49%] bg-slate-600 h-5 rounded flex items-center justify-end px-2 text-slate-300 text-[10px] font-mono">0.49</div>
-                                <div class="w-[80%] bg-primary h-5 rounded flex items-center justify-end px-2 text-slate-900 text-[10px] font-bold font-mono shadow-[0_0_10px_#22d3ee]">0.80</div>
+                                <div class="bg-slate-600 h-5 rounded flex items-center justify-end px-2 text-slate-300 text-[10px] font-mono chart-bar" style="--target-width: 49%;">0.49</div>
+                                <div class="bg-primary h-5 rounded flex items-center justify-end px-2 text-slate-900 text-[10px] font-bold font-mono shadow-[0_0_10px_#22d3ee] chart-bar" style="--target-width: 80%;">0.80</div>
                             </div>
                         </div>
                     </div>
@@ -447,8 +496,8 @@
                         <div class="flex items-center gap-4 mb-2">
                             <span class="w-16 font-bold text-sm text-slate-300">Knife</span>
                             <div class="flex-grow flex flex-col gap-1.5">
-                                <div class="w-[60%] bg-slate-600 h-5 rounded flex items-center justify-end px-2 text-slate-300 text-[10px] font-mono">0.60</div>
-                                <div class="w-[70%] bg-primary h-5 rounded flex items-center justify-end px-2 text-slate-900 text-[10px] font-bold font-mono shadow-[0_0_10px_#22d3ee]">0.70</div>
+                                <div class="bg-slate-600 h-5 rounded flex items-center justify-end px-2 text-slate-300 text-[10px] font-mono chart-bar" style="--target-width: 60%;">0.60</div>
+                                <div class="bg-primary h-5 rounded flex items-center justify-end px-2 text-slate-900 text-[10px] font-bold font-mono shadow-[0_0_10px_#22d3ee] chart-bar" style="--target-width: 70%;">0.70</div>
                             </div>
                         </div>
                     </div>
@@ -456,8 +505,8 @@
                         <div class="flex items-center gap-4 mb-2">
                             <span class="w-16 font-bold text-sm text-slate-300">Scissors</span>
                             <div class="flex-grow flex flex-col gap-1.5">
-                                <div class="w-[73%] bg-slate-600 h-5 rounded flex items-center justify-end px-2 text-slate-300 text-[10px] font-mono">0.73</div>
-                                <div class="w-[78%] bg-primary h-5 rounded flex items-center justify-end px-2 text-slate-900 text-[10px] font-bold font-mono shadow-[0_0_10px_#22d3ee]">0.78</div>
+                                <div class="bg-slate-600 h-5 rounded flex items-center justify-end px-2 text-slate-300 text-[10px] font-mono chart-bar" style="--target-width: 73%;">0.73</div>
+                                <div class="bg-primary h-5 rounded flex items-center justify-end px-2 text-slate-900 text-[10px] font-bold font-mono shadow-[0_0_10px_#22d3ee] chart-bar" style="--target-width: 78%;">0.78</div>
                             </div>
                         </div>
                     </div>
@@ -468,7 +517,8 @@
                 </div>
                 <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm h-full flex flex-col">
                     <div class="flex-grow img-placeholder">
-                        <img src="pictures/v2.0 Confusion Matrix.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="v2.0 Confusion Matrix">
+                        <img src="pictures/v2.0 Confusion Matrix.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="v2.0 Confusion Matrix" onerror="this.style.display='none'">
+                        <span class="text-slate-500 font-mono text-sm">圖片佔位符</span>
                     </div>
                     <div class="bg-slate-900/80 py-3 text-center text-xs text-slate-400 border-t border-slate-700 font-mono">v2.0 Confusion Matrix — Person 提升至 0.79</div>
                 </div>
@@ -488,7 +538,8 @@
                 <div class="col-span-5">
                     <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm h-full flex flex-col">
                         <div class="flex-grow img-placeholder min-h-[300px]">
-                            <img src="pictures/v2.0 PR Curve.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="v2.0 PR Curve">
+                            <img src="pictures/v2.0 PR Curve.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="v2.0 PR Curve" onerror="this.style.display='none'">
+                            <span class="text-slate-500 font-mono text-sm">圖片佔位符</span>
                         </div>
                         <div class="bg-slate-900/80 py-3 text-center text-xs text-slate-400 border-t border-slate-700 font-mono">v2.0 PR Curve — mAP@0.5 = 0.758</div>
                     </div>
@@ -496,13 +547,15 @@
                 <div class="col-span-7 flex flex-col gap-6">
                     <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm flex-1">
                         <div class="h-[180px] img-placeholder">
-                            <img src="pictures/sample 4.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="v2.0 Sample 1">
+                            <img src="pictures/sample 4.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="v2.0 Sample 1" onerror="this.style.display='none'">
+                            <span class="text-slate-500 font-mono text-sm">圖片佔位符</span>
                         </div>
                         <div class="bg-slate-900/80 py-2 text-center text-xs text-slate-400 border-t border-slate-700 font-medium">偵測樣本 1</div>
                     </div>
                     <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm flex-1">
                         <div class="h-[180px] img-placeholder">
-                            <img src="pictures/sample 5.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="v2.0 Sample 2">
+                            <img src="pictures/sample 5.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="v2.0 Sample 2" onerror="this.style.display='none'">
+                            <span class="text-slate-500 font-mono text-sm">圖片佔位符</span>
                         </div>
                         <div class="bg-slate-900/80 py-2 text-center text-xs text-slate-400 border-t border-slate-700 font-medium">偵測樣本 2</div>
                     </div>
@@ -519,7 +572,8 @@
             <div class="grid grid-cols-2 gap-8">
                 <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm">
                     <div class="h-[360px] img-placeholder">
-                        <img src="pictures/radar chart.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="Radar Chart">
+                        <img src="pictures/radar chart.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="Radar Chart" onerror="this.style.display='none'">
+                        <span class="text-slate-500 font-mono text-sm">圖片佔位符</span>
                     </div>
                     <div class="bg-slate-900/80 py-3 text-center text-xs text-slate-400 border-t border-slate-700 font-medium">前後版本性能雷達圖 — 各指標全面提升</div>
                 </div>
@@ -561,7 +615,8 @@
                 <div class="col-span-5">
                     <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm flex flex-col h-full">
                         <div class="flex-grow img-placeholder min-h-[300px]">
-                            <img src="pictures/v3.0 Confusion Matrix.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="v3.0 Confusion Matrix">
+                            <img src="pictures/v3.0 Confusion Matrix.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="v3.0 Confusion Matrix" onerror="this.style.display='none'">
+                            <span class="text-slate-500 font-mono text-sm">圖片佔位符</span>
                         </div>
                         <div class="bg-slate-900/80 py-3 text-center text-xs text-slate-400 border-t border-slate-700 font-mono">
                             v3.0 蒸餾後 Confusion Matrix
@@ -597,11 +652,11 @@
                     <!-- 成效指標 -->
                     <div class="grid grid-cols-3 gap-4 mt-2">
                         <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center shadow-sm">
-                            <div class="text-4xl font-black text-emerald-400 mb-2 drop-shadow-[0_0_8px_rgba(16,185,129,0.6)]">88<span class="text-xl text-emerald-500/70">%</span></div>
+                            <div class="text-4xl font-black text-emerald-400 mb-2 drop-shadow-[0_0_8px_rgba(16,185,129,0.6)]"><span class="counter" data-target="88">0</span><span class="text-xl text-emerald-500/70">%</span></div>
                             <div class="text-sm text-slate-400 font-bold">壓縮率</div>
                         </div>
                         <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center shadow-sm">
-                            <div class="text-4xl font-black text-amber-400 mb-2 drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]">8.3<span class="text-xl text-amber-500/70">×</span></div>
+                            <div class="text-4xl font-black text-amber-400 mb-2 drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]"><span class="counter-float" data-target="8.3">0.0</span><span class="text-xl text-amber-500/70">×</span></div>
                             <div class="text-sm text-slate-400 font-bold">體積縮小</div>
                         </div>
                         <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center shadow-sm">
@@ -622,8 +677,8 @@
             
             <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm flex flex-col h-[500px]">
                 <div class="flex-grow img-placeholder bg-slate-900">
-                    <!-- 這裡原本有 opacity-90，已一併替換 -->
-                    <img src="pictures/training metrics.png" class="absolute inset-0 w-full h-full object-contain object-center opacity-90" alt="Training Metrics">
+                    <img src="pictures/training metrics.png" class="absolute inset-0 w-full h-full object-contain object-center opacity-90" alt="Training Metrics" onerror="this.style.display='none'">
+                    <span class="text-slate-500 font-mono text-sm">圖片佔位符</span>
                 </div>
                 <div class="bg-slate-900/80 py-3 text-center text-xs text-slate-400 border-t border-slate-700 font-mono">
                     訓練過程 Loss / Precision / Recall / mAP 指標
@@ -752,9 +807,9 @@
                         <!-- 交集 -->
                         <div class="flex flex-col items-center gap-6">
                             <div class="relative w-40 h-28 flex items-center justify-center group">
-                                <div class="w-24 h-24 rounded-full border-[3px] border-slate-500 absolute left-0 transition-all group-hover:border-slate-400"></div>
-                                <div class="w-24 h-24 rounded-full border-[3px] border-slate-500 absolute right-0 transition-all group-hover:border-slate-400"></div>
-                                <svg class="w-40 h-28 absolute z-10 drop-shadow-[0_0_15px_rgba(239,68,68,0.6)]" viewBox="0 0 160 112">
+                                <div class="w-24 h-24 rounded-full border-[3px] border-slate-500 absolute left-0 transition-all group-hover:border-slate-400 venn-left"></div>
+                                <div class="w-24 h-24 rounded-full border-[3px] border-slate-500 absolute right-0 transition-all group-hover:border-slate-400 venn-right"></div>
+                                <svg class="w-40 h-28 absolute z-10 drop-shadow-[0_0_15px_rgba(239,68,68,0.6)] venn-left" viewBox="0 0 160 112">
                                     <clipPath id="circle-clip">
                                         <circle cx="48" cy="56" r="46"/>
                                     </clipPath>
@@ -768,10 +823,10 @@
                         <div class="flex flex-col items-center gap-6">
                             <div class="relative w-40 h-28 flex items-center justify-center group">
                                 <svg class="w-40 h-28 absolute drop-shadow-[0_0_15px_rgba(239,68,68,0.4)]" viewBox="0 0 160 112">
-                                    <circle cx="48" cy="56" r="46" fill="#ef4444" />
-                                    <circle cx="112" cy="56" r="46" fill="#ef4444" />
-                                    <circle cx="48" cy="56" r="46" fill="none" stroke="#94a3b8" stroke-width="3" class="transition-all group-hover:stroke-slate-300"/>
-                                    <circle cx="112" cy="56" r="46" fill="none" stroke="#94a3b8" stroke-width="3" class="transition-all group-hover:stroke-slate-300"/>
+                                    <circle cx="48" cy="56" r="46" fill="#ef4444" class="venn-left"/>
+                                    <circle cx="112" cy="56" r="46" fill="#ef4444" class="venn-right"/>
+                                    <circle cx="48" cy="56" r="46" fill="none" stroke="#94a3b8" stroke-width="3" class="transition-all group-hover:stroke-slate-300 venn-left"/>
+                                    <circle cx="112" cy="56" r="46" fill="none" stroke="#94a3b8" stroke-width="3" class="transition-all group-hover:stroke-slate-300 venn-right"/>
                                 </svg>
                             </div>
                             <span class="text-slate-300 font-bold text-lg tracking-widest">聯集 <span class="text-sm font-mono text-slate-500">union</span></span>
@@ -825,7 +880,8 @@
                 <!-- 左側截圖 -->
                 <div class="col-span-7 bg-slate-800 border border-slate-700 rounded-xl overflow-hidden flex flex-col shadow-sm">
                     <div class="flex-grow img-placeholder border-none bg-[#0b1120]">
-                        <img src="pictures/n8n workflow.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="n8n Workflow">
+                        <img src="pictures/n8n workflow.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="n8n Workflow" onerror="this.style.display='none'">
+                        <span class="text-slate-500 font-mono text-sm">圖片佔位符</span>
                     </div>
                     <div class="bg-slate-900/80 py-3 text-center text-xs text-slate-400 border-t border-slate-700 font-mono">
                         n8n 自動化流程編排
@@ -857,7 +913,8 @@
                 <!-- 左側：即時偵測畫面 -->
                 <div class="col-span-6 bg-slate-800 border border-slate-700 rounded-xl overflow-hidden flex flex-col shadow-sm">
                     <div class="flex-grow img-placeholder border-none bg-[#0b1120]">
-                        <img src="pictures/live detection.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="Live Detection">
+                        <img src="pictures/live detection.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="Live Detection" onerror="this.style.display='none'">
+                        <span class="text-slate-500 font-mono text-sm">圖片佔位符</span>
                     </div>
                     <div class="bg-slate-900/80 py-3 text-center text-xs text-slate-400 border-t border-slate-700 font-mono">
                         即時偵測畫面 — 物件偵測 + 危險分數計算
@@ -915,7 +972,8 @@
                 <!-- LINE 警報通知 -->
                 <div class="col-span-3 bg-slate-800 border border-slate-700 rounded-xl overflow-hidden flex flex-col shadow-sm group hover:border-primary/50 transition-colors">
                     <div class="flex-grow img-placeholder border-none bg-[#0b1120]">
-                        <img src="pictures/LINE screenshot.jpg" class="absolute inset-0 w-full h-full object-contain object-center" alt="LINE Screenshot">
+                        <img src="pictures/LINE screenshot.jpg" class="absolute inset-0 w-full h-full object-contain object-center" alt="LINE Screenshot" onerror="this.style.display='none'">
+                        <span class="text-slate-500 font-mono text-sm">圖片佔位符</span>
                     </div>
                     <div class="bg-slate-900/80 py-3 text-center text-xs text-slate-400 border-t border-slate-700 font-mono group-hover:text-primary transition-colors">
                         LINE 警報通知
@@ -925,7 +983,8 @@
                 <!-- Email 警報通知 -->
                 <div class="col-span-3 bg-slate-800 border border-slate-700 rounded-xl overflow-hidden flex flex-col shadow-sm group hover:border-emerald-400/50 transition-colors">
                     <div class="flex-grow img-placeholder border-none bg-[#0b1120]">
-                        <img src="pictures/email screenshot.jpg" class="absolute inset-0 w-full h-full object-contain object-center" alt="Email Screenshot">
+                        <img src="pictures/email screenshot.jpg" class="absolute inset-0 w-full h-full object-contain object-center" alt="Email Screenshot" onerror="this.style.display='none'">
+                        <span class="text-slate-500 font-mono text-sm">圖片佔位符</span>
                     </div>
                     <div class="bg-slate-900/80 py-3 text-center text-xs text-slate-400 border-t border-slate-700 font-mono group-hover:text-emerald-400 transition-colors">
                         Email 警報通知
@@ -935,7 +994,8 @@
                 <!-- Supabase 事件數據紀錄 -->
                 <div class="col-span-6 bg-slate-800 border border-slate-700 rounded-xl overflow-hidden flex flex-col shadow-sm group hover:border-accent/50 transition-colors">
                     <div class="flex-grow img-placeholder border-none bg-[#0b1120]">
-                        <img src="pictures/supabase screenshot.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="Supabase Screenshot">
+                        <img src="pictures/supabase screenshot.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="Supabase Screenshot" onerror="this.style.display='none'">
+                        <span class="text-slate-500 font-mono text-sm">圖片佔位符</span>
                     </div>
                     <div class="bg-slate-900/80 py-3 text-center text-xs text-slate-400 border-t border-slate-700 font-mono group-hover:text-accent transition-colors">
                         Supabase 事件數據紀錄
@@ -989,22 +1049,23 @@
 
         <!-- 實際導覽列 -->
         <div class="bg-slate-900/60 border border-slate-700/50 shadow-lg rounded-full flex items-center px-4 py-2 gap-4 backdrop-blur-md transform translate-y-6 opacity-0 pointer-events-none group-hover:translate-y-0 group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-300 ease-out relative z-10">
-            <button class="text-slate-500 hover:text-primary transition" onclick="goToSlide(0)">
+            <!-- 新增 active:scale-90 按壓互動效果 -->
+            <button class="text-slate-500 hover:text-primary active:scale-90 transition-all" onclick="goToSlide(0)">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M5 12L12 19M5 12L12 5M2 5V19"></path></svg>
             </button>
-            <button class="text-slate-500 hover:text-primary transition" onclick="prevSlide()">
+            <button class="text-slate-500 hover:text-primary active:scale-90 transition-all" onclick="prevSlide()">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M5 12L12 19M5 12L12 5"></path></svg>
             </button>
             
             <div class="flex items-baseline gap-1 mx-2 font-mono">
-                <span id="current-page" class="text-sm font-bold text-primary drop-shadow-[0_0_8px_rgba(34,211,238,0.5)]">1</span>
+                <span id="current-page" class="text-sm font-bold text-primary drop-shadow-[0_0_8px_rgba(34,211,238,0.5)] transition-all">1</span>
                 <span class="text-xs text-slate-500 font-medium">/ <span id="total-pages">18</span></span>
             </div>
             
-            <button class="text-slate-500 hover:text-primary transition" onclick="nextSlide()">
+            <button class="text-slate-500 hover:text-primary active:scale-90 transition-all" onclick="nextSlide()">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12H19M19 12L12 5M19 12L12 19"></path></svg>
             </button>
-            <button class="text-slate-500 hover:text-primary transition" onclick="goToSlide(totalSlides - 1)">
+            <button class="text-slate-500 hover:text-primary active:scale-90 transition-all" onclick="goToSlide(totalSlides - 1)">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12H19M19 12L12 5M19 12L12 19M22 5V19"></path></svg>
             </button>
         </div>
@@ -1017,29 +1078,93 @@
         const totalSlides = slides.length;
         document.getElementById('total-pages').innerText = totalSlides; 
 
-        function showSlide(index) {
-            slides.forEach(s => s.classList.remove('active'));
+        // 修改：支援動畫方向判斷與進度條更新
+        function showSlide(index, direction = 'initial') {
+            slides.forEach(s => {
+                s.classList.remove('active', 'slide-in-right', 'slide-in-left', 'slide-in-initial');
+            });
+            
             slides[index].classList.add('active');
+            
+            if (direction === 'right') {
+                slides[index].classList.add('slide-in-right');
+            } else if (direction === 'left') {
+                slides[index].classList.add('slide-in-left');
+            } else {
+                slides[index].classList.add('slide-in-initial');
+            }
+
             document.getElementById('current-page').innerText = index + 1;
+            
+            // 更新進度條
+            const progress = ((index + 1) / totalSlides) * 100;
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+
+            // 觸發數字跳動動畫
+            animateCounters(slides[index]);
+        }
+
+        // 新增：數字計數器動畫
+        function animateCounters(slide) {
+            // 整數計數器
+            const counters = slide.querySelectorAll('.counter');
+            counters.forEach(counter => {
+                const target = +counter.getAttribute('data-target');
+                const duration = 1200; // 動畫持續 1.2 秒
+                const startTime = performance.now();
+                
+                const update = (currentTime) => {
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    // 使用 Quartic 減速函數，使數字停止得更平滑
+                    const easeOut = 1 - Math.pow(1 - progress, 4); 
+                    counter.innerText = Math.floor(easeOut * target);
+                    
+                    if (progress < 1) requestAnimationFrame(update);
+                    else counter.innerText = target;
+                };
+                requestAnimationFrame(update);
+            });
+
+            // 浮點數計數器 (小數點後1位)
+            const floatCounters = slide.querySelectorAll('.counter-float');
+            floatCounters.forEach(counter => {
+                const target = parseFloat(counter.getAttribute('data-target'));
+                const duration = 1200;
+                const startTime = performance.now();
+                
+                const update = (currentTime) => {
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const easeOut = 1 - Math.pow(1 - progress, 4);
+                    counter.innerText = (easeOut * target).toFixed(1);
+                    
+                    if (progress < 1) requestAnimationFrame(update);
+                    else counter.innerText = target.toFixed(1);
+                };
+                requestAnimationFrame(update);
+            });
         }
 
         function nextSlide() {
             if (currentIdx < totalSlides - 1) {
                 currentIdx++;
-                showSlide(currentIdx);
+                showSlide(currentIdx, 'right');
             }
         }
 
         function prevSlide() {
             if (currentIdx > 0) {
                 currentIdx--;
-                showSlide(currentIdx);
+                showSlide(currentIdx, 'left');
             }
         }
 
         function goToSlide(index) {
+            if (index === currentIdx) return;
+            const direction = index > currentIdx ? 'right' : 'left';
             currentIdx = index;
-            showSlide(currentIdx);
+            showSlide(currentIdx, direction);
         }
 
         window.addEventListener('keydown', (e) => {
@@ -1047,7 +1172,19 @@
             if (e.key === 'ArrowLeft') prevSlide();
         });
 
-        showSlide(currentIdx);
+        // 新增：滑鼠追蹤光暈效果
+        const mouseGlow = document.getElementById('mouse-glow');
+        window.addEventListener('mousemove', (e) => {
+            if (mouseGlow) {
+                // 使用 setTimeout 讓光暈有微小的延遲感，增加流動性
+                setTimeout(() => {
+                    mouseGlow.style.left = e.clientX + 'px';
+                    mouseGlow.style.top = e.clientY + 'px';
+                }, 50);
+            }
+        });
+
+        showSlide(currentIdx, 'initial');
     </script>
 </body>
 </html>
