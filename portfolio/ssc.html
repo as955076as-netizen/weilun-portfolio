@@ -125,7 +125,7 @@
         }
     </style>
 </head>
-<body class="text-slate-50 h-screen relative selection:bg-primary selection:text-darkbg overflow-hidden">
+<body class="text-slate-50 w-screen h-screen relative selection:bg-primary selection:text-darkbg overflow-hidden flex items-center justify-center">
 
     <div id="progress-bar" class="fixed top-0 left-0 h-1 bg-primary z-[60] transition-all duration-500 ease-out w-0 shadow-[0_0_10px_#22d3ee]"></div>
 
@@ -138,12 +138,11 @@
         </div>
     </div>
 
-    <div id="presentation" class="w-full h-full flex flex-col justify-center items-center px-12 pb-24 pt-12 bg-cardbg m-4 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.5)] border border-slate-700 relative overflow-hidden" style="width: calc(100% - 2rem); height: calc(100% - 2rem);">
+    <div id="presentation" class="flex flex-col justify-center items-center px-16 pb-24 pt-16 bg-cardbg rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.5)] border border-slate-700 relative overflow-hidden" style="width: 1920px; height: 1080px; flex-shrink: 0; transform-origin: center;">
         
         <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-primary/5 blur-[120px] pointer-events-none"></div>
         <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-indigo-500/5 blur-[120px] pointer-events-none"></div>
 
-        <!-- Slide 1: 封面 -->
         <div class="slide flex-col items-center justify-center text-center relative z-10">
             <div class="mb-10 flex flex-col items-center justify-center relative group cursor-default">
                 <div class="flex items-center gap-4 bg-slate-800/50 border border-primary/30 py-2 px-6 rounded-full backdrop-blur-md shadow-[0_0_20px_rgba(34,211,238,0.05)] hover:shadow-[0_0_30px_rgba(34,211,238,0.2)] hover:border-primary/60 transition-all duration-500 mb-6">
@@ -173,7 +172,6 @@
             <p class="text-lg text-slate-500 font-light tracking-widest">結合 YOLOv8 與動態風險演算的智慧居家監控系統</p>
         </div>
 
-        <!-- Slide 2: 專題動機 -->
         <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
             <div class="mb-8">
                 <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ Motivation</div>
@@ -229,7 +227,6 @@
             </div>
         </div>
 
-        <!-- Slide 3: 專題目標 & 系統架構 -->
         <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
             <div class="mb-8">
                 <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ Objectives & Architecture</div>
@@ -313,7 +310,6 @@
             </div>
         </div>
 
-        <!-- Slide 4: 硬體與資料處理 -->
         <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
             <div class="mb-8">
                 <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ Hardware & Data</div>
@@ -386,7 +382,6 @@
             </div>
         </div>
 
-        <!-- Slide 5: YOLOv8 模型訓練 -->
         <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
             <div class="mb-8">
                 <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ YOLOv8 Training</div>
@@ -435,7 +430,6 @@
             </div>
         </div>
 
-        <!-- Slide 6: 初版模型問題分析 -->
         <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
             <div class="mb-8 flex items-center gap-4">
                 <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest uppercase font-mono">/ Model Analysis</div>
@@ -475,7 +469,6 @@
             </div>
         </div>
 
-        <!-- Slide 7: 偵測樣本圖 -->
         <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
             <div class="mb-8">
                 <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ Detection Samples</div>
@@ -506,7 +499,6 @@
             </div>
         </div>
 
-        <!-- Slide 8: 優化成效 -->
         <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
             <div class="mb-8 flex items-center gap-4">
                 <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest uppercase font-mono">/ Performance Lift</div>
@@ -558,7 +550,6 @@
             </div>
         </div>
 
-        <!-- Slide 9: PR Curve & 偵測樣本 -->
         <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
             <div class="mb-8">
                 <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ PR Curve & Samples</div>
@@ -593,7 +584,6 @@
             </div>
         </div>
 
-        <!-- Slide 10: 前後版本性能比較 -->
         <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
             <div class="mb-8">
                 <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ Radar Comparison</div>
@@ -629,7 +619,6 @@
             </div>
         </div>
 
-        <!-- Slide 11: 蒸餾模型驗證 -->
         <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
             <div class="mb-8">
                 <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ Distillation Result</div>
@@ -688,7 +677,6 @@
             </div>
         </div>
 
-        <!-- Slide 12: 訓練過程指標 -->
         <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
             <div class="mb-8">
                 <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ Training Metrics</div>
@@ -704,7 +692,6 @@
             </div>
         </div>
 
-        <!-- Slide 13: 危險分數計算 -->
         <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
             <div class="mb-8">
                 <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ Risk Algorithm</div>
@@ -751,7 +738,6 @@
             </div>
         </div>
 
-        <!-- Slide 14: 座標轉換 & IoU 計算 -->
         <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
             <div class="mb-8">
                 <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ Coordinate & IoU</div>
@@ -759,7 +745,6 @@
             </div>
             
             <div class="flex flex-col gap-6 w-full flex-grow">
-                <!-- 上半部：計算步驟 (箭頭連接排版) -->
                 <div class="flex items-center justify-between w-full px-4 gap-4 mt-2">
                     <div class="flex-1 bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-sm group hover:border-primary/50 hover:-translate-y-1 hover:shadow-[0_0_15px_rgba(34,211,238,0.2)] transition-all duration-300 chart-wipe" style="--anim-delay: 0.2s;">
                         <h3 class="text-base font-bold text-white mb-3 text-center group-hover:text-primary-light transition-colors">YOLO 轉 Px</h3>
@@ -791,17 +776,14 @@
                     </div>
                 </div>
 
-                <!-- 提示橫幅 -->
                 <div class="bg-slate-800/80 border border-primary/30 rounded-xl py-2 px-5 text-center shadow-[0_0_15px_rgba(34,211,238,0.1)] backdrop-blur-sm chart-zoom mx-4 mt-2" style="--anim-delay: 0.7s;">
                     <span class="text-primary font-bold tracking-widest text-sm flex justify-center items-center gap-3 drop-shadow-[0_0_8px_rgba(34,211,238,0.6)]">
                         <span class="text-lg animate-pulse">💡</span> 距離越近 → 1/d 越大 → 分數越高
                     </span>
                 </div>
 
-                <!-- 下半部：IoU 圖示 -->
                 <div class="bg-slate-800 border border-slate-700 rounded-xl flex flex-col overflow-hidden shadow-sm flex-grow chart-zoom mx-4" style="--anim-delay: 0.8s;">
                     <div class="flex-grow flex items-center justify-center p-6 gap-24 relative bg-[#0b1120]">
-                        <!-- 交集 -->
                         <div class="flex flex-col items-center gap-4">
                             <div class="relative w-40 h-28 flex items-center justify-center group">
                                 <div class="w-24 h-24 rounded-full border-[3px] border-slate-500 absolute left-0 transition-all group-hover:border-slate-400 venn-left"></div>
@@ -816,7 +798,6 @@
                             <span class="text-slate-300 font-bold text-lg tracking-widest">交集 <span class="text-sm font-mono text-slate-500">intersection</span></span>
                         </div>
                         
-                        <!-- 聯集 -->
                         <div class="flex flex-col items-center gap-4">
                             <div class="relative w-40 h-28 flex items-center justify-center group">
                                 <svg class="w-40 h-28 absolute drop-shadow-[0_0_15px_rgba(239,68,68,0.4)]" viewBox="0 0 160 112">
@@ -836,7 +817,6 @@
             </div>
         </div>
 
-        <!-- Slide 15: 事件觸發與自動化通知 -->
         <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
             <div class="mb-8">
                 <div class="inline-block bg-slate-800 text-orange-400 border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ Event Trigger</div>
@@ -911,7 +891,6 @@
             </div>
         </div>
 
-        <!-- Slide 16: 成果展示 -->
         <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
             <div class="mb-8">
                 <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ Results</div>
@@ -967,7 +946,6 @@
             </div>
         </div>
 
-        <!-- Slide 17: 通知管道 & 數據儲存 -->
         <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
             <div class="mb-8">
                 <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ Notifications & Data</div>
@@ -975,7 +953,6 @@
             </div>
             
             <div class="grid grid-cols-12 gap-8 h-[450px] w-full">
-                <!-- LINE 警報通知 -->
                 <div class="col-span-3 bg-slate-800 border border-slate-700 rounded-xl overflow-hidden flex flex-col shadow-sm group hover:border-primary/50 transition-colors">
                     <div class="flex-grow img-placeholder border-none bg-[#0b1120]">
                         <img src="pictures/LINE screenshot.jpg" class="absolute inset-0 w-full h-full object-contain object-center" alt="LINE Screenshot" onerror="this.style.display='none'">
@@ -985,7 +962,6 @@
                     </div>
                 </div>
                 
-                <!-- Email 警報通知 -->
                 <div class="col-span-3 bg-slate-800 border border-slate-700 rounded-xl overflow-hidden flex flex-col shadow-sm group hover:border-emerald-400/50 transition-colors">
                     <div class="flex-grow img-placeholder border-none bg-[#0b1120]">
                         <img src="pictures/email screenshot.jpg" class="absolute inset-0 w-full h-full object-contain object-center" alt="Email Screenshot" onerror="this.style.display='none'">
@@ -995,7 +971,6 @@
                     </div>
                 </div>
 
-                <!-- Supabase 事件數據紀錄 -->
                 <div class="col-span-6 bg-slate-800 border border-slate-700 rounded-xl overflow-hidden flex flex-col shadow-sm group hover:border-accent/50 transition-colors">
                     <div class="flex-grow img-placeholder border-none bg-[#0b1120]">
                         <img src="pictures/supabase screenshot.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="Supabase Screenshot" onerror="this.style.display='none'">
@@ -1007,7 +982,6 @@
             </div>
         </div>
 
-        <!-- Slide 18: 結尾 -->
         <div class="slide flex-col items-center justify-center text-center relative z-10">
             <div class="mb-6">
                 <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest uppercase font-mono shadow-sm">/ Conclusion</div>
@@ -1018,19 +992,16 @@
             <h2 class="text-xl text-slate-400 font-medium mb-16 tracking-widest">用科技的眼，看顧家人的每一刻</h2>
             
             <div class="grid grid-cols-3 gap-6 max-w-4xl w-full">
-                <!-- Card 1 -->
                 <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-8 shadow-sm hover:shadow-[0_0_20px_rgba(34,211,238,0.15)] transition-all backdrop-blur-sm group hover:-translate-y-1">
                     <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">🎯</div>
                     <h3 class="text-lg font-bold text-slate-100 mb-2">洞察危機</h3>
                     <p class="text-xs text-slate-400 font-mono">AI 視覺精準辨識</p>
                 </div>
-                <!-- Card 2 -->
                 <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-8 shadow-sm hover:shadow-[0_0_20px_rgba(251,191,36,0.15)] transition-all backdrop-blur-sm group hover:-translate-y-1">
                     <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">⚡</div>
                     <h3 class="text-lg font-bold text-slate-100 mb-2">毫秒預警</h3>
                     <p class="text-xs text-slate-400 font-mono">邊緣端極速推論</p>
                 </div>
-                <!-- Card 3 -->
                 <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-8 shadow-sm hover:shadow-[0_0_20px_rgba(16,185,129,0.15)] transition-all backdrop-blur-sm group hover:-translate-y-1">
                     <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">🛡️</div>
                     <h3 class="text-lg font-bold text-slate-100 mb-2">主動防護</h3>
@@ -1041,7 +1012,6 @@
 
     </div>
 
-    <!-- 底部導覽控制列 -->
     <div class="fixed bottom-0 left-1/2 -translate-x-1/2 z-50 pt-16 pb-6 px-16 group flex justify-center">
         
         <div class="absolute bottom-3 flex flex-col items-center gap-1 text-primary font-bold text-xs tracking-widest animate-bounce group-hover:opacity-0 transition-opacity duration-300 pointer-events-none drop-shadow-[0_0_10px_rgba(34,211,238,0.8)]">
@@ -1072,6 +1042,31 @@
     </div>
 
     <script>
+        // === 加入：負責計算畫布縮放比例的函式 ===
+        function resizePresentation() {
+            const presentation = document.getElementById('presentation');
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            
+            // 開發的固定解析度 (1920x1080 是目前主流比例)
+            const targetWidth = 1920; 
+            const targetHeight = 1080;
+            
+            // 縮小 4% 以保留視窗邊距 (類似原本 margin 的效果)
+            const scaleX = (windowWidth * 0.96) / targetWidth;
+            const scaleY = (windowHeight * 0.96) / targetHeight;
+            
+            // 取寬或高最小的縮放比，確保不會被裁切
+            const scale = Math.min(scaleX, scaleY);
+            
+            // 套用縮放
+            presentation.style.transform = `scale(${scale})`;
+        }
+
+        // 監聽視窗大小改變
+        window.addEventListener('resize', resizePresentation);
+        
+        // --- 以下為原本的簡報邏輯 ---
         let currentIdx = 0;
         const slides = document.querySelectorAll('.slide');
         const totalSlides = slides.length;
@@ -1176,6 +1171,8 @@
             }
         });
 
+        // 初始化執行
+        resizePresentation();
         showSlide(currentIdx, 'initial');
     </script>
 </body>
