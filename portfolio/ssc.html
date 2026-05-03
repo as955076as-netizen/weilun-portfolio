@@ -814,26 +814,32 @@
 
         <!-- ==================== Slide 14: 座標轉換 & IoU 計算 ==================== -->
         <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
-            <div class="mb-8">
+            <div class="mb-6">
                 <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ Coordinate & IoU</div>
                 <h2 class="text-4xl font-black text-white">座標轉換 & IoU 計算</h2>
             </div>
             
-            <div class="flex flex-col gap-6 w-full flex-grow">
+            <!-- 修正：加入 mt-2 並增加內部區塊間距為 gap-8 -->
+            <div class="flex flex-col gap-8 w-full flex-grow mt-2">
                 <!-- 上半部：計算步驟 (水平貫穿排版) -->
-                <div class="relative w-full pt-2">
+                <!-- 修正：將 py 放大，確保上下有充足呼吸空間 -->
+                <div class="relative w-full py-4">
                     <!-- 水平發光主線 -->
-                    <div class="absolute top-[2rem] left-[15%] right-[15%] h-1 bg-slate-800 rounded-full shadow-inner">
+                    <!-- 修正：因應 py-4(16px)，圓形w-16(64px)中心點位於 16+32 = 48px (即 3rem) -->
+                    <div class="absolute top-[3rem] left-[18%] right-[18%] h-1 bg-slate-800 rounded-full shadow-inner">
                         <div class="absolute inset-0 bg-gradient-to-r from-primary via-blue-400 to-primary opacity-80" style="background-size: 200% 100%; animation: flowGradient 3s linear infinite;"></div>
                     </div>
 
-                    <div class="flex items-start justify-between relative z-10 w-full px-8 gap-6">
+                    <!-- 修正：加大間距至 gap-12，兩側留白至 px-12 -->
+                    <div class="flex items-start justify-between relative z-10 w-full px-12 gap-12">
                         <!-- Step 1 -->
                         <div class="flex flex-col items-center flex-1 group relative chart-wipe" style="--anim-delay: 0.2s;">
                             <div class="w-16 h-16 rounded-full bg-slate-900 border-2 border-primary flex items-center justify-center text-xl font-bold text-primary shadow-[0_0_15px_rgba(34,211,238,0.4)] group-hover:scale-110 transition-transform relative z-10">1</div>
-                            <div class="mt-5 bg-slate-800 border border-slate-700 rounded-xl p-4 shadow-sm w-full group-hover:border-primary/50 transition-colors">
-                                <h3 class="text-sm font-bold text-white mb-2 text-center">YOLO 轉 Px</h3>
-                                <div class="bg-slate-900/80 rounded-md p-2 text-xs font-mono text-slate-300 text-center">
+                            <!-- 修正：卡片與圓圈距離 mt-5 -> mt-8，內距 p-4 -> p-6 -->
+                            <div class="mt-8 bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-sm w-full group-hover:border-primary/50 transition-colors">
+                                <!-- 修正：字體微調放大 -->
+                                <h3 class="text-base font-bold text-white mb-3 text-center">YOLO 轉 Px</h3>
+                                <div class="bg-slate-900/80 rounded-md p-3 text-sm font-mono text-slate-300 text-center leading-relaxed">
                                     cx = x_center * W<br>cy = y_center * H
                                 </div>
                             </div>
@@ -842,9 +848,11 @@
                         <!-- Step 2 -->
                         <div class="flex flex-col items-center flex-1 group relative chart-wipe" style="--anim-delay: 0.4s;">
                             <div class="w-16 h-16 rounded-full bg-slate-900 border-2 border-primary flex items-center justify-center text-xl font-bold text-primary shadow-[0_0_15px_rgba(34,211,238,0.4)] group-hover:scale-110 transition-transform relative z-10">2</div>
-                            <div class="mt-5 bg-slate-800 border border-slate-700 rounded-xl p-4 shadow-sm w-full group-hover:border-primary/50 transition-colors">
-                                <h3 class="text-sm font-bold text-white mb-2 text-center">還原 Bounding Box</h3>
-                                <div class="bg-slate-900/80 rounded-md p-2 text-xs font-mono text-slate-300 text-center">
+                            <!-- 修正：卡片與圓圈距離 mt-5 -> mt-8，內距 p-4 -> p-6 -->
+                            <div class="mt-8 bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-sm w-full group-hover:border-primary/50 transition-colors">
+                                <!-- 修正：字體微調放大 -->
+                                <h3 class="text-base font-bold text-white mb-3 text-center">還原 Bounding Box</h3>
+                                <div class="bg-slate-900/80 rounded-md p-3 text-sm font-mono text-slate-300 text-center leading-relaxed">
                                     x1 = cx - bw/2<br>x2 = cx + bw/2
                                 </div>
                             </div>
@@ -853,9 +861,11 @@
                         <!-- Step 3 -->
                         <div class="flex flex-col items-center flex-1 group relative chart-wipe" style="--anim-delay: 0.6s;">
                             <div class="w-16 h-16 rounded-full bg-slate-900 border-2 border-primary flex items-center justify-center text-xl font-bold text-primary shadow-[0_0_15px_rgba(34,211,238,0.4)] group-hover:scale-110 transition-transform relative z-10">3</div>
-                            <div class="mt-5 bg-slate-800 border border-slate-700 rounded-xl p-4 shadow-sm w-full group-hover:border-primary/50 transition-colors">
-                                <h3 class="text-sm font-bold text-white mb-2 text-center">距離計算 (Distance)</h3>
-                                <div class="bg-slate-900/80 rounded-md p-2 text-[10px] font-mono text-slate-300 text-center">
+                            <!-- 修正：卡片與圓圈距離 mt-5 -> mt-8，內距 p-4 -> p-6 -->
+                            <div class="mt-8 bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-sm w-full group-hover:border-primary/50 transition-colors">
+                                <!-- 修正：字體微調放大 -->
+                                <h3 class="text-base font-bold text-white mb-3 text-center">距離計算 (Distance)</h3>
+                                <div class="bg-slate-900/80 rounded-md p-3 text-[11px] font-mono text-slate-300 text-center leading-relaxed">
                                     d = &radic;((cx1-cx2)&sup2; + (cy1-cy2)&sup2;)
                                 </div>
                             </div>
@@ -864,14 +874,15 @@
                 </div>
 
                 <!-- 提示橫幅 -->
-                <div class="bg-slate-800/80 border border-primary/30 rounded-xl py-2 px-5 text-center shadow-[0_0_15px_rgba(34,211,238,0.1)] backdrop-blur-sm chart-zoom" style="--anim-delay: 0.7s;">
+                <div class="bg-slate-800/80 border border-primary/30 rounded-xl py-2 px-5 text-center shadow-[0_0_15px_rgba(34,211,238,0.1)] backdrop-blur-sm chart-zoom mx-4" style="--anim-delay: 0.7s;">
                     <span class="text-primary font-bold tracking-widest text-sm flex justify-center items-center gap-3 drop-shadow-[0_0_8px_rgba(34,211,238,0.6)]">
                         <span class="text-lg animate-pulse">💡</span> 距離越近 → 1/d 越大 → 分數越高
                     </span>
                 </div>
 
                 <!-- 下半部：IoU 圖示 -->
-                <div class="bg-slate-800 border border-slate-700 rounded-xl flex flex-col overflow-hidden shadow-sm flex-grow chart-zoom" style="--anim-delay: 0.8s;">
+                <!-- 修正：加入 mx-4 增加左右兩側呼吸空間 -->
+                <div class="bg-slate-800 border border-slate-700 rounded-xl flex flex-col overflow-hidden shadow-sm flex-grow chart-zoom mx-4" style="--anim-delay: 0.8s;">
                     <div class="flex-grow flex items-center justify-center p-6 gap-24 relative bg-[#0b1120]">
                         <!-- 交集 -->
                         <div class="flex flex-col items-center gap-4">
