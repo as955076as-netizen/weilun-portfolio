@@ -65,7 +65,7 @@
         .active .chart-bar {
             width: var(--target-width) !important;
             opacity: 1;
-            transition: width 1s cubic-bezier(0.22, 1, 0.36, 1) 0.4s, opacity 0.5s ease-out 0.3s;
+            transition: width 1s cubic-bezier(0.22, 1, 0.36, 1) var(--anim-delay, 0.4s), opacity 0.5s ease-out calc(var(--anim-delay, 0.4s) - 0.1s);
         }
         .active .venn-left {
             animation: slideVennLeft 1s cubic-bezier(0.16, 1, 0.3, 1) 0.4s backwards;
@@ -75,6 +75,30 @@
         }
         @keyframes slideVennLeft { from { transform: translateX(-30px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         @keyframes slideVennRight { from { transform: translateX(30px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        /* 新增：靜態圖表的進入動畫 (Wipe & Zoom) */
+        .slide .chart-wipe {
+            clip-path: inset(0 100% 0 0);
+            opacity: 0;
+        }
+        .slide.active .chart-wipe {
+            animation: wipeRight 1s cubic-bezier(0.22, 1, 0.36, 1) var(--anim-delay, 0.3s) forwards;
+        }
+        .slide .chart-zoom {
+            transform: scale(0.85);
+            opacity: 0;
+        }
+        .slide.active .chart-zoom {
+            animation: popZoom 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) var(--anim-delay, 0.3s) forwards;
+        }
+        @keyframes wipeRight {
+            0% { clip-path: inset(0 100% 0 0); opacity: 0; transform: translateX(-20px); }
+            100% { clip-path: inset(0 0 0 0); opacity: 1; transform: translateX(0); }
+        }
+        @keyframes popZoom {
+            0% { transform: scale(0.85); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
 
         /* 深色模式下的圖片佔位符 */
         .img-placeholder {
@@ -316,9 +340,9 @@
                             <span class="bg-slate-700 text-slate-300 border border-slate-600 px-3 py-1 rounded-md">相機實拍</span>
                         </div>
                         <div class="w-full h-6 rounded-md overflow-hidden flex mb-2 text-[10px] text-slate-900 text-center leading-6 font-semibold">
-                            <div class="bg-primary chart-bar flex-shrink-0" style="--target-width: 78%;">78%</div>
-                            <div class="bg-blue-400 chart-bar flex-shrink-0" style="--target-width: 15%;">15%</div>
-                            <div class="bg-indigo-400 chart-bar flex-shrink-0" style="--target-width: 7%;">7%</div>
+                            <div class="bg-primary chart-bar flex-shrink-0" style="--target-width: 78%; --anim-delay: 0.2s;">78%</div>
+                            <div class="bg-blue-400 chart-bar flex-shrink-0" style="--target-width: 15%; --anim-delay: 0.4s;">15%</div>
+                            <div class="bg-indigo-400 chart-bar flex-shrink-0" style="--target-width: 7%; --anim-delay: 0.6s;">7%</div>
                         </div>
                         <div class="flex gap-4 text-[10px] text-slate-400 font-medium">
                             <span class="flex items-center gap-1"><div class="w-2 h-2 bg-primary rounded-full"></div>訓練 5,521</span>
@@ -425,14 +449,14 @@
                 <div class="flex flex-col gap-6">
                     <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm">
                         <div class="h-48 img-placeholder">
-                            <img src="pictures/v1.0 Confusion Matrix.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="v1.0 Confusion Matrix" onerror="this.style.display='none'">
+                            <img src="pictures/v1.0 Confusion Matrix.png" class="absolute inset-0 w-full h-full object-contain object-center chart-zoom" style="--anim-delay: 0.3s;" alt="v1.0 Confusion Matrix" onerror="this.style.display='none'">
                             <span class="text-slate-500 font-mono text-sm">圖片佔位符</span>
                         </div>
                         <div class="bg-slate-900/80 py-2 text-center text-xs text-slate-500 border-t border-slate-700 font-mono">v1.0 Confusion Matrix — Person 僅 0.36</div>
                     </div>
                     <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm">
                         <div class="h-48 img-placeholder">
-                            <img src="pictures/v1.0 PR Curve.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="v1.0 PR Curve" onerror="this.style.display='none'">
+                            <img src="pictures/v1.0 PR Curve.png" class="absolute inset-0 w-full h-full object-contain object-center chart-wipe" style="--anim-delay: 0.5s;" alt="v1.0 PR Curve" onerror="this.style.display='none'">
                             <span class="text-slate-500 font-mono text-sm">圖片佔位符</span>
                         </div>
                         <div class="bg-slate-900/80 py-2 text-center text-xs text-slate-500 border-t border-slate-700 font-mono">v1.0 PR Curve — mAP@0.5 = 0.607</div>
@@ -487,8 +511,8 @@
                         <div class="flex items-center gap-4 mb-2">
                             <span class="w-16 font-bold text-sm text-slate-300">Person</span>
                             <div class="flex-grow flex flex-col gap-1.5">
-                                <div class="bg-slate-600 h-5 rounded flex items-center justify-end px-2 text-slate-300 text-[10px] font-mono chart-bar" style="--target-width: 49%;">0.49</div>
-                                <div class="bg-primary h-5 rounded flex items-center justify-end px-2 text-slate-900 text-[10px] font-bold font-mono shadow-[0_0_10px_#22d3ee] chart-bar" style="--target-width: 80%;">0.80</div>
+                                <div class="bg-slate-600 h-5 rounded flex items-center justify-end px-2 text-slate-300 text-[10px] font-mono chart-bar" style="--target-width: 49%; --anim-delay: 0.3s;">0.49</div>
+                                <div class="bg-primary h-5 rounded flex items-center justify-end px-2 text-slate-900 text-[10px] font-bold font-mono shadow-[0_0_10px_#22d3ee] chart-bar" style="--target-width: 80%; --anim-delay: 0.4s;">0.80</div>
                             </div>
                         </div>
                     </div>
@@ -496,8 +520,8 @@
                         <div class="flex items-center gap-4 mb-2">
                             <span class="w-16 font-bold text-sm text-slate-300">Knife</span>
                             <div class="flex-grow flex flex-col gap-1.5">
-                                <div class="bg-slate-600 h-5 rounded flex items-center justify-end px-2 text-slate-300 text-[10px] font-mono chart-bar" style="--target-width: 60%;">0.60</div>
-                                <div class="bg-primary h-5 rounded flex items-center justify-end px-2 text-slate-900 text-[10px] font-bold font-mono shadow-[0_0_10px_#22d3ee] chart-bar" style="--target-width: 70%;">0.70</div>
+                                <div class="bg-slate-600 h-5 rounded flex items-center justify-end px-2 text-slate-300 text-[10px] font-mono chart-bar" style="--target-width: 60%; --anim-delay: 0.5s;">0.60</div>
+                                <div class="bg-primary h-5 rounded flex items-center justify-end px-2 text-slate-900 text-[10px] font-bold font-mono shadow-[0_0_10px_#22d3ee] chart-bar" style="--target-width: 70%; --anim-delay: 0.6s;">0.70</div>
                             </div>
                         </div>
                     </div>
@@ -505,8 +529,8 @@
                         <div class="flex items-center gap-4 mb-2">
                             <span class="w-16 font-bold text-sm text-slate-300">Scissors</span>
                             <div class="flex-grow flex flex-col gap-1.5">
-                                <div class="bg-slate-600 h-5 rounded flex items-center justify-end px-2 text-slate-300 text-[10px] font-mono chart-bar" style="--target-width: 73%;">0.73</div>
-                                <div class="bg-primary h-5 rounded flex items-center justify-end px-2 text-slate-900 text-[10px] font-bold font-mono shadow-[0_0_10px_#22d3ee] chart-bar" style="--target-width: 78%;">0.78</div>
+                                <div class="bg-slate-600 h-5 rounded flex items-center justify-end px-2 text-slate-300 text-[10px] font-mono chart-bar" style="--target-width: 73%; --anim-delay: 0.7s;">0.73</div>
+                                <div class="bg-primary h-5 rounded flex items-center justify-end px-2 text-slate-900 text-[10px] font-bold font-mono shadow-[0_0_10px_#22d3ee] chart-bar" style="--target-width: 78%; --anim-delay: 0.8s;">0.78</div>
                             </div>
                         </div>
                     </div>
@@ -517,7 +541,7 @@
                 </div>
                 <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm h-full flex flex-col">
                     <div class="flex-grow img-placeholder">
-                        <img src="pictures/v2.0 Confusion Matrix.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="v2.0 Confusion Matrix" onerror="this.style.display='none'">
+                        <img src="pictures/v2.0 Confusion Matrix.png" class="absolute inset-0 w-full h-full object-contain object-center chart-zoom" style="--anim-delay: 0.4s;" alt="v2.0 Confusion Matrix" onerror="this.style.display='none'">
                         <span class="text-slate-500 font-mono text-sm">圖片佔位符</span>
                     </div>
                     <div class="bg-slate-900/80 py-3 text-center text-xs text-slate-400 border-t border-slate-700 font-mono">v2.0 Confusion Matrix — Person 提升至 0.79</div>
@@ -538,7 +562,7 @@
                 <div class="col-span-5">
                     <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm h-full flex flex-col">
                         <div class="flex-grow img-placeholder min-h-[300px]">
-                            <img src="pictures/v2.0 PR Curve.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="v2.0 PR Curve" onerror="this.style.display='none'">
+                            <img src="pictures/v2.0 PR Curve.png" class="absolute inset-0 w-full h-full object-contain object-center chart-wipe" style="--anim-delay: 0.3s;" alt="v2.0 PR Curve" onerror="this.style.display='none'">
                             <span class="text-slate-500 font-mono text-sm">圖片佔位符</span>
                         </div>
                         <div class="bg-slate-900/80 py-3 text-center text-xs text-slate-400 border-t border-slate-700 font-mono">v2.0 PR Curve — mAP@0.5 = 0.758</div>
@@ -572,7 +596,7 @@
             <div class="grid grid-cols-2 gap-8">
                 <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm">
                     <div class="h-[360px] img-placeholder">
-                        <img src="pictures/radar chart.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="Radar Chart" onerror="this.style.display='none'">
+                        <img src="pictures/radar chart.png" class="absolute inset-0 w-full h-full object-contain object-center chart-zoom" style="--anim-delay: 0.2s;" alt="Radar Chart" onerror="this.style.display='none'">
                         <span class="text-slate-500 font-mono text-sm">圖片佔位符</span>
                     </div>
                     <div class="bg-slate-900/80 py-3 text-center text-xs text-slate-400 border-t border-slate-700 font-medium">前後版本性能雷達圖 — 各指標全面提升</div>
@@ -580,19 +604,19 @@
                 <div class="flex flex-col gap-6 justify-center">
                     <div class="bg-slate-800 border border-primary/30 rounded-xl p-8 text-center glow-effect">
                         <div class="text-sm font-bold text-primary-light mb-2 uppercase tracking-wider">整體 mAP@0.5 提升</div>
-                        <div class="text-6xl font-black text-primary drop-shadow-[0_0_10px_rgba(34,211,238,0.8)]">+0.15</div>
+                        <div class="text-6xl font-black text-primary drop-shadow-[0_0_10px_rgba(34,211,238,0.8)]"><span class="counter-float" data-target="0.15" data-decimals="2" data-prefix="+">+0.00</span></div>
                     </div>
                     <div class="grid grid-cols-3 gap-4">
                         <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center shadow-sm">
-                            <div class="text-3xl font-black text-white mb-1">0.76</div>
+                            <div class="text-3xl font-black text-white mb-1"><span class="counter-float" data-target="0.76" data-decimals="2">0.00</span></div>
                             <div class="text-xs text-slate-500 font-bold font-mono">mAP@0.5</div>
                         </div>
                         <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center shadow-sm">
-                            <div class="text-3xl font-black text-primary mb-1">0.80</div>
+                            <div class="text-3xl font-black text-primary mb-1"><span class="counter-float" data-target="0.80" data-decimals="2">0.00</span></div>
                             <div class="text-xs text-slate-500 font-bold font-mono">Person AP</div>
                         </div>
                         <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center shadow-sm">
-                            <div class="text-3xl font-black text-slate-300 mb-1">0.78</div>
+                            <div class="text-3xl font-black text-slate-300 mb-1"><span class="counter-float" data-target="0.78" data-decimals="2">0.00</span></div>
                             <div class="text-xs text-slate-500 font-bold font-mono">Scissors AP</div>
                         </div>
                     </div>
@@ -615,7 +639,7 @@
                 <div class="col-span-5">
                     <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm flex flex-col h-full">
                         <div class="flex-grow img-placeholder min-h-[300px]">
-                            <img src="pictures/v3.0 Confusion Matrix.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="v3.0 Confusion Matrix" onerror="this.style.display='none'">
+                            <img src="pictures/v3.0 Confusion Matrix.png" class="absolute inset-0 w-full h-full object-contain object-center chart-zoom" style="--anim-delay: 0.3s;" alt="v3.0 Confusion Matrix" onerror="this.style.display='none'">
                             <span class="text-slate-500 font-mono text-sm">圖片佔位符</span>
                         </div>
                         <div class="bg-slate-900/80 py-3 text-center text-xs text-slate-400 border-t border-slate-700 font-mono">
@@ -677,7 +701,7 @@
             
             <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm flex flex-col h-[500px]">
                 <div class="flex-grow img-placeholder bg-slate-900">
-                    <img src="pictures/training metrics.png" class="absolute inset-0 w-full h-full object-contain object-center opacity-90" alt="Training Metrics" onerror="this.style.display='none'">
+                    <img src="pictures/training metrics.png" class="absolute inset-0 w-full h-full object-contain object-center opacity-90 chart-wipe" style="--anim-delay: 0.3s;" alt="Training Metrics" onerror="this.style.display='none'">
                     <span class="text-slate-500 font-mono text-sm">圖片佔位符</span>
                 </div>
                 <div class="bg-slate-900/80 py-3 text-center text-xs text-slate-400 border-t border-slate-700 font-mono">
@@ -1130,6 +1154,8 @@
             const floatCounters = slide.querySelectorAll('.counter-float');
             floatCounters.forEach(counter => {
                 const target = parseFloat(counter.getAttribute('data-target'));
+                const decimals = parseInt(counter.getAttribute('data-decimals')) || 1;
+                const prefix = counter.getAttribute('data-prefix') || '';
                 const duration = 1200;
                 const startTime = performance.now();
                 
@@ -1137,10 +1163,10 @@
                     const elapsed = currentTime - startTime;
                     const progress = Math.min(elapsed / duration, 1);
                     const easeOut = 1 - Math.pow(1 - progress, 4);
-                    counter.innerText = (easeOut * target).toFixed(1);
+                    counter.innerText = prefix + (easeOut * target).toFixed(decimals);
                     
                     if (progress < 1) requestAnimationFrame(update);
-                    else counter.innerText = target.toFixed(1);
+                    else counter.innerText = prefix + target.toFixed(decimals);
                 };
                 requestAnimationFrame(update);
             });
