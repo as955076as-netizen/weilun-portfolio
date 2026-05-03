@@ -270,7 +270,6 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10 mb-32 md:mb-48">
-                <!-- 三個核心模組維持不變 -->
                 <div class="border border-white/10 bg-white/[0.02] p-8 md:p-10 backdrop-blur-sm group hover:border-[#c8a97e]/50 transition-colors duration-500">
                     <div class="text-3xl text-white/20 font-light mb-6 group-hover:text-[#c8a97e] transition-colors duration-500">01</div>
                     <h3 class="text-xl font-bold mb-4 tracking-wide">Computer Vision</h3>
@@ -301,9 +300,7 @@
 
             <div class="flex flex-col space-y-16 md:space-y-32">
                 
-                <!-- 【按鈕化】點擊這裡將會觸發彈出視窗 -->
                 <a href="javascript:void(0)" id="trigger-presentation" class="relative block w-full aspect-video md:aspect-[21/9] bg-[#0a0a0a] border border-white/5 overflow-hidden group cursor-pointer">
-                    <!-- 背景圖或漸層 -->
                     <div class="absolute inset-0 bg-gradient-to-br from-black/80 to-[#c8a97e]/10 group-hover:scale-105 transition-transform duration-700 ease-out"></div>
                     
                     <div class="absolute bottom-0 left-0 w-full p-8 md:p-16 flex flex-col justify-end bg-gradient-to-t from-[#050505] via-[#050505]/80 to-transparent">
@@ -316,14 +313,12 @@
                             基於邊緣計算的 AI 居家安全監控系統。透過輕量化 YOLO 模型實現跌倒偵測，並結合 n8n 工作流，在異常發生時自動觸發即時群組通報機制。
                         </p>
                         
-                        <!-- 提示點擊的 UI -->
                         <div class="flex items-center text-[#c8a97e] text-sm tracking-widest font-medium opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
                             CLICK TO VIEW PRESENTATION <span class="ml-2">→</span>
                         </div>
                     </div>
                 </a>
 
-                <!-- 其他專案區塊 -->
                 <div class="relative w-full aspect-video md:aspect-[21/9] bg-[#0a0a0a] border border-white/5 flex items-center justify-center">
                     <div class="text-white/20 tracking-widest text-sm">[ PROJECT DATA LOADING ... ]</div>
                 </div>
@@ -332,21 +327,16 @@
         </div>
     </section>
     
-    <!-- ==========================================
-         【新增】全螢幕彈出視窗 (Modal Lightbox)
-         ========================================== -->
-    <div id="presentation-modal" class="fixed inset-0 z-[85] hidden items-center justify-center bg-black/90 backdrop-blur-md opacity-0 transition-opacity duration-400">
+    <div id="presentation-modal" class="fixed inset-0 z-[85] hidden items-center justify-center bg-black/90 backdrop-blur-md opacity-0 transition-opacity duration-400 p-4 md:p-8">
         
-        <!-- 關閉按鈕 -->
-        <button id="close-modal-btn" class="absolute top-6 right-6 md:top-10 md:right-10 text-white/50 hover:text-white transition-colors cursor-pointer z-50 p-2">
+        <button id="close-modal-btn" class="absolute top-4 right-4 md:top-8 md:right-8 text-white/50 hover:text-white transition-colors cursor-pointer z-50 p-2">
             <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12" />
             </svg>
         </button>
 
-        <!-- OS 桌面風格視窗 -->
-        <div id="modal-content" class="w-[95%] md:w-[85%] h-[85vh] max-w-[1200px] window-widget scale-95 transition-transform duration-400 shadow-2xl shadow-[#c8a97e]/10">
-            <div class="window-header">
+        <div id="modal-content" class="w-full max-w-[1200px] max-h-full flex flex-col window-widget scale-95 transition-transform duration-400 shadow-2xl shadow-[#c8a97e]/10">
+            <div class="window-header shrink-0">
                 <div class="flex space-x-2">
                     <span class="dot" style="background:#ff5f56;"></span>
                     <span class="dot" style="background:#ffbd2e;"></span>
@@ -357,8 +347,7 @@
                 </div>
             </div>
             
-            <!-- 嵌入簡報，填滿下方空間 -->
-            <div class="flex-grow relative bg-[#f9f9f9]">
+            <div class="w-full relative bg-[#0a0a0a] aspect-video">
                 <iframe src="portfolio/ssc.html" class="absolute inset-0 w-full h-full border-none" allowfullscreen></iframe>
             </div>
         </div>
