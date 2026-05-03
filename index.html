@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ROY | AI Engineering Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=Noto+Sans+TC:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link href="https://gs.jurieo.com/gemini/fonts-googleapis/css2?family=Inter:wght@300;400;700;900&family=Noto+Sans+TC:wght@300;400;700;900&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -81,7 +81,6 @@
 
         /* 第二頁：視覺鎖定畫布 */
         #cv-canvas {
-            /* 【修正 1】改為 fixed，這樣網頁往下滑動時特效才不會跑掉或消失 */
             position: fixed; 
             top: 0;
             left: 0;
@@ -188,6 +187,48 @@
         .hidden-page {
             display: none !important;
         }
+
+        /* ==========================================
+           【新增】OS 桌面視窗風格 (Dark Mode 黑化版)
+           ========================================== */
+        .window-widget {
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            overflow: hidden;
+            width: 100%;
+            background-color: #121212;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+        }
+        
+        .window-widget:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 25px 50px rgba(200, 169, 126, 0.15); /* 微微的金色陰影 */
+        }
+        
+        .window-header {
+            background-color: #1e1e1e;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .window-title {
+            margin-left: 12px;
+            font-size: 12px;
+            color: #888;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col relative selection:bg-white/20 selection:text-white">
@@ -232,7 +273,6 @@
         </div>
     </main>
     
-    <!-- 【修正 2】移除了 bg-[#050505] 讓背景透明，特效才能透出來 -->
     <section id="works" class="w-full min-h-screen relative z-10 py-24 md:py-40 hidden-page">
         <div class="max-w-7xl mx-auto px-8 lg:px-20">
             
@@ -273,10 +313,9 @@
             </div>
 
             <div class="flex flex-col space-y-16 md:space-y-32">
-                <!-- 修改這裡：將 div 替換成 a 標籤，並加上 href -->
-                <a href="./portfolio/ssc.html" class="relative block w-full aspect-video md:aspect-[21/9] bg-[#0a0a0a] border border-white/5 overflow-hidden group cursor-pointer">
-                    <div class="absolute inset-0 bg-gradient-to-br from-black/80 to-[#c8a97e]/10 group-hover:scale-105 transition-transform duration-700 ease-out"></div>
-                    <div class="absolute bottom-0 left-0 w-full p-8 md:p-16 flex flex-col justify-end bg-gradient-to-t from-[#050505] via-[#050505]/80 to-transparent">
+                
+                <div class="relative w-full bg-[#0a0a0a] border border-white/5 overflow-hidden group">
+                    <div class="p-8 md:p-12 pb-6 md:pb-8 flex flex-col justify-end bg-gradient-to-t from-[#050505] to-transparent">
                         <div class="flex items-center space-x-3 mb-4">
                             <span class="text-[10px] border border-[#c8a97e]/30 text-[#c8a97e] px-2 py-1 rounded-sm tracking-wider">YOLOv8</span>
                             <span class="text-[10px] border border-[#c8a97e]/30 text-[#c8a97e] px-2 py-1 rounded-sm tracking-wider">n8n</span>
@@ -286,7 +325,19 @@
                             基於邊緣計算的 AI 居家安全監控系統。透過輕量化 YOLO 模型實現跌倒偵測，並結合 n8n 工作流，在異常發生時自動觸發即時群組通報機制。
                         </p>
                     </div>
-                </a>
+
+                    <div class="p-8 md:p-12 pt-0 z-20 relative">
+                        <div class="window-widget">
+                            <div class="window-header">
+                                <span class="dot" style="background:#ff5f56;"></span>
+                                <span class="dot" style="background:#ffbd2e;"></span>
+                                <span class="dot" style="background:#27c93f;"></span>
+                                <span class="window-title">Smart_Safety_Care_System.ppt</span>
+                            </div>
+                            <iframe src="slides.html" width="100%" height="450px" style="border: none; background: #fff;" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="relative w-full aspect-video md:aspect-[21/9] bg-[#0a0a0a] border border-white/5 flex items-center justify-center">
                     <div class="text-white/20 tracking-widest text-sm">[ PROJECT DATA LOADING ... ]</div>
@@ -395,13 +446,12 @@
     }
 
     function animatePaths() {
-        if(!isPathsActive) return; // 控制器：如果是關閉狀態就停止重繪
+        if(!isPathsActive) return;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         paths.forEach(path => { path.update(); path.draw(); });
         requestAnimationFrame(animatePaths);
     }
     
-    // 初始化首頁特效
     initPaths();
     animatePaths();
 
@@ -483,32 +533,25 @@
     }
 
     function animateCV() {
-        if(!isCVActive) return; // 控制器：關閉狀態停止重繪
+        if(!isCVActive) return; 
         requestAnimationFrame(animateCV);
         cvCtx.clearRect(0, 0, cvCanvas.width, cvCanvas.height);
 
         scanner.x = lerp(scanner.x, cursorX, 0.1);
         scanner.y = lerp(scanner.y, cursorY, 0.1);
 
-        // ==========================================
-        // ✨ 新增：探照燈 (Spotlight) 背景光暈效果
-        // ==========================================
-        // 創建跟隨游標 (scanner 帶有平滑延遲效果) 的放射狀漸層
-        const spotRadius = 450; // 探照燈擴散半徑，可自行調整大小
+        const spotRadius = 450; 
         const spotlight = cvCtx.createRadialGradient(
             scanner.x, scanner.y, 0, 
             scanner.x, scanner.y, spotRadius
         );
         
-        // 使用主題色 (#c8a97e) 設定光暈亮度向外遞減
-        spotlight.addColorStop(0, 'rgba(200, 169, 126, 0.12)'); // 光源中心亮度
-        spotlight.addColorStop(0.4, 'rgba(200, 169, 126, 0.04)'); // 光暈中段
-        spotlight.addColorStop(1, 'rgba(5, 5, 5, 0)');            // 邊緣融入黑暗背景
+        spotlight.addColorStop(0, 'rgba(200, 169, 126, 0.12)'); 
+        spotlight.addColorStop(0.4, 'rgba(200, 169, 126, 0.04)'); 
+        spotlight.addColorStop(1, 'rgba(5, 5, 5, 0)');            
 
-        // 將光暈繪製到畫布上 (這層光暈會在所有幾何圖形的下方)
         cvCtx.fillStyle = spotlight;
         cvCtx.fillRect(0, 0, cvCanvas.width, cvCanvas.height);
-        // ==========================================
 
         for (let i = 0; i < cvTargets.length; i++) cvTargets[i].update();
 
@@ -524,7 +567,6 @@
     const cursorRing = document.getElementById('cursor-ring');
     let ringX = cursorX; let ringY = cursorY;
 
-    // (游標座標已改由全域 mousemove 更新)
     window.addEventListener('mousemove', () => {
         if(cursorDot) { cursorDot.style.left = `${cursorX}px`; cursorDot.style.top = `${cursorY}px`; }
     });
@@ -536,7 +578,7 @@
     }
     animateCursor();
 
-    const interactables = document.querySelectorAll('a, button');
+    const interactables = document.querySelectorAll('a, button, iframe');
     interactables.forEach(el => {
         el.addEventListener('mouseenter', () => {
             if(cursorRing) cursorRing.classList.add('cursor-hover-active');
@@ -587,28 +629,22 @@
         enterBtn.addEventListener('click', (e) => {
             e.preventDefault();
             
-            // 1. 啟動黑幕遮罩轉場
             document.body.classList.add('transition-active');
 
-            // 2. 黑幕蓋住時（600毫秒後），執行畫面與特效替換
             setTimeout(() => {
                 pageHero.classList.add('hidden-page');      
                 pageWorks.classList.remove('hidden-page');  
                 window.scrollTo(0, 0);                      
 
-                // --- 特效切換核心邏輯 ---
-                // 關閉：呼吸燈、自動化光軌
                 ambientBreathe.classList.add('hidden-page');
                 pathwayCanvas.classList.add('hidden-page');
-                isPathsActive = false; // 停止光軌運算節省效能
+                isPathsActive = false; 
 
-                // 啟動：幾何視覺鎖定
                 visionCanvas.classList.remove('hidden-page');
                 isCVActive = true; 
-                initCV();      // 初始化 CV 畫布與座標
-                animateCV();   // 開始執行 CV 特效
+                initCV();      
+                animateCV();   
 
-                // 3. 準備打開遮罩
                 document.body.classList.remove('transition-active');
                 document.body.classList.add('transition-out');
 
