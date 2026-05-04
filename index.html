@@ -190,29 +190,6 @@
             display: flex;
             flex-direction: column;
         }
-        
-        .window-header {
-            background-color: #1e1e1e;
-            padding: 12px 16px;
-            display: flex;
-            align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            margin-right: 8px;
-        }
-
-        .window-title {
-            font-size: 13px;
-            color: #888;
-            font-family: 'Inter', sans-serif;
-            font-weight: 500;
-            letter-spacing: 0.05em;
-        }
 
         /* 確保彈出視窗時背景不會滾動 */
         .no-scroll {
@@ -231,8 +208,8 @@
     <canvas id="pathway-canvas"></canvas>
     <canvas id="cv-canvas" class="hidden-page"></canvas>
 
-    <main id="page-hero" class="flex-grow flex items-center justify-center px-8 relative z-10 min-h-screen w-full"> 
-        <div class="w-full px-8 lg:px-20 mx-auto flex flex-col items-center justify-center text-center"> 
+    <main id="page-hero" class="flex-grow flex items-center justify-center px-4 md:px-8 relative z-10 min-h-screen w-full"> 
+        <div class="w-full px-4 md:px-8 lg:px-20 mx-auto flex flex-col items-center justify-center text-center"> 
             
             <div class="animate-fade-in-up delay-100 text-xs md:text-sm font-bold tracking-[0.5em] text-white/80 mb-6 md:mb-10 pl-[0.5em]">K U A N . 2 0 2 6</div>
 
@@ -262,7 +239,7 @@
     </main>
     
     <section id="works" class="w-full min-h-screen relative z-10 py-24 md:py-40 hidden-page">
-        <div class="max-w-7xl mx-auto px-8 lg:px-20">
+        <div class="max-w-7xl mx-auto px-5 md:px-8 lg:px-20">
             
             <div class="mb-20 md:mb-32">
                 <div class="text-[10px] tracking-[0.3em] text-[#c8a97e] mb-4">01 / CAPABILITIES</div>
@@ -300,11 +277,11 @@
 
             <div class="flex flex-col space-y-16 md:space-y-32">
                 
-                <a href="javascript:void(0)" id="trigger-presentation" class="relative block w-full aspect-video md:aspect-[21/9] bg-[#0a0a0a] border border-white/5 overflow-hidden group cursor-pointer">
+                <a href="javascript:void(0)" id="trigger-presentation" class="relative block w-full h-[420px] md:h-auto md:aspect-[21/9] bg-[#0a0a0a] border border-white/5 overflow-hidden group cursor-pointer">
                     <div class="absolute inset-0 bg-gradient-to-br from-black/80 to-[#c8a97e]/10 group-hover:scale-105 transition-transform duration-700 ease-out"></div>
                     
-                    <div class="absolute bottom-0 left-0 w-full p-8 md:p-16 flex flex-col justify-end bg-gradient-to-t from-[#050505] via-[#050505]/80 to-transparent">
-                        <div class="flex items-center space-x-3 mb-4">
+                    <div class="absolute bottom-0 left-0 w-full h-full md:h-auto p-6 md:p-16 flex flex-col justify-end bg-gradient-to-t from-[#050505] via-[#050505]/90 to-transparent">
+                        <div class="flex items-center space-x-3 mb-4 mt-auto md:mt-0">
                             <span class="text-[10px] border border-[#c8a97e]/30 text-[#c8a97e] px-2 py-1 rounded-sm tracking-wider">YOLOv8</span>
                             <span class="text-[10px] border border-[#c8a97e]/30 text-[#c8a97e] px-2 py-1 rounded-sm tracking-wider">n8n</span>
                         </div>
@@ -313,13 +290,13 @@
                             基於邊緣計算的 AI 居家安全監控系統。透過輕量化 YOLO 模型實現跌倒偵測，並結合 n8n 工作流，在異常發生時自動觸發即時群組通報機制。
                         </p>
                         
-                        <div class="flex items-center text-[#c8a97e] text-sm tracking-widest font-medium opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                        <div class="flex items-center text-[#c8a97e] text-sm tracking-widest font-medium opacity-100 md:opacity-0 group-hover:opacity-100 transform translate-y-0 md:translate-y-2 group-hover:translate-y-0 transition-all duration-300">
                             CLICK TO VIEW PRESENTATION <span class="ml-2">→</span>
                         </div>
                     </div>
                 </a>
 
-                <div class="relative w-full aspect-video md:aspect-[21/9] bg-[#0a0a0a] border border-white/5 flex items-center justify-center">
+                <div class="relative w-full h-[200px] md:h-auto md:aspect-[21/9] bg-[#0a0a0a] border border-white/5 flex items-center justify-center">
                     <div class="text-white/20 tracking-widest text-sm">[ PROJECT DATA LOADING ... ]</div>
                 </div>
             </div>
@@ -327,30 +304,21 @@
         </div>
     </section>
     
-    <div id="presentation-modal" class="fixed inset-0 z-[85] hidden items-center justify-center bg-black/90 backdrop-blur-md opacity-0 transition-opacity duration-400 p-0 md:p-8">
+    <div id="presentation-modal" class="fixed inset-0 z-[85] hidden flex-col items-center justify-center bg-black opacity-0 transition-opacity duration-400 px-0 pt-14 pb-0 md:p-8 md:pt-20">
         
-                <button id="close-modal-btn" class="absolute top-4 right-4 md:top-8 md:right-8 text-white/50 hover:text-white transition-colors cursor-pointer z-50 p-2 border md:border-none border-white/20 rounded-full md:rounded-none backdrop-blur-sm bg-black/20 md:bg-transparent">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="md:hidden">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="hidden md:block">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-        </button>
-
-        <div id="modal-content" class="w-full h-full md:max-w-[1200px] md:max-h-full flex flex-col md:window-widget scale-95 transition-transform duration-400 shadow-2xl shadow-[#c8a97e]/10">
-            <div class="window-header shrink-0 hidden md:flex">
-                <div class="flex space-x-2">
-                    <span class="dot" style="background:#ff5f56;"></span>
-                    <span class="dot" style="background:#ffbd2e;"></span>
-                    <span class="dot" style="background:#27c93f;"></span>
-                </div>
-                <div class="flex-grow text-center window-title -ml-12">
-                    Smart_Safety_Care_System.ppt
-                </div>
-            </div>
+        <!-- 頂部標題與關閉按鈕 -->
+        <div class="absolute top-0 left-0 w-full h-14 md:h-20 flex items-center justify-center z-50">
+            <span class="text-white/50 text-sm font-light tracking-wide pointer-events-none">Smart Safety Care</span>
             
-            <div class="w-full h-full md:h-auto relative bg-[#0a0a0a] md:aspect-video rounded-xl md:rounded-none overflow-hidden">
+            <button id="close-modal-btn" class="absolute right-4 md:right-8 text-white/50 hover:text-white transition-all cursor-pointer p-2 md:p-2.5 rounded-full border border-white/20 hover:border-white/60 hover:bg-white/10">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <div id="modal-content" class="w-full h-full md:max-w-[1440px] flex flex-col scale-95 transition-transform duration-400">
+            <div class="w-full h-full relative bg-white rounded-t-xl md:rounded-xl overflow-hidden shadow-2xl shadow-black">
                 <iframe src="portfolio/ssc.html" class="absolute inset-0 w-full h-full border-none" allowfullscreen></iframe>
             </div>
         </div>
