@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>安全居家照護系統 | 專題簡報</title>
+    <title>安全居家照護系統 | 專題介紹網站</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://gs.jurieo.com/gemini/fonts-googleapis/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <script>
@@ -23,35 +23,84 @@
         }
     </script>
     <style>
-        body { background-color: #0f172a; color: #f8fafc; overflow: hidden; }
-        .slide { 
-            display: none; 
-            width: 100%; 
-            height: 100%; 
+        /* 新增全域縮放變數，統一縮小所有頁面以適應畫面，解決裁切問題 */
+        :root {
+            --slide-scale: 0.82; /* 預設整體縮小至 82% */
         }
-        .slide.active { display: flex; }
-        
-        .slide-in-right {
-            animation: slideInRight 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-        .slide-in-left {
-            animation: slideInLeft 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-        .slide-in-initial {
-            animation: fadeInScale 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        /* 針對不同螢幕高度自動動態縮小，保證筆電或小螢幕都不會裁切 */
+        @media (max-height: 900px) { :root { --slide-scale: 0.75; } }
+        @media (max-height: 800px) { :root { --slide-scale: 0.65; } }
+        @media (max-height: 700px) { :root { --slide-scale: 0.55; } }
+
+        /* 隱藏全域滾動，將滾動控制權完全交給 #presentation */
+        html, body { 
+            background-color: #0f172a; 
+            color: #f8fafc; 
+            overflow: hidden; 
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
         }
 
-        @keyframes slideInRight {
-            from { opacity: 0; transform: translateX(40px) scale(0.98); }
-            to { opacity: 1; transform: translateX(0) scale(1); }
+        /* 滿版輪播容器 */
+        #presentation {
+            display: flex !important;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            width: 100vw;
+            height: 100vh;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            align-items: center; /* 確保內容垂直靠中 */
+            
+            /* 隱藏原生捲軸，提升質感 */
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
-        @keyframes slideInLeft {
-            from { opacity: 0; transform: translateX(-40px) scale(0.98); }
-            to { opacity: 1; transform: translateX(0) scale(1); }
+        #presentation::-webkit-scrollbar {
+            display: none;
         }
-        @keyframes fadeInScale {
-            from { opacity: 0; transform: translateY(20px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
+        
+        /* 每個 Slide 都是精準的 100vw 大小 */
+        .slide { 
+            flex: 0 0 100vw !important;
+            width: 100vw !important;
+            max-width: 100vw !important;
+            height: 100vh !important;
+            max-height: 100vh !important;
+            scroll-snap-align: center;
+            
+            /* 將 slide 本身設為置中容器 */
+            display: flex !important; 
+            flex-direction: column !important;
+            justify-content: center !important; /* 絕對垂直置中 */
+            align-items: center !important;     /* 絕對水平置中 */
+            
+            /* 左右保留安全距離，下方多留一點空間抵銷底部導覽列的視覺重量 */
+            padding: 0 5vw 4rem 5vw !important; 
+            margin: 0 !important;
+            opacity: 0;
+            
+            /* 改用變數控制縮放大小，動態計算讓畫面完美塞入視窗 */
+            transform: scale(calc(var(--slide-scale) - 0.05));
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            box-sizing: border-box;
+        }
+        
+        /* 讓 Slide 內部的所有區塊保持最大寬度 (1152px)，不被無限拉伸 */
+        .slide > * {
+            width: 100%;
+            max-width: 1152px;
+        }
+
+        /* 滾動到畫面中時觸發的狀態 */
+        .slide.active { 
+            opacity: 1;
+            /* 啟動時放大至我們設定好的最佳縮小比例 */
+            transform: scale(var(--slide-scale));
         }
         
         .chart-bar {
@@ -104,10 +153,6 @@
             0% { background-position: 200% center; }
             100% { background-position: -200% center; }
         }
-        @keyframes flowGradientVertical {
-            0% { background-position: center 200%; }
-            100% { background-position: center -200%; }
-        }
 
         .img-placeholder {
             background-color: #0f172a; 
@@ -125,12 +170,12 @@
         }
     </style>
 </head>
-<body class="text-slate-50 h-screen relative selection:bg-primary selection:text-darkbg overflow-hidden">
+<body class="text-slate-50 relative selection:bg-primary selection:text-darkbg">
 
-    <div id="progress-bar" class="fixed top-0 left-0 h-1 bg-primary z-[60] transition-all duration-500 ease-out w-0 shadow-[0_0_10px_#22d3ee]"></div>
+    <!-- 頂部進度條 -->
+    <div id="progress-bar" class="fixed top-0 left-0 h-1 bg-primary z-[60] w-0 shadow-[0_0_10px_#22d3ee] transition-all duration-300"></div>
 
-    <div id="mouse-glow" class="fixed w-[800px] h-[800px] rounded-full bg-primary/5 blur-[120px] pointer-events-none transition-all duration-300 ease-out -translate-x-1/2 -translate-y-1/2 z-0 hidden md:block opacity-50 mix-blend-screen"></div>
-
+    <!-- 頂部標籤 -->
     <div class="fixed top-6 right-8 z-50">
         <div class="flex items-center gap-2 border border-slate-700 rounded-lg py-1.5 px-3 bg-slate-800/80 backdrop-blur-sm shadow-sm">
             <div class="w-2 h-2 bg-primary rounded-full animate-pulse shadow-[0_0_8px_#22d3ee]"></div>
@@ -138,13 +183,11 @@
         </div>
     </div>
 
-    <div id="presentation" class="w-full h-full flex flex-col justify-center items-center px-12 pb-24 pt-12 bg-cardbg m-4 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.5)] border border-slate-700 relative overflow-hidden" style="width: calc(100% - 2rem); height: calc(100% - 2rem);">
+    <!-- 左右滑動橫向捲動容器 -->
+    <div id="presentation">
         
-        <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-primary/5 blur-[120px] pointer-events-none"></div>
-        <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-indigo-500/5 blur-[120px] pointer-events-none"></div>
-
         <!-- Slide 1: 封面 -->
-        <div class="slide flex-col items-center justify-center text-center relative z-10">
+        <div class="slide text-center" id="slide-0">
             <div class="mb-10 flex flex-col items-center justify-center relative group cursor-default">
                 <div class="flex items-center gap-4 bg-slate-800/50 border border-primary/30 py-2 px-6 rounded-full backdrop-blur-md shadow-[0_0_20px_rgba(34,211,238,0.05)] hover:shadow-[0_0_30px_rgba(34,211,238,0.2)] hover:border-primary/60 transition-all duration-500 mb-6">
                     <div class="relative flex items-center justify-center w-8 h-8">
@@ -166,20 +209,20 @@
                     SENIOR PROJECT PRESENTATION
                 </div>
             </div>
-            <h1 class="text-6xl md:text-7xl font-black tracking-tight mb-6 text-white drop-shadow-lg">
+            <h1 class="text-6xl md:text-7xl font-black tracking-tight mb-6 text-white drop-shadow-lg text-center w-full">
                 安全居家照護<span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400">系統</span>
             </h1>
-            <h2 class="text-2xl text-slate-300 font-medium mb-4 uppercase tracking-widest font-mono">Smart Home Safety System</h2>
-            <p class="text-lg text-slate-500 font-light tracking-widest">結合 YOLOv8 與動態風險演算的智慧居家監控系統</p>
+            <h2 class="text-2xl text-slate-300 font-medium mb-4 uppercase tracking-widest font-mono text-center w-full">Smart Home Safety System</h2>
+            <p class="text-lg text-slate-500 font-light tracking-widest text-center w-full">結合 YOLOv8 與動態風險演算的智慧居家監控系統</p>
         </div>
 
         <!-- Slide 2: 專題動機 -->
-        <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
-            <div class="mb-8">
+        <div class="slide" id="slide-1">
+            <div class="mb-8 w-full">
                 <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ Motivation</div>
                 <h2 class="text-4xl font-black text-white">專題動機</h2>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-16 mt-8 items-center">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-16 mt-8 items-center w-full">
                 <div class="space-y-8">
                     <div class="flex gap-4">
                         <div class="w-12 h-12 bg-slate-800 border border-slate-700 rounded-xl flex items-center justify-center text-2xl flex-shrink-0 shadow-inner">👴</div>
@@ -230,8 +273,8 @@
         </div>
 
         <!-- Slide 3: 專題目標 & 系統架構 -->
-        <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
-            <div class="mb-8">
+        <div class="slide" id="slide-2">
+            <div class="mb-8 w-full">
                 <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ Objectives & Architecture</div>
                 <h2 class="text-4xl font-black text-white">專題目標 & 系統架構</h2>
             </div>
@@ -314,12 +357,12 @@
         </div>
 
         <!-- Slide 4: 硬體與資料處理 -->
-        <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
-            <div class="mb-8">
+        <div class="slide" id="slide-3">
+            <div class="mb-8 w-full">
                 <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ Hardware & Data</div>
                 <h2 class="text-4xl font-black text-white">硬體與資料處理</h2>
             </div>
-            <div class="grid grid-cols-2 gap-10 items-stretch">
+            <div class="grid grid-cols-2 gap-10 items-stretch w-full">
                 <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm flex flex-col h-full">
                     <div class="h-64 relative bg-[#0a0f1d] border-b border-slate-700 flex items-center justify-center overflow-hidden flex-grow">
                         <img src="pictures/JETSON ORIN™ NANO.jpg" class="absolute inset-0 w-full h-full object-contain object-center" alt="Jetson Orin" onerror="this.style.display='none'">
@@ -387,12 +430,12 @@
         </div>
 
         <!-- Slide 5: YOLOv8 模型訓練 -->
-        <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
-            <div class="mb-8">
+        <div class="slide" id="slide-4">
+            <div class="mb-8 w-full">
                 <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ YOLOv8 Training</div>
                 <h2 class="text-4xl font-black text-white">YOLOv8 模型訓練</h2>
             </div>
-            <div class="grid grid-cols-12 gap-8">
+            <div class="grid grid-cols-12 gap-8 w-full">
                 <div class="col-span-5">
                     <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm">
                         <table class="w-full text-sm text-left">
@@ -436,15 +479,17 @@
         </div>
 
         <!-- Slide 6: 初版模型問題分析 -->
-        <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
-            <div class="mb-8 flex items-center gap-4">
-                <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest uppercase font-mono">/ Model Analysis</div>
+        <div class="slide" id="slide-5">
+            <div class="w-full">
+                <div class="mb-8 flex items-center gap-4">
+                    <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest uppercase font-mono">/ Model Analysis</div>
+                </div>
+                <div class="flex items-center gap-4 mb-6">
+                    <span class="bg-slate-700 border border-slate-600 text-slate-300 px-3 py-1 rounded-md text-sm font-mono font-bold">v1.0</span>
+                    <h2 class="text-4xl font-black text-white">初版模型問題分析</h2>
+                </div>
             </div>
-            <div class="flex items-center gap-4 mb-6">
-                <span class="bg-slate-700 border border-slate-600 text-slate-300 px-3 py-1 rounded-md text-sm font-mono font-bold">v1.0</span>
-                <h2 class="text-4xl font-black text-white">初版模型問題分析</h2>
-            </div>
-            <div class="grid grid-cols-2 gap-8">
+            <div class="grid grid-cols-2 gap-8 w-full">
                 <div class="flex flex-col gap-6">
                     <div class="border-l-4 border-red-500 bg-slate-800 border-y border-r border-slate-700 rounded-r-xl p-8 shadow-[-10px_0_20px_-5px_rgba(239,68,68,0.5)] relative overflow-hidden group hover:shadow-[-10px_0_25px_-2px_rgba(239,68,68,0.7)] transition-all">
                         <div class="absolute top-0 left-0 w-16 h-full bg-gradient-to-r from-red-500/20 to-transparent pointer-events-none"></div>
@@ -476,15 +521,15 @@
         </div>
 
         <!-- Slide 7: 偵測樣本圖 -->
-        <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
-            <div class="mb-8">
+        <div class="slide" id="slide-6">
+            <div class="mb-8 w-full">
                 <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ Detection Samples</div>
                 <div class="flex items-center gap-4">
                     <span class="bg-slate-700 border border-slate-600 text-slate-300 px-3 py-1 rounded-md text-sm font-mono font-bold">v1.0</span>
                     <h2 class="text-4xl font-black text-white">偵測樣本圖</h2>
                 </div>
             </div>
-            <div class="grid grid-cols-3 gap-6">
+            <div class="grid grid-cols-3 gap-6 w-full">
                 <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm">
                     <div class="h-72 img-placeholder">
                         <img src="pictures/sample 1.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="Sample 1" onerror="this.style.display='none'">
@@ -507,15 +552,17 @@
         </div>
 
         <!-- Slide 8: 優化成效 -->
-        <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
-            <div class="mb-8 flex items-center gap-4">
-                <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest uppercase font-mono">/ Performance Lift</div>
+        <div class="slide" id="slide-7">
+            <div class="w-full">
+                <div class="mb-8 flex items-center gap-4">
+                    <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest uppercase font-mono">/ Performance Lift</div>
+                </div>
+                <div class="flex items-center gap-4 mb-10">
+                    <span class="bg-primary/20 border border-primary/40 text-primary px-3 py-1 rounded-md text-sm font-mono font-bold shadow-[0_0_10px_rgba(34,211,238,0.2)]">v2.0</span>
+                    <h2 class="text-4xl font-black text-white">優化成效</h2>
+                </div>
             </div>
-            <div class="flex items-center gap-4 mb-10">
-                <span class="bg-primary/20 border border-primary/40 text-primary px-3 py-1 rounded-md text-sm font-mono font-bold shadow-[0_0_10px_rgba(34,211,238,0.2)]">v2.0</span>
-                <h2 class="text-4xl font-black text-white">優化成效</h2>
-            </div>
-            <div class="grid grid-cols-2 gap-12 items-center">
+            <div class="grid grid-cols-2 gap-12 items-center w-full">
                 <div class="space-y-8 bg-slate-800 p-8 rounded-xl border border-slate-700">
                     <div>
                         <div class="flex items-center gap-4 mb-2">
@@ -559,15 +606,15 @@
         </div>
 
         <!-- Slide 9: PR Curve & 偵測樣本 -->
-        <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
-            <div class="mb-8">
+        <div class="slide" id="slide-8">
+            <div class="mb-8 w-full">
                 <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ PR Curve & Samples</div>
                 <div class="flex items-center gap-4">
                     <span class="bg-primary/20 border border-primary/40 text-primary px-3 py-1 rounded-md text-sm font-mono font-bold shadow-[0_0_10px_rgba(34,211,238,0.2)]">v2.0</span>
                     <h2 class="text-4xl font-black text-white">PR Curve & 偵測樣本</h2>
                 </div>
             </div>
-            <div class="grid grid-cols-12 gap-8">
+            <div class="grid grid-cols-12 gap-8 w-full">
                 <div class="col-span-5">
                     <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm h-full flex flex-col">
                         <div class="flex-grow img-placeholder min-h-[300px]">
@@ -594,12 +641,12 @@
         </div>
 
         <!-- Slide 10: 前後版本性能比較 -->
-        <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
-            <div class="mb-8">
+        <div class="slide" id="slide-9">
+            <div class="mb-8 w-full">
                 <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ Radar Comparison</div>
                 <h2 class="text-4xl font-black text-white">前後版本性能比較</h2>
             </div>
-            <div class="grid grid-cols-2 gap-8">
+            <div class="grid grid-cols-2 gap-8 w-full">
                 <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm">
                     <div class="h-[360px] img-placeholder">
                         <img src="pictures/radar chart.png" class="absolute inset-0 w-full h-full object-contain object-center chart-zoom" style="--anim-delay: 0.2s;" alt="Radar Chart" onerror="this.style.display='none'">
@@ -630,8 +677,8 @@
         </div>
 
         <!-- Slide 11: 蒸餾模型驗證 -->
-        <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
-            <div class="mb-8">
+        <div class="slide" id="slide-10">
+            <div class="mb-8 w-full">
                 <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ Distillation Result</div>
                 <div class="flex items-center gap-4">
                     <span class="bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 px-3 py-1 rounded-md text-sm font-mono font-bold shadow-[0_0_10px_rgba(16,185,129,0.2)]">v3.0</span>
@@ -639,7 +686,7 @@
                 </div>
             </div>
             
-            <div class="grid grid-cols-12 gap-10 items-center">
+            <div class="grid grid-cols-12 gap-10 items-center w-full">
                 <div class="col-span-5">
                     <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm flex flex-col h-full">
                         <div class="flex-grow img-placeholder min-h-[300px]">
@@ -689,8 +736,8 @@
         </div>
 
         <!-- Slide 12: 訓練過程指標 -->
-        <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
-            <div class="mb-8">
+        <div class="slide" id="slide-11">
+            <div class="mb-8 w-full">
                 <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ Training Metrics</div>
                 <h2 class="text-4xl font-black text-white">訓練過程指標</h2>
             </div>
@@ -705,12 +752,12 @@
         </div>
 
         <!-- Slide 13: 危險分數計算 -->
-        <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
-            <div class="mb-8">
+        <div class="slide" id="slide-12">
+            <div class="mb-8 w-full">
                 <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ Risk Algorithm</div>
                 <h2 class="text-4xl font-black text-white">危險分數計算</h2>
             </div>
-            <div class="flex flex-col gap-6">
+            <div class="flex flex-col gap-6 w-full">
                 <div class="bg-slate-800 border border-primary/30 rounded-xl p-6 text-center shadow-[0_0_20px_rgba(34,211,238,0.15)] relative overflow-hidden group">
                     <div class="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-primary/5 pointer-events-none"></div>
                     <div class="text-primary font-bold tracking-[0.2em] relative z-10 font-mono text-lg drop-shadow-[0_0_8px_rgba(34,211,238,0.5)]">
@@ -752,8 +799,8 @@
         </div>
 
         <!-- Slide 14: 座標轉換 & IoU 計算 -->
-        <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
-            <div class="mb-8">
+        <div class="slide" id="slide-13">
+            <div class="mb-8 w-full">
                 <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ Coordinate & IoU</div>
                 <h2 class="text-4xl font-black text-white">座標轉換 & IoU 計算</h2>
             </div>
@@ -837,8 +884,8 @@
         </div>
 
         <!-- Slide 15: 事件觸發與自動化通知 -->
-        <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
-            <div class="mb-8">
+        <div class="slide" id="slide-14">
+            <div class="mb-8 w-full">
                 <div class="inline-block bg-slate-800 text-orange-400 border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ Event Trigger</div>
                 <h2 class="text-4xl font-black text-white">事件觸發與自動化通知</h2>
             </div>
@@ -888,7 +935,7 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-12 gap-8 flex-grow min-h-[250px]">
+            <div class="grid grid-cols-12 gap-8 flex-grow min-h-[250px] w-full">
                 <div class="col-span-7 bg-slate-800 border border-slate-700 rounded-xl overflow-hidden flex flex-col shadow-sm">
                     <div class="flex-grow img-placeholder border-none bg-[#0b1120]">
                         <img src="pictures/n8n workflow.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="n8n Workflow" onerror="this.style.display='none'">
@@ -912,8 +959,8 @@
         </div>
 
         <!-- Slide 16: 成果展示 -->
-        <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
-            <div class="mb-8">
+        <div class="slide" id="slide-15">
+            <div class="mb-8 w-full">
                 <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ Results</div>
                 <h2 class="text-4xl font-black text-white">成果展示</h2>
             </div>
@@ -968,8 +1015,8 @@
         </div>
 
         <!-- Slide 17: 通知管道 & 數據儲存 -->
-        <div class="slide flex-col justify-center max-w-6xl w-full mx-auto relative z-10">
-            <div class="mb-8">
+        <div class="slide" id="slide-16">
+            <div class="mb-8 w-full">
                 <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ Notifications & Data</div>
                 <h2 class="text-4xl font-black text-white">通知管道 & 數據儲存</h2>
             </div>
@@ -1008,14 +1055,14 @@
         </div>
 
         <!-- Slide 18: 結尾 -->
-        <div class="slide flex-col items-center justify-center text-center relative z-10">
-            <div class="mb-6">
+        <div class="slide text-center" id="slide-17">
+            <div class="mb-6 w-full">
                 <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest uppercase font-mono shadow-sm">/ Conclusion</div>
             </div>
-            <h1 class="text-7xl font-black tracking-tight mb-4 text-white drop-shadow-lg">
+            <h1 class="text-7xl font-black tracking-tight mb-4 text-white drop-shadow-lg w-full text-center">
                 Thank <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400">You</span>
             </h1>
-            <h2 class="text-xl text-slate-400 font-medium mb-16 tracking-widest">用科技的眼，看顧家人的每一刻</h2>
+            <h2 class="text-xl text-slate-400 font-medium mb-16 tracking-widest w-full text-center">用科技的眼，看顧家人的每一刻</h2>
             
             <div class="grid grid-cols-3 gap-6 max-w-4xl w-full">
                 <!-- Card 1 -->
@@ -1075,30 +1122,47 @@
         let currentIdx = 0;
         const slides = document.querySelectorAll('.slide');
         const totalSlides = slides.length;
+        const presentation = document.getElementById('presentation');
         document.getElementById('total-pages').innerText = totalSlides; 
 
-        function showSlide(index, direction = 'initial') {
-            slides.forEach(s => {
-                s.classList.remove('active', 'slide-in-right', 'slide-in-left', 'slide-in-initial');
+        // 網站化修改：使用 IntersectionObserver 讓區塊滾動到畫面時自動觸發特效
+        const observerOptions = {
+            root: presentation,
+            rootMargin: '0px',
+            threshold: 0.5 // 當區塊進入畫面 50% 時才算數，這樣判斷最精準
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    
+                    // 更新當前頁碼
+                    const index = Array.from(slides).indexOf(entry.target);
+                    currentIdx = index;
+                    document.getElementById('current-page').innerText = index + 1;
+                    
+                    // 執行數字跳動動畫 (確保不重複執行)
+                    if (!entry.target.dataset.animated) {
+                        animateCounters(entry.target);
+                        entry.target.dataset.animated = "true";
+                    }
+                } else {
+                    entry.target.classList.remove('active');
+                    entry.target.dataset.animated = ""; 
+                }
             });
-            
-            slides[index].classList.add('active');
-            
-            if (direction === 'right') {
-                slides[index].classList.add('slide-in-right');
-            } else if (direction === 'left') {
-                slides[index].classList.add('slide-in-left');
-            } else {
-                slides[index].classList.add('slide-in-initial');
-            }
+        }, observerOptions);
 
-            document.getElementById('current-page').innerText = index + 1;
-            
-            const progress = ((index + 1) / totalSlides) * 100;
+        slides.forEach(slide => observer.observe(slide));
+
+        // 左右滑動修改：進度條改為監聽 presentation 容器的橫向滾動
+        presentation.addEventListener('scroll', () => {
+            const scrollLeft = presentation.scrollLeft;
+            const docWidth = presentation.scrollWidth - presentation.clientWidth;
+            const progress = docWidth > 0 ? (scrollLeft / docWidth) * 100 : 0;
             document.getElementById('progress-bar').style.width = `${progress}%`;
-
-            animateCounters(slides[index]);
-        }
+        });
 
         function animateCounters(slide) {
             const counters = slide.querySelectorAll('.counter');
@@ -1140,43 +1204,48 @@
             });
         }
 
+        // JS 精準位移控制，保證每次滑動都對齊正中間
+        function goToSlide(index) {
+            if (index >= 0 && index < totalSlides) {
+                presentation.scrollTo({
+                    left: index * window.innerWidth,
+                    behavior: 'smooth'
+                });
+            }
+        }
+
         function nextSlide() {
             if (currentIdx < totalSlides - 1) {
-                currentIdx++;
-                showSlide(currentIdx, 'right');
+                goToSlide(currentIdx + 1);
             }
         }
 
         function prevSlide() {
             if (currentIdx > 0) {
-                currentIdx--;
-                showSlide(currentIdx, 'left');
+                goToSlide(currentIdx - 1);
             }
-        }
-
-        function goToSlide(index) {
-            if (index === currentIdx) return;
-            const direction = index > currentIdx ? 'right' : 'left';
-            currentIdx = index;
-            showSlide(currentIdx, direction);
         }
 
         window.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+            if (e.key === 'ArrowRight') nextSlide();
             if (e.key === 'ArrowLeft') prevSlide();
         });
 
-        const mouseGlow = document.getElementById('mouse-glow');
-        window.addEventListener('mousemove', (e) => {
-            if (mouseGlow) {
-                setTimeout(() => {
-                    mouseGlow.style.left = e.clientX + 'px';
-                    mouseGlow.style.top = e.clientY + 'px';
-                }, 50);
+        // 將滑鼠的上下滾動自動轉換為左右翻頁
+        let isWheelScrolling = false;
+        presentation.addEventListener('wheel', (e) => {
+            if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+                e.preventDefault(); 
+                if (!isWheelScrolling) {
+                    if (e.deltaY > 0) nextSlide();
+                    else prevSlide();
+                    
+                    isWheelScrolling = true;
+                    setTimeout(() => isWheelScrolling = false, 800);
+                }
             }
-        });
+        }, { passive: false });
 
-        showSlide(currentIdx, 'initial');
     </script>
 </body>
 </html>
