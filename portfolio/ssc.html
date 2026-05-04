@@ -31,6 +31,17 @@
         }
         .slide.active { display: flex; }
         
+        /* 🌟 核心修改：純 CSS 的 16:10 限制魔法 */
+        #presentation {
+            /* 基礎設定：佔滿視窗 90% */
+            width: 90vw;
+            height: 90vh;
+            
+            /* 鎖定 16:10 比例 (1280x800)，且極限不超過 1280px / 800px 以維持彈窗感 */
+            max-width: min(1280px, calc(90vh * 1.6));
+            max-height: min(800px, calc(90vw / 1.6));
+        }
+
         .slide-in-right {
             animation: slideInRight 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
@@ -138,7 +149,7 @@
         </div>
     </div>
 
-    <div id="presentation" class="flex flex-col justify-center items-center px-16 pb-24 pt-16 bg-cardbg relative overflow-hidden" style="width: 1920px; height: 1080px; flex-shrink: 0; transform-origin: center;">
+    <div id="presentation" class="flex flex-col justify-center items-center px-16 pb-24 pt-16 bg-cardbg rounded-3xl shadow-[0_10px_50px_rgba(0,0,0,0.7)] border border-slate-700 relative overflow-hidden">
         
         <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-primary/5 blur-[120px] pointer-events-none"></div>
         <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-indigo-500/5 blur-[120px] pointer-events-none"></div>
