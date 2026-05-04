@@ -138,7 +138,7 @@
         </div>
     </div>
 
-    <div id="presentation" class="flex flex-col justify-center items-center px-16 pb-24 pt-16 bg-cardbg rounded-3xl shadow-[0_10px_50px_rgba(0,0,0,0.7)] border border-slate-700 relative overflow-hidden" style="width: 1280px; height: 800px; flex-shrink: 0; transform-origin: center;">
+    <div id="presentation" class="flex flex-col justify-center items-center px-16 pb-24 pt-16 bg-cardbg relative overflow-hidden" style="width: 1920px; height: 1080px; flex-shrink: 0; transform-origin: center;">
         
         <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-primary/5 blur-[120px] pointer-events-none"></div>
         <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-indigo-500/5 blur-[120px] pointer-events-none"></div>
@@ -1042,7 +1042,7 @@
     </div>
 
     <script>
-        // === 加入：負責計算畫布縮放比例的函式 ===
+        // === 🌟 調整：直接以 100% 視窗寬高去算縮放，且不限制最大比例 ===
         function resizePresentation() {
             const presentation = document.getElementById('presentation');
             const windowWidth = window.innerWidth;
@@ -1052,11 +1052,11 @@
             const targetWidth = 1920; 
             const targetHeight = 1080;
             
-            // 縮小 4% 以保留視窗邊距 (類似原本 margin 的效果)
-            const scaleX = (windowWidth * 0.96) / targetWidth;
-            const scaleY = (windowHeight * 0.96) / targetHeight;
+            // 拿掉所有 0.9 或 0.96 的邊界限制，直接用 100% 去算
+            const scaleX = windowWidth / targetWidth;
+            const scaleY = windowHeight / targetHeight;
             
-            // 取寬或高最小的縮放比，確保不會被裁切
+            // 取寬或高最小的縮放比，確保畫面拉到最大「絕對不被裁切」
             const scale = Math.min(scaleX, scaleY);
             
             // 套用縮放
