@@ -33,13 +33,20 @@
         }
         .slide.active { display: flex; }
 
-        /* 🌟 核心：滿版響應式視窗 🌟 */
+        /* 🌟 核心：方法一的純 CSS 現代解法 🌟 */
         #presentation {
-            /* 1. 設定基礎大小，佔據大部分可用空間 */
+            /* 1. 設定基礎大小，佔據視窗 95%，保留互動視窗的質感邊距 */
             width: 95vw;
             height: 95vh;
             
-            /* 2. 在手機版/長條視窗時，自動填滿垂直空間並允許滾動 */
+            /* 2. 強制維持 16:10 的最佳視覺比例 */
+            aspect-ratio: 16 / 10;
+
+            /* 3. 使用 calc() 防呆機制：確保在極端長條或寬扁視窗下絕對不會被裁切 */
+            max-width: calc(95vh * (16 / 10));
+            max-height: calc(95vw * (10 / 16));
+
+            /* 4. 網站互動視窗的標準行為：如果螢幕太小導致內容擠壓，允許內部滾動 */
             overflow-y: auto;
             overflow-x: hidden;
             
@@ -162,7 +169,7 @@
         </div>
     </div>
 
-    <div id="presentation" class="flex flex-col justify-center items-center px-8 md:px-16 pb-24 pt-16 border border-slate-700 relative">
+        <div id="presentation" class="flex flex-col justify-center items-center px-8 md:px-16 pb-24 pt-16 border-0 md:border border-slate-700 relative">
         <div class="absolute top-6 right-6 hidden md:flex items-center gap-2 bg-slate-100/10 border border-slate-700 rounded-full px-3 py-1 text-slate-300 text-xs font-bold shadow-sm z-50">
             <div class="w-6 h-3.5 bg-slate-600 rounded-full relative">
                 <div class="w-3.5 h-3.5 bg-[#c8a97e] rounded-full absolute left-0 top-0 shadow"></div>
