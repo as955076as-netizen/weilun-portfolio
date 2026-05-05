@@ -88,7 +88,6 @@
             min-height: 100%; 
             display: flex;
             flex-direction: column;
-            /* ❌ 移除 justify-content: center; 這是造成手機版內容過長時，頂部被裁切無法滾動的元兇 */
             padding: 3rem 1.25rem 7.5rem 1.25rem; /* ✅ 增加手機版底部 padding，避免被導覽列遮擋 */
             box-sizing: border-box;
             
@@ -181,6 +180,30 @@
         }
         .arrow-flow-x { animation: arrowFlowX 1.5s infinite ease-in-out; }
         .arrow-flow-y { animation: arrowFlowY 1.5s infinite ease-in-out; }
+
+        /* ✨ 卡片互動懸浮特效 (包含Q彈縮放與發光) */
+        .interactive-card {
+            position: relative;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.4s ease;
+        }
+        .interactive-card:hover {
+            transform: translateY(-6px) scale(1.015);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 0 20px rgba(34, 211, 238, 0.15);
+            border-color: rgba(34, 211, 238, 0.4);
+            z-index: 20;
+        }
+        
+        /* 較小內部元素的懸浮特效 */
+        .interactive-item {
+            position: relative;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+        .interactive-item:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 0 15px rgba(34, 211, 238, 0.2);
+            border-color: rgba(34, 211, 238, 0.5);
+            z-index: 10;
+        }
 
         .img-placeholder {
             background-color: #0f172a; 
@@ -290,15 +313,15 @@
                             </p>
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                            <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center shadow-sm">
+                            <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center shadow-sm interactive-card">
                                 <div class="text-4xl font-black text-red-400 mb-1">24<span class="text-lg text-slate-500 font-medium">/7</span></div>
                                 <div class="text-xs text-slate-400 font-medium">全天候監控</div>
                             </div>
-                            <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center shadow-sm">
+                            <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center shadow-sm interactive-card">
                                 <div class="text-4xl font-black text-primary mb-1">&lt;1<span class="text-lg text-slate-500 font-medium">s</span></div>
                                 <div class="text-xs text-slate-400 font-medium">反應時間</div>
                             </div>
-                            <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center shadow-sm">
+                            <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center shadow-sm interactive-card">
                                 <div class="text-4xl font-black text-emerald-400 mb-1">3<span class="text-lg text-slate-500 font-medium">ch</span></div>
                                 <div class="text-xs text-slate-400 font-medium">通知管道</div>
                             </div>
@@ -316,22 +339,22 @@
                     <h2 class="text-4xl font-black text-white">專題目標 & 系統架構</h2>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12 w-full">
-                    <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-sm">
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-sm interactive-card">
                         <div class="w-10 h-10 bg-primary/20 text-primary rounded-lg flex items-center justify-center text-xl mb-4">🔍</div>
                         <h3 class="font-bold mb-2 text-slate-100">即時物件偵測</h3>
                         <p class="text-xs text-slate-400">精準識別人物與危險物品</p>
                     </div>
-                    <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-sm">
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-sm interactive-card">
                         <div class="w-10 h-10 bg-orange-500/20 text-orange-400 rounded-lg flex items-center justify-center text-xl mb-4">📐</div>
                         <h3 class="font-bold mb-2 text-slate-100">動態風險評估</h3>
                         <p class="text-xs text-slate-400">計算人與危險物的風險指數</p>
                     </div>
-                    <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-sm">
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-sm interactive-card">
                         <div class="w-10 h-10 bg-purple-500/20 text-purple-400 rounded-lg flex items-center justify-center text-xl mb-4">⚙️</div>
                         <h3 class="font-bold mb-2 text-slate-100">自動化系統</h3>
                         <p class="text-xs text-slate-400">即時通知 + 資料庫存儲</p>
                     </div>
-                    <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-sm">
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-sm interactive-card">
                         <div class="w-10 h-10 bg-emerald-500/20 text-emerald-400 rounded-lg flex items-center justify-center text-xl mb-4">📱</div>
                         <h3 class="font-bold mb-2 text-slate-100">APP 應用</h3>
                         <p class="text-xs text-slate-400">即時接收警報與查看現場</p>
@@ -416,7 +439,7 @@
                     <h2 class="text-4xl font-black text-white">硬體與資料處理</h2>
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-stretch w-full">
-                    <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm flex flex-col h-full">
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm flex flex-col h-full interactive-card">
                         <div class="h-48 md:h-64 relative bg-[#0a0f1d] border-b border-slate-700 flex items-center justify-center overflow-hidden flex-grow">
                             <img src="pictures/JETSON ORIN™ NANO.jpg" class="absolute inset-0 w-full h-full object-contain object-center" alt="Jetson Orin" onerror="this.style.display='none'">
                         </div>
@@ -442,7 +465,7 @@
                         </div>
                     </div>
                     <div class="flex flex-col gap-6">
-                        <div class="bg-slate-800 border border-slate-700 rounded-xl p-8 shadow-sm">
+                        <div class="bg-slate-800 border border-slate-700 rounded-xl p-8 shadow-sm interactive-card">
                             <h3 class="font-bold mb-4 text-base text-slate-100">資料來源 — 共 7,091 張</h3>
                             <div class="flex flex-wrap gap-2 mb-6 text-[10px] font-bold">
                                 <span class="bg-slate-700 text-slate-300 border border-slate-600 px-3 py-1 rounded-md">Roboflow</span>
@@ -461,18 +484,18 @@
                                 <span class="flex items-center gap-1"><div class="w-2 h-2 bg-indigo-400 rounded-full"></div>驗證 486</span>
                             </div>
                         </div>
-                        <div class="bg-slate-800 border border-slate-700 rounded-xl p-8 shadow-sm flex-grow">
+                        <div class="bg-slate-800 border border-slate-700 rounded-xl p-8 shadow-sm flex-grow interactive-card">
                             <h3 class="font-bold mb-6 text-base text-slate-100">標註類別 — LabelImg</h3>
                             <div class="grid grid-cols-3 gap-4">
-                                <div class="bg-slate-900/50 border border-slate-700 rounded-lg py-6 text-center">
+                                <div class="bg-slate-900/50 border border-slate-700 rounded-lg py-6 text-center interactive-item cursor-default">
                                     <div class="text-3xl mb-2">🧑</div>
                                     <div class="text-sm font-bold text-slate-300">0 — 人</div>
                                 </div>
-                                <div class="bg-slate-900/50 border border-slate-700 rounded-lg py-6 text-center">
+                                <div class="bg-slate-900/50 border border-slate-700 rounded-lg py-6 text-center interactive-item cursor-default">
                                     <div class="text-3xl mb-2">🔪</div>
                                     <div class="text-sm font-bold text-slate-300">1 — 刀具</div>
                                 </div>
-                                <div class="bg-slate-900/50 border border-slate-700 rounded-lg py-6 text-center">
+                                <div class="bg-slate-900/50 border border-slate-700 rounded-lg py-6 text-center interactive-item cursor-default">
                                     <div class="text-3xl mb-2">✂️</div>
                                     <div class="text-sm font-bold text-slate-300">2 — 剪刀</div>
                                 </div>
@@ -492,7 +515,7 @@
                 </div>
                 <div class="flex flex-col md:grid md:grid-cols-12 gap-8 w-full">
                     <div class="w-full md:col-span-5">
-                        <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm overflow-x-auto">
+                        <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm overflow-x-auto interactive-card">
                             <table class="w-full text-sm text-left whitespace-nowrap min-w-[300px]">
                                 <thead class="bg-slate-900/80 text-slate-400 uppercase text-xs font-semibold">
                                     <tr>
@@ -512,7 +535,7 @@
                         </div>
                     </div>
                     <div class="w-full md:col-span-7 flex flex-col gap-6">
-                        <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-sm">
+                        <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-sm interactive-card">
                             <h3 class="font-bold mb-4 text-base text-slate-100">資料增強策略</h3>
                             <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
                                 <div class="bg-slate-900/50 border border-slate-700/50 rounded-md px-4 py-2 text-sm flex justify-between"><span class="font-bold text-slate-300">Mosaic</span> <span class="text-primary font-mono">1.0</span></div>
@@ -523,7 +546,7 @@
                                 <div class="bg-slate-900/50 border border-slate-700/50 rounded-md px-4 py-2 text-sm flex justify-between"><span class="font-bold text-slate-300">Translate</span> <span class="text-primary font-mono">0.2</span></div>
                             </div>
                         </div>
-                        <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm flex-grow flex flex-col">
+                        <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm flex-grow flex flex-col interactive-card">
                             <div class="flex-grow img-placeholder relative min-h-[150px] md:min-h-[200px]">
                                 <img src="pictures/LabelImg View.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="LabelImg View" onerror="this.style.display='none'">
                             </div>
@@ -548,26 +571,26 @@
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
                     <div class="flex flex-col gap-6">
-                        <div class="border-l-4 border-red-500 bg-slate-800 border-y border-r border-slate-700 rounded-r-xl p-8 shadow-[-10px_0_20px_-5px_rgba(239,68,68,0.5)] relative overflow-hidden group hover:shadow-[-10px_0_25px_-2px_rgba(239,68,68,0.7)] transition-all">
+                        <div class="interactive-card border-l-4 border-red-500 bg-slate-800 border-y border-r border-slate-700 rounded-r-xl p-8 shadow-[-10px_0_20px_-5px_rgba(239,68,68,0.5)] relative overflow-hidden group">
                             <div class="absolute top-0 left-0 w-16 h-full bg-gradient-to-r from-red-500/20 to-transparent pointer-events-none"></div>
                             <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2 relative z-10"><span class="text-red-400 drop-shadow-[0_0_8px_rgba(239,68,68,0.8)]">🐛 問題：</span>人物辨識率低</h3>
                             <p class="text-slate-400 text-sm leading-relaxed mb-2 relative z-10">持刀照片中人物經常無法被偵測。</p>
                             <p class="text-slate-400 text-sm relative z-10">Person mAP@50 僅 <strong class="text-red-400 drop-shadow-[0_0_5px_rgba(239,68,68,0.6)]">0.492</strong>，整體 mAP = 0.607</p>
                         </div>
-                        <div class="border-l-4 border-emerald-500 bg-slate-800 border-y border-r border-slate-700 rounded-r-xl p-8 shadow-[-10px_0_20px_-5px_rgba(16,185,129,0.5)] relative overflow-hidden group hover:shadow-[-10px_0_25px_-2px_rgba(16,185,129,0.7)] transition-all">
+                        <div class="interactive-card border-l-4 border-emerald-500 bg-slate-800 border-y border-r border-slate-700 rounded-r-xl p-8 shadow-[-10px_0_20px_-5px_rgba(16,185,129,0.5)] relative overflow-hidden group">
                             <div class="absolute top-0 left-0 w-16 h-full bg-gradient-to-r from-emerald-500/20 to-transparent pointer-events-none"></div>
                             <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2 relative z-10"><span class="text-emerald-400 drop-shadow-[0_0_8px_rgba(16,185,129,0.8)]">✅ 優化：</span>增加人物資料多樣性</h3>
                             <p class="text-slate-400 text-sm leading-relaxed relative z-10">加入不同姿態、光線、角度的人物資料集</p>
                         </div>
                     </div>
                     <div class="flex flex-col gap-6">
-                        <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm">
+                        <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm interactive-card">
                             <div class="h-40 md:h-48 img-placeholder">
                                 <img src="pictures/v1.0 Confusion Matrix.png" class="absolute inset-0 w-full h-full object-contain object-center chart-zoom" style="--anim-delay: 0.3s;" alt="v1.0 Confusion Matrix" onerror="this.style.display='none'">
                             </div>
                             <div class="bg-slate-900/80 py-2 text-center text-xs text-slate-500 border-t border-slate-700 font-mono">v1.0 Confusion Matrix — Person 僅 0.36</div>
                         </div>
-                        <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm">
+                        <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm interactive-card">
                             <div class="h-40 md:h-48 img-placeholder">
                                 <img src="pictures/v1.0 PR Curve.png" class="absolute inset-0 w-full h-full object-contain object-center chart-wipe" style="--anim-delay: 0.5s;" alt="v1.0 PR Curve" onerror="this.style.display='none'">
                             </div>
@@ -589,19 +612,19 @@
                     </div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-                    <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm">
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm interactive-card">
                         <div class="h-56 md:h-72 img-placeholder">
                             <img src="pictures/sample 1.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="Sample 1" onerror="this.style.display='none'">
                         </div>
                         <div class="bg-slate-900/80 py-3 text-center text-xs text-slate-400 border-t border-slate-700 font-medium">偵測樣本 1</div>
                     </div>
-                    <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm">
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm interactive-card">
                         <div class="h-56 md:h-72 img-placeholder">
                             <img src="pictures/sample 4.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="Sample 4" onerror="this.style.display='none'">
                         </div>
                         <div class="bg-slate-900/80 py-3 text-center text-xs text-slate-400 border-t border-slate-700 font-medium">偵測樣本 2</div>
                     </div>
-                    <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm">
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm interactive-card">
                         <div class="h-56 md:h-72 img-placeholder">
                             <img src="pictures/sample 3.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="Sample 3" onerror="this.style.display='none'">
                         </div>
@@ -623,9 +646,8 @@
                         <h2 class="text-4xl font-black text-white">優化成效</h2>
                     </div>
                 </div>
-                <!-- ✅ 縮小手機版的 gap 避免過度拉長畫面 -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center w-full">
-                    <div class="space-y-8 bg-slate-800 p-8 rounded-xl border border-slate-700">
+                    <div class="space-y-8 bg-slate-800 p-8 rounded-xl border border-slate-700 interactive-card">
                         <div>
                             <div class="flex items-center gap-4 mb-2">
                                 <span class="w-16 font-bold text-sm text-slate-300">Person</span>
@@ -658,7 +680,7 @@
                             <div class="flex items-center gap-1.5"><div class="w-3 h-3 bg-primary rounded-sm shadow-[0_0_8px_#22d3ee]"></div> v2.0</div>
                         </div>
                     </div>
-                    <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm h-full flex flex-col">
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm h-full flex flex-col interactive-card">
                         <div class="flex-grow img-placeholder min-h-[250px]">
                             <img src="pictures/v2.0 Confusion Matrix.png" class="absolute inset-0 w-full h-full object-contain object-center chart-zoom" style="--anim-delay: 0.4s;" alt="v2.0 Confusion Matrix" onerror="this.style.display='none'">
                         </div>
@@ -680,7 +702,7 @@
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 md:gap-6 w-full items-stretch">
                     <div class="lg:col-span-5">
-                        <div class="bg-slate-800 rounded-xl overflow-hidden shadow-sm h-full flex flex-col border border-slate-700">
+                        <div class="bg-slate-800 rounded-xl overflow-hidden shadow-sm h-full flex flex-col border border-slate-700 interactive-card">
                             <div class="flex-grow img-placeholder relative min-h-[250px] md:min-h-[350px]">
                                 <img src="pictures/v2.0 PR Curve.png" class="absolute inset-0 w-full h-full object-contain chart-wipe" style="--anim-delay: 0.3s;" alt="v2.0 PR Curve" onerror="this.style.display='none'">
                             </div>
@@ -688,13 +710,13 @@
                         </div>
                     </div>
                     <div class="lg:col-span-7 flex flex-col gap-4 md:gap-5">
-                        <div class="bg-slate-800 rounded-xl overflow-hidden shadow-sm flex-1 flex flex-col border border-slate-700">
+                        <div class="bg-slate-800 rounded-xl overflow-hidden shadow-sm flex-1 flex flex-col border border-slate-700 interactive-card">
                             <div class="flex-grow img-placeholder relative min-h-[140px] md:min-h-[160px]">
                                 <img src="pictures/sample 2.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="v2.0 Sample 1" onerror="this.style.display='none'">
                             </div>
                             <div class="bg-slate-900/80 py-1.5 md:py-2 text-center text-[9px] md:text-[10px] text-slate-400 border-t border-slate-700 mt-auto">偵測樣本 1</div>
                         </div>
-                        <div class="bg-slate-800 rounded-xl overflow-hidden shadow-sm flex-1 flex flex-col border border-slate-700">
+                        <div class="bg-slate-800 rounded-xl overflow-hidden shadow-sm flex-1 flex flex-col border border-slate-700 interactive-card">
                             <div class="flex-grow img-placeholder relative min-h-[140px] md:min-h-[160px]">
                                 <img src="pictures/sample 5.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="v2.0 Sample 2" onerror="this.style.display='none'">
                             </div>
@@ -713,27 +735,27 @@
                     <h2 class="text-4xl font-black text-white">前後版本性能比較</h2>
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
-                    <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm">
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm interactive-card">
                         <div class="h-[280px] md:h-[360px] img-placeholder">
                             <img src="pictures/radar chart.png" class="absolute inset-0 w-full h-full object-contain object-center chart-zoom" style="--anim-delay: 0.2s;" alt="Radar Chart" onerror="this.style.display='none'">
                         </div>
                         <div class="bg-slate-900/80 py-3 text-center text-xs text-slate-400 border-t border-slate-700 font-medium">前後版本性能雷達圖 — 各指標全面提升</div>
                     </div>
                     <div class="flex flex-col gap-6 justify-center">
-                        <div class="bg-slate-800 border border-primary/30 rounded-xl p-8 text-center glow-effect">
+                        <div class="bg-slate-800 border border-primary/30 rounded-xl p-8 text-center glow-effect interactive-card">
                             <div class="text-sm font-bold text-primary-light mb-2 uppercase tracking-wider">整體 mAP@0.5 提升</div>
                             <div class="text-6xl font-black text-primary drop-shadow-[0_0_10px_rgba(34,211,238,0.8)]"><span class="counter-float" data-target="0.15" data-decimals="2" data-prefix="+">+0.00</span></div>
                         </div>
                         <div class="grid grid-cols-3 gap-4">
-                            <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center shadow-sm">
+                            <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center shadow-sm interactive-card">
                                 <div class="text-3xl font-black text-white mb-1"><span class="counter-float" data-target="0.76" data-decimals="2">0.00</span></div>
                                 <div class="text-xs text-slate-500 font-bold font-mono">mAP@0.5</div>
                             </div>
-                            <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center shadow-sm">
+                            <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center shadow-sm interactive-card">
                                 <div class="text-3xl font-black text-primary mb-1"><span class="counter-float" data-target="0.80" data-decimals="2">0.00</span></div>
                                 <div class="text-xs text-slate-500 font-bold font-mono">Person AP</div>
                             </div>
-                            <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center shadow-sm">
+                            <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center shadow-sm interactive-card">
                                 <div class="text-3xl font-black text-slate-300 mb-1"><span class="counter-float" data-target="0.78" data-decimals="2">0.00</span></div>
                                 <div class="text-xs text-slate-500 font-bold font-mono">Scissors AP</div>
                             </div>
@@ -754,10 +776,9 @@
                     </div>
                 </div>
                 
-                <!-- ✅ 縮小手機版的 gap 避免過度拉長畫面 -->
                 <div class="flex flex-col md:grid md:grid-cols-12 gap-8 md:gap-10 items-center w-full">
                     <div class="w-full md:col-span-5">
-                        <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm flex flex-col h-full min-h-[250px]">
+                        <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm flex flex-col h-full min-h-[250px] interactive-card">
                             <div class="flex-grow img-placeholder min-h-[250px] md:min-h-[300px]">
                                 <img src="pictures/v3.0 Confusion Matrix.png" class="absolute inset-0 w-full h-full object-contain object-center chart-zoom" style="--anim-delay: 0.3s;" alt="v3.0 Confusion Matrix" onerror="this.style.display='none'">
                             </div>
@@ -768,7 +789,7 @@
                     </div>
                     <div class="w-full md:col-span-7 flex flex-col gap-8">
                         <div class="flex flex-col sm:flex-row justify-center items-center gap-6">
-                            <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center w-full sm:w-40 shadow-sm relative">
+                            <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center w-full sm:w-40 shadow-sm relative interactive-card">
                                 <div class="text-xs text-slate-400 font-mono mb-2">Teacher</div>
                                 <div class="text-4xl font-black text-white">49.7<span class="text-sm text-slate-500 ml-1">MB</span></div>
                                 <div class="text-xs text-slate-500 mt-2 font-mono">YOLOv8m</div>
@@ -777,7 +798,7 @@
                                 <div class="text-2xl font-bold rotate-90 sm:rotate-0">→</div>
                                 <div class="text-xs font-bold tracking-widest mt-1 sm:mt-0 sm:ml-2">蒸餾</div>
                             </div>
-                            <div class="bg-slate-800 border-2 border-emerald-500/50 rounded-xl p-6 text-center w-full sm:w-40 shadow-[0_0_15px_rgba(16,185,129,0.15)] relative overflow-hidden">
+                            <div class="bg-slate-800 border-2 border-emerald-500/50 rounded-xl p-6 text-center w-full sm:w-40 shadow-[0_0_15px_rgba(16,185,129,0.15)] relative overflow-hidden interactive-card">
                                 <div class="absolute inset-0 bg-emerald-500/5"></div>
                                 <div class="relative z-10">
                                     <div class="text-xs text-emerald-400 font-mono mb-2 font-bold">Student</div>
@@ -787,15 +808,15 @@
                             </div>
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-2">
-                            <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center shadow-sm">
+                            <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center shadow-sm interactive-card">
                                 <div class="text-4xl font-black text-emerald-400 mb-2 drop-shadow-[0_0_8px_rgba(16,185,129,0.6)]"><span class="counter" data-target="88">0</span><span class="text-xl text-emerald-500/70">%</span></div>
                                 <div class="text-sm text-slate-400 font-bold">壓縮率</div>
                             </div>
-                            <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center shadow-sm">
+                            <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center shadow-sm interactive-card">
                                 <div class="text-4xl font-black text-amber-400 mb-2 drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]"><span class="counter-float" data-target="8.3">0.0</span><span class="text-xl text-amber-500/70">×</span></div>
                                 <div class="text-sm text-slate-400 font-bold">體積縮小</div>
                             </div>
-                            <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center shadow-sm">
+                            <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center shadow-sm interactive-card">
                                 <div class="text-4xl font-black text-purple-400 mb-2 drop-shadow-[0_0_8px_rgba(168,85,247,0.6)]">Edge</div>
                                 <div class="text-sm text-slate-400 font-bold">邊緣部署</div>
                             </div>
@@ -812,7 +833,7 @@
                     <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ Training Metrics</div>
                     <h2 class="text-4xl font-black text-white">訓練過程指標</h2>
                 </div>
-                <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm flex flex-col h-[300px] md:h-[400px] w-full">
+                <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm flex flex-col h-[300px] md:h-[400px] w-full interactive-card">
                     <div class="flex-grow img-placeholder bg-slate-900">
                         <img src="pictures/training metrics.png" class="absolute inset-0 w-full h-full object-contain object-center opacity-90 chart-wipe" style="--anim-delay: 0.3s;" alt="Training Metrics" onerror="this.style.display='none'">
                     </div>
@@ -838,25 +859,25 @@
                         </div>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <div class="bg-slate-800 border border-slate-700 rounded-xl p-8 flex flex-col items-center text-center group hover:border-primary/50 hover:shadow-[0_0_20px_rgba(34,211,238,0.1)] transition-all">
+                        <div class="bg-slate-800 border border-slate-700 rounded-xl p-8 flex flex-col items-center text-center interactive-card group">
                             <div class="text-4xl mb-4 group-hover:-translate-y-1 transition-transform">📏</div>
                             <h3 class="text-lg font-bold text-white mb-2">1 / 距離</h3>
                             <p class="text-sm text-slate-300 mb-1">越近 → 分數越高</p>
                             <p class="text-xs text-slate-500 font-mono mt-1 border-t border-slate-700 pt-2 w-full">歐式距離反比</p>
                         </div>
-                        <div class="bg-slate-800 border border-slate-700 rounded-xl p-8 flex flex-col items-center text-center group hover:border-red-400/50 hover:shadow-[0_0_20px_rgba(239,68,68,0.1)] transition-all">
+                        <div class="bg-slate-800 border border-slate-700 rounded-xl p-8 flex flex-col items-center text-center interactive-card group">
                             <div class="text-4xl mb-4 group-hover:-translate-y-1 transition-transform">🔪</div>
                             <h3 class="text-lg font-bold text-white mb-2">危險等級</h3>
                             <p class="text-sm text-slate-300 mb-0.5 font-mono">scissors: 3.0</p>
                             <p class="text-sm text-slate-300 font-mono">knife: 5.0</p>
                         </div>
-                        <div class="bg-slate-800 border border-slate-700 rounded-xl p-8 flex flex-col items-center text-center group hover:border-emerald-400/50 hover:shadow-[0_0_20px_rgba(16,185,129,0.1)] transition-all">
+                        <div class="bg-slate-800 border border-slate-700 rounded-xl p-8 flex flex-col items-center text-center interactive-card group">
                             <div class="text-4xl mb-4 group-hover:-translate-y-1 transition-transform">🎬</div>
                             <h3 class="text-lg font-bold text-white mb-2">持續影格</h3>
                             <p class="text-sm text-slate-300 mb-1">連續偵測才計算</p>
                             <p class="text-xs text-slate-500 font-mono mt-1 border-t border-slate-700 pt-2 w-full">避免瞬間誤判</p>
                         </div>
-                        <div class="bg-slate-800 border border-slate-700 rounded-xl p-8 flex flex-col items-center text-center group hover:border-blue-400/50 hover:shadow-[0_0_20px_rgba(96,165,250,0.1)] transition-all">
+                        <div class="bg-slate-800 border border-slate-700 rounded-xl p-8 flex flex-col items-center text-center interactive-card group">
                             <div class="text-4xl mb-4 group-hover:-translate-y-1 transition-transform">🔀</div>
                             <h3 class="text-lg font-bold text-white mb-2">IoU 重疊</h3>
                             <p class="text-sm text-slate-300 mb-1">交集 / 聯集</p>
@@ -883,29 +904,33 @@
                 <div class="flex flex-col gap-6 w-full flex-grow">
                     <!-- 上半部：計算步驟 -->
                     <div class="flex flex-col md:flex-row items-center justify-between w-full gap-4 mt-2">
-                        <div class="flex-1 w-full bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-sm group hover:border-primary/50 hover:-translate-y-1 hover:shadow-[0_0_15px_rgba(34,211,238,0.2)] transition-all duration-300 chart-wipe" style="--anim-delay: 0.2s;">
+                        <div class="flex-1 w-full bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-sm interactive-card group chart-wipe" style="--anim-delay: 0.2s;">
                             <h3 class="text-base font-bold text-white mb-3 text-center group-hover:text-primary-light transition-colors">YOLO 轉 Px</h3>
                             <div class="bg-slate-900/80 rounded-md p-3 text-sm font-mono text-slate-300 text-center leading-relaxed">
                                 cx = x_center * W<br>cy = y_center * H
                             </div>
                         </div>
                         
-                        <div class="text-slate-500 font-bold chart-wipe rotate-90 md:rotate-0 flex-shrink-0" style="--anim-delay: 0.3s;">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="text-primary animate-pulse drop-shadow-[0_0_8px_rgba(34,211,238,0.6)]"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        <!-- 互動箭頭 1 -->
+                        <div class="flex-none flex items-center justify-center chart-zoom z-10" style="--anim-delay: 0.3s;">
+                            <svg class="hidden md:block w-8 h-8 text-primary arrow-flow-x drop-shadow-[0_0_10px_rgba(34,211,238,0.8)]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+                            <svg class="block md:hidden w-8 h-8 text-primary arrow-flow-y drop-shadow-[0_0_10px_rgba(34,211,238,0.8)] my-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 9l7 7 7-7"></path></svg>
                         </div>
 
-                        <div class="flex-1 w-full bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-sm group hover:border-primary/50 hover:-translate-y-1 hover:shadow-[0_0_15px_rgba(34,211,238,0.2)] transition-all duration-300 chart-wipe" style="--anim-delay: 0.4s;">
+                        <div class="flex-1 w-full bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-sm interactive-card group chart-wipe" style="--anim-delay: 0.4s;">
                             <h3 class="text-base font-bold text-white mb-3 text-center group-hover:text-primary-light transition-colors">還原 Bounding Box</h3>
                             <div class="bg-slate-900/80 rounded-md p-3 text-sm font-mono text-slate-300 text-center leading-relaxed">
                                 x1 = cx - bw/2<br>x2 = cx + bw/2
                             </div>
                         </div>
 
-                        <div class="text-slate-500 font-bold chart-wipe rotate-90 md:rotate-0 flex-shrink-0" style="--anim-delay: 0.5s;">
-                             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="text-primary animate-pulse drop-shadow-[0_0_8px_rgba(34,211,238,0.6)]"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        <!-- 互動箭頭 2 -->
+                        <div class="flex-none flex items-center justify-center chart-zoom z-10" style="--anim-delay: 0.5s;">
+                            <svg class="hidden md:block w-8 h-8 text-primary arrow-flow-x drop-shadow-[0_0_10px_rgba(34,211,238,0.8)]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+                            <svg class="block md:hidden w-8 h-8 text-primary arrow-flow-y drop-shadow-[0_0_10px_rgba(34,211,238,0.8)] my-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 9l7 7 7-7"></path></svg>
                         </div>
 
-                        <div class="flex-1 w-full bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-sm group hover:border-primary/50 hover:-translate-y-1 hover:shadow-[0_0_15px_rgba(34,211,238,0.2)] transition-all duration-300 chart-wipe" style="--anim-delay: 0.6s;">
+                        <div class="flex-1 w-full bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-sm interactive-card group chart-wipe" style="--anim-delay: 0.6s;">
                             <h3 class="text-base font-bold text-white mb-3 text-center group-hover:text-primary-light transition-colors">距離計算 (Distance)</h3>
                             <div class="bg-slate-900/80 rounded-md p-3 text-[11px] font-mono text-slate-300 text-center leading-relaxed">
                                 d = &radic;((cx1-cx2)&sup2; + (cy1-cy2)&sup2;)
@@ -921,7 +946,7 @@
                     </div>
 
                     <!-- 下半部：IoU 圖示 -->
-                    <div class="bg-slate-800 border border-slate-700 rounded-xl flex flex-col overflow-hidden shadow-sm flex-grow chart-zoom" style="--anim-delay: 0.8s;">
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl flex flex-col overflow-hidden shadow-sm flex-grow chart-zoom interactive-card" style="--anim-delay: 0.8s;">
                         <div class="flex-grow flex flex-col sm:flex-row items-center justify-center p-6 gap-12 md:gap-24 relative bg-[#0b1120]">
                             <!-- 交集 -->
                             <div class="flex flex-col items-center gap-4">
@@ -1030,7 +1055,7 @@
                 </div>
 
                 <div class="flex flex-col md:grid md:grid-cols-12 gap-8 flex-grow w-full">
-                    <div class="w-full md:col-span-7 bg-slate-800 border border-slate-700 rounded-xl overflow-hidden flex flex-col shadow-sm">
+                    <div class="w-full md:col-span-7 bg-slate-800 border border-slate-700 rounded-xl overflow-hidden flex flex-col shadow-sm interactive-card">
                         <div class="flex-grow img-placeholder border-none bg-[#0b1120] min-h-[200px]">
                             <img src="pictures/n8n workflow.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="n8n Workflow" onerror="this.style.display='none'">
                         </div>
@@ -1040,11 +1065,11 @@
                     </div>
                     
                     <div class="w-full md:col-span-5 flex flex-col gap-6 justify-center">
-                        <div class="bg-slate-800 border border-slate-700 rounded-xl p-8 shadow-sm">
+                        <div class="bg-slate-800 border border-slate-700 rounded-xl p-8 shadow-sm interactive-card">
                             <h3 class="text-lg font-bold text-white mb-3">N8N 自動化</h3>
                             <p class="text-sm text-slate-400 leading-relaxed">接收 Webhook，觸發 API 發送 LINE / Email 警報</p>
                         </div>
-                        <div class="bg-slate-800 border border-slate-700 rounded-xl p-8 shadow-sm">
+                        <div class="bg-slate-800 border border-slate-700 rounded-xl p-8 shadow-sm interactive-card">
                             <h3 class="text-lg font-bold text-white mb-3">Supabase 資料庫</h3>
                             <p class="text-sm text-slate-400 leading-relaxed">存儲危險事件 Timestamp、影像與分數記錄</p>
                         </div>
@@ -1062,7 +1087,7 @@
                 </div>
                 
                 <div class="flex flex-col md:grid md:grid-cols-12 gap-10 md:h-[400px] w-full">
-                    <div class="w-full md:col-span-6 bg-slate-800 border border-slate-700 rounded-xl overflow-hidden flex flex-col shadow-sm min-h-[250px]">
+                    <div class="w-full md:col-span-6 bg-slate-800 border border-slate-700 rounded-xl overflow-hidden flex flex-col shadow-sm min-h-[250px] interactive-card">
                         <div class="flex-grow img-placeholder border-none bg-[#0b1120]">
                             <img src="pictures/live detection.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="Live Detection" onerror="this.style.display='none'">
                         </div>
@@ -1071,7 +1096,7 @@
                         </div>
                     </div>
                     
-                    <div class="w-full md:col-span-6 bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm flex flex-col overflow-x-auto">
+                    <div class="w-full md:col-span-6 bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm flex flex-col overflow-x-auto interactive-card">
                         <table class="w-full text-sm text-left flex-grow min-w-[400px]">
                             <thead class="bg-slate-900/80 text-slate-400 font-bold">
                                 <tr>
@@ -1121,7 +1146,7 @@
                 
                 <div class="flex flex-col md:grid md:grid-cols-12 gap-8 md:h-[350px] w-full">
                     <!-- LINE 警報通知 -->
-                    <div class="w-full md:col-span-3 bg-slate-800 border border-slate-700 rounded-xl overflow-hidden flex flex-col shadow-sm h-64 md:h-full">
+                    <div class="w-full md:col-span-3 bg-slate-800 border border-slate-700 rounded-xl overflow-hidden flex flex-col shadow-sm h-64 md:h-full interactive-card">
                         <div class="flex-grow img-placeholder border-none bg-[#0b1120]">
                             <img src="pictures/LINE screenshot.jpg" class="absolute inset-0 w-full h-full object-contain object-center" alt="LINE Screenshot" onerror="this.style.display='none'">
                         </div>
@@ -1131,7 +1156,7 @@
                     </div>
                     
                     <!-- Email 警報通知 -->
-                    <div class="w-full md:col-span-3 bg-slate-800 border border-slate-700 rounded-xl overflow-hidden flex flex-col shadow-sm h-64 md:h-full">
+                    <div class="w-full md:col-span-3 bg-slate-800 border border-slate-700 rounded-xl overflow-hidden flex flex-col shadow-sm h-64 md:h-full interactive-card">
                         <div class="flex-grow img-placeholder border-none bg-[#0b1120]">
                             <img src="pictures/email screenshot.jpg" class="absolute inset-0 w-full h-full object-contain object-center" alt="Email Screenshot" onerror="this.style.display='none'">
                         </div>
@@ -1141,7 +1166,7 @@
                     </div>
 
                     <!-- Supabase 事件數據紀錄 -->
-                    <div class="w-full md:col-span-6 bg-slate-800 border border-slate-700 rounded-xl overflow-hidden flex flex-col shadow-sm h-64 md:h-full">
+                    <div class="w-full md:col-span-6 bg-slate-800 border border-slate-700 rounded-xl overflow-hidden flex flex-col shadow-sm h-64 md:h-full interactive-card">
                         <div class="flex-grow img-placeholder border-none bg-[#0b1120]">
                             <img src="pictures/supabase screenshot.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="Supabase Screenshot" onerror="this.style.display='none'">
                         </div>
@@ -1166,19 +1191,19 @@
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl w-full">
                     <!-- Card 1 -->
-                    <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-5 shadow-sm">
+                    <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-5 shadow-sm interactive-card">
                         <div class="text-4xl mb-4">🎯</div>
                         <h3 class="text-lg font-bold text-slate-100 mb-2">洞察危機</h3>
                         <p class="text-xs text-slate-400 font-mono">AI 視覺精準辨識</p>
                     </div>
                     <!-- Card 2 -->
-                    <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-5 shadow-sm">
+                    <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-5 shadow-sm interactive-card">
                         <div class="text-4xl mb-4">⚡</div>
                         <h3 class="text-lg font-bold text-slate-100 mb-2">毫秒預警</h3>
                         <p class="text-xs text-slate-400 font-mono">邊緣端極速推論</p>
                     </div>
                     <!-- Card 3 -->
-                    <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-5 shadow-sm">
+                    <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-5 shadow-sm interactive-card">
                         <div class="text-4xl mb-4">🛡️</div>
                         <h3 class="text-lg font-bold text-slate-100 mb-2">主動防護</h3>
                         <p class="text-xs text-slate-400 font-mono">全自動跨網通報</p>
@@ -1190,7 +1215,6 @@
     </div>
 
     <!-- 底部導覽控制列 -->
-    <!-- ✅ 調整手機版左右 padding (px-4 md:px-16)，避免按鈕被擠壓 -->
     <div class="fixed bottom-0 left-1/2 -translate-x-1/2 z-50 pt-16 pb-6 px-4 md:px-16 group flex justify-center w-full pointer-events-none">
         <div class="absolute bottom-3 flex flex-col items-center gap-1 text-primary font-bold text-xs tracking-widest animate-bounce group-hover:opacity-0 transition-opacity duration-300 pointer-events-none drop-shadow-[0_0_10px_rgba(34,211,238,0.8)]">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 15l-6-6-6 6"/></svg>
