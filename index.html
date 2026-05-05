@@ -196,9 +196,43 @@
             overflow: hidden;
         }
 
-        /* 導覽列平滑滾動設定 */
-        html {
-            scroll-behavior: smooth;
+        /* 自訂光線掃描動畫 (用於 Philosophy 區塊) */
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* 新增：真實的發光粒子 (Real Particles) - 效能優化版 */
+        .real-particle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 4px;
+            height: 4px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            pointer-events: none;
+            /* 優化：減少陰影層數，減輕 GPU 負擔 */
+            box-shadow: 0 0 8px #ffffff, 0 0 15px #c8a97e;
+            z-index: 20;
+            /* 優化：開啟硬體加速 */
+            will-change: transform, opacity;
+            animation: fly-particle 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes fly-particle {
+            0% { transform: translate(-50%, -50%) scale(1.5); opacity: 1; }
+            100% { transform: translate(calc(-50% + var(--px)), calc(-50% + var(--py))) scale(0); opacity: 0; }
+        }
+
+        /* 單個字母本身的過渡動畫 */
+        .scatter-letter {
+            /* 加入 text-shadow 的過渡效果，並讓發光的速度比消失更快 */
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease, color 0.2s ease, text-shadow 0.2s ease;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0 0 15px rgba(200, 169, 126, 0.1);
+            /* 優化：開啟硬體加速 */
+            will-change: transform, opacity, text-shadow;
         }
     </style>
 </head>
@@ -207,23 +241,6 @@
     <div id="ambient-breathe" class="ambient-breathe"></div>
     <div id="page-transition"></div>
 
-    <!-- 導覽列 (預設隱藏，進入系統後滑出) -->
-    <header id="global-nav" class="fixed w-full top-0 left-0 z-[80] flex justify-between items-center px-6 md:px-12 py-5 transition-all duration-1000 transform -translate-y-full opacity-0 bg-[#050505]/80 backdrop-blur-md border-b border-white/5">
-        <a href="#" id="logo-btn" class="text-white font-black tracking-widest text-xl group cursor-pointer">
-            R<span class="text-[#c8a97e] group-hover:text-white transition-colors">.</span>
-        </a>
-        
-        <nav class="hidden sm:flex space-x-8 md:space-x-12 text-[10px] md:text-xs tracking-[0.25em] text-white/50 font-light">
-            <a href="#capabilities" class="hover:text-[#c8a97e] transition-colors duration-300">CAPABILITIES</a>
-            <a href="#archives" class="hover:text-[#c8a97e] transition-colors duration-300">ARCHIVES</a>
-        </nav>
-        
-        <div class="text-[9px] tracking-[0.2em] text-[#c8a97e] flex items-center gap-2">
-            <span class="w-1.5 h-1.5 bg-[#c8a97e] rounded-full animate-pulse shadow-[0_0_8px_#c8a97e]"></span>
-            <span class="hidden sm:inline">SYSTEM ONLINE</span>
-        </div>
-    </header>
-
     <div id="cursor-dot" class="hidden md:block pointer-events-none fixed top-0 left-0 w-2 h-2 bg-[#c8a97e] rounded-full z-[100] transform -translate-x-1/2 -translate-y-1/2 transition-transform duration-100"></div>
     <div id="cursor-ring" class="hidden md:block pointer-events-none fixed top-0 left-0 w-10 h-10 border border-[#c8a97e]/50 rounded-full z-[99] transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ease-out"></div>
 
@@ -231,10 +248,8 @@
     <canvas id="cv-canvas" class="hidden-page"></canvas>
 
     <main id="page-hero" class="flex-grow flex items-center justify-center px-4 md:px-8 relative z-10 min-h-screen w-full"> 
-        <!-- 移除先前的整體往上移動，讓標題維持原位 -->
         <div class="w-full px-4 md:px-8 lg:px-20 mx-auto flex flex-col items-center justify-center text-center"> 
             
-            <!-- 加上 relative 與 top 屬性，讓它單獨往下移動且不影響下方元素排版 -->
             <div class="animate-fade-in-up delay-100 text-xs md:text-sm font-bold tracking-[0.5em] text-white/80 mb-6 md:mb-10 pl-[0.5em] relative top-8 md:top-12">K U A N . 2 0 2 6</div>
 
             <div class="animate-fade-in-up delay-300 overflow-visible w-full flex items-center justify-center relative top-10 md:top-20">
@@ -248,7 +263,6 @@
                 「從實務現場跨越至演算法開發，以精準的自動化邏輯，重構視覺工程的無限可能。」
             </p>
 
-            <!-- 縮小 padding-top 並且加上負位移，只讓這個按鈕區塊往上調 -->
             <div class="animate-fade-in-up delay-700 pt-6 md:pt-10 -translate-y-4 md:-translate-y-8 flex flex-col items-center space-y-6 z-10">
                 <button id="enter-btn" class="btn-capsule group inline-flex items-center justify-center px-10 py-3 md:py-4 rounded-full text-sm font-medium tracking-[0.2em] transition-all duration-300">
                     <span class="pl-[0.2em]">進入系統</span>
@@ -266,77 +280,140 @@
     <section id="works" class="w-full min-h-screen relative z-10 py-24 md:py-40 hidden-page">
         <div class="max-w-7xl mx-auto px-5 md:px-8 lg:px-20">
             
-            <!-- 加入 id="capabilities" 以及 pt-24 -mt-24 解決導覽列遮擋問題 -->
-            <div id="capabilities" class="mb-20 md:mb-32 pt-24 -mt-24">
-                <div class="text-[10px] tracking-[0.3em] text-[#c8a97e] mb-4">01 / CAPABILITIES</div>
-                <h2 class="text-3xl md:text-5xl font-black tracking-tight text-white/90">系統核心模組</h2>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10 mb-32 md:mb-48">
-                <div class="border border-white/10 bg-white/[0.02] p-8 md:p-10 backdrop-blur-sm group hover:border-[#c8a97e]/50 transition-colors duration-500">
-                    <div class="text-3xl text-white/20 font-light mb-6 group-hover:text-[#c8a97e] transition-colors duration-500">01</div>
-                    <h3 class="text-xl font-bold mb-4 tracking-wide">Computer Vision</h3>
-                    <p class="text-sm text-white/50 leading-relaxed font-light tracking-wide">
-                        基於 YOLO 架構與深度學習模型，開發即時影像辨識與追蹤系統。專注於模型輕量化、推論加速，並將 AI 視覺技術落地應用於實際場域。
-                    </p>
-                </div>
-                <div class="border border-white/10 bg-white/[0.02] p-8 md:p-10 backdrop-blur-sm group hover:border-[#c8a97e]/50 transition-colors duration-500">
-                    <div class="text-3xl text-white/20 font-light mb-6 group-hover:text-[#c8a97e] transition-colors duration-500">02</div>
-                    <h3 class="text-xl font-bold mb-4 tracking-wide">Workflow Automation</h3>
-                    <p class="text-sm text-white/50 leading-relaxed font-light tracking-wide">
-                        精通 n8n 等自動化工具，串接各類 API 建立高效的工作流。將複雜的開發流程、警報系統與資料處理自動化，打造如神經網絡般的無縫整合架構。
-                    </p>
-                </div>
-                <div class="border border-white/10 bg-white/[0.02] p-8 md:p-10 backdrop-blur-sm group hover:border-[#c8a97e]/50 transition-colors duration-500">
-                    <div class="text-3xl text-white/20 font-light mb-6 group-hover:text-[#c8a97e] transition-colors duration-500">03</div>
-                    <h3 class="text-xl font-bold mb-4 tracking-wide">Audio-Visual Engineering</h3>
-                    <p class="text-sm text-white/50 leading-relaxed font-light tracking-wide">
-                        結合傳播媒體實務經驗與音樂幕後工程背景，深諳影音訊號處理與多媒體系統整合。能以工程邏輯解構藝術創作，實現從訊號源到終端展示的完美傳遞。
-                    </p>
+            <!-- 頁面 Hero Title：核心理念 (不編號) -->
+            <div id="philosophy" class="mb-32 md:mb-48">
+                <div class="w-full max-w-4xl">
+                    <div class="text-[10px] tracking-[0.3em] text-[#c8a97e] mb-4 uppercase">AUDIO-VISUAL & AI ENGINEERING</div>
+                    <h2 id="scatter-title" class="text-3xl md:text-5xl lg:text-6xl font-black tracking-tight mb-8 relative">Engineering the Infinite Possibilities of Vision.</h2>
+                    <div class="space-y-6 text-sm md:text-base text-white/60 font-light tracking-wide leading-relaxed">
+                        <p>真正的工程不僅是程式碼，而是將邏輯化為解決問題的精準工具。</p>
+                        <p>結合影音實務與 AI 視覺技術，我專注於演算法開發與工作流自動化，致力打破傳統瓶頸，重構系統的效率與可能性。</p>
+                    </div>
                 </div>
             </div>
 
-            <!-- 加入 id="archives" 以及 pt-24 -mt-24 解決導覽列遮擋問題 -->
-            <div id="archives" class="mb-16 md:mb-24 pt-24 -mt-24">
-                <div class="text-[10px] tracking-[0.3em] text-[#c8a97e] mb-4">02 / ARCHIVES</div>
+            <!-- 01 / ARCHIVES 精選專案實績 -->
+            <div id="archives" class="mb-16 md:mb-24">
+                <div class="text-[10px] tracking-[0.3em] text-[#c8a97e] mb-4 uppercase">01 — Archives</div>
                 <h2 class="text-3xl md:text-5xl font-black tracking-tight text-white/90">精選專案實績</h2>
             </div>
 
-            <div class="flex flex-col space-y-16 md:space-y-32">
+            <div class="flex flex-col space-y-16 md:space-y-32 mb-32 md:mb-48">
                 
-                <a href="javascript:void(0)" id="trigger-presentation" class="relative block w-full h-[420px] md:h-auto md:aspect-[21/9] bg-[#0a0a0a] border border-white/5 overflow-hidden group cursor-pointer">
-                    <div class="absolute inset-0 bg-gradient-to-br from-black/80 to-[#c8a97e]/10 group-hover:scale-105 transition-transform duration-700 ease-out"></div>
-                    
-                    <div class="absolute bottom-0 left-0 w-full h-full md:h-auto p-6 md:p-16 flex flex-col justify-end bg-gradient-to-t from-[#050505] via-[#050505]/90 to-transparent">
+                <!-- 專案卡片 1：標題已更改為 Smart Safety Care -->
+                <a href="javascript:void(0)" class="trigger-modal-btn relative block w-full h-[420px] md:h-auto md:aspect-[21/9] bg-[#0a0a0a] border border-white/5 overflow-hidden rounded-3xl group cursor-pointer" data-title="Smart Safety Care">
+                    <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="Smart Safety Care Cover" class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:scale-105 group-hover:opacity-70 transition-all duration-700 ease-out z-0">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/80 to-transparent pointer-events-none z-10"></div>
+                    <div class="absolute bottom-0 left-0 w-full h-full md:h-auto p-6 md:p-16 flex flex-col justify-end z-20">
                         <div class="flex items-center space-x-3 mb-4 mt-auto md:mt-0">
-                            <span class="text-[10px] border border-[#c8a97e]/30 text-[#c8a97e] px-2 py-1 rounded-sm tracking-wider">YOLOv8</span>
-                            <span class="text-[10px] border border-[#c8a97e]/30 text-[#c8a97e] px-2 py-1 rounded-sm tracking-wider">n8n</span>
+                            <span class="text-[10px] border border-[#c8a97e]/30 text-[#c8a97e] px-2 py-1 rounded-lg tracking-wider backdrop-blur-sm bg-black/30">YOLOv8</span>
+                            <span class="text-[10px] border border-[#c8a97e]/30 text-[#c8a97e] px-2 py-1 rounded-lg tracking-wider backdrop-blur-sm bg-black/30">n8n</span>
                         </div>
-                        <h3 class="text-2xl md:text-4xl font-bold text-white mb-4 group-hover:text-[#c8a97e] transition-colors duration-300">Smart Safety Care System</h3>
-                        <p class="text-sm md:text-base text-white/60 max-w-2xl font-light tracking-wide mb-6">
+                        <h3 class="text-2xl md:text-4xl font-bold text-white mb-4 group-hover:text-[#c8a97e] transition-colors duration-300 drop-shadow-md">Smart Safety Care</h3>
+                        <p class="text-sm md:text-base text-white/70 max-w-2xl font-light tracking-wide mb-6 drop-shadow-md">
                             基於邊緣計算的 AI 居家安全監控系統。透過輕量化 YOLO 模型實現跌倒偵測，並結合 n8n 工作流，在異常發生時自動觸發即時群組通報機制。
                         </p>
-                        
-                        <div class="flex items-center text-[#c8a97e] text-sm tracking-widest font-medium opacity-100 md:opacity-0 group-hover:opacity-100 transform translate-y-0 md:translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                        <div class="flex items-center text-[#c8a97e] text-sm tracking-widest font-medium opacity-100 md:opacity-0 group-hover:opacity-100 transform translate-y-0 md:translate-y-2 group-hover:translate-y-0 transition-all duration-300 drop-shadow-md">
                             CLICK TO VIEW PRESENTATION <span class="ml-2">→</span>
                         </div>
                     </div>
                 </a>
 
-                <div class="relative w-full h-[200px] md:h-auto md:aspect-[21/9] bg-[#0a0a0a] border border-white/5 flex items-center justify-center">
-                    <div class="text-white/20 tracking-widest text-sm">[ PROJECT DATA LOADING ... ]</div>
+                <!-- 專案卡片 2：標題同步更改 -->
+                <a href="javascript:void(0)" class="trigger-modal-btn relative block w-full h-[420px] md:h-auto md:aspect-[21/9] bg-[#0a0a0a] border border-white/5 overflow-hidden rounded-3xl group cursor-pointer" data-title="Smart Safety Care">
+                    <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="Smart Safety Care Cover" class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:scale-105 group-hover:opacity-70 transition-all duration-700 ease-out z-0">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/80 to-transparent pointer-events-none z-10"></div>
+                    <div class="absolute bottom-0 left-0 w-full h-full md:h-auto p-6 md:p-16 flex flex-col justify-end z-20">
+                        <div class="flex items-center space-x-3 mb-4 mt-auto md:mt-0">
+                            <span class="text-[10px] border border-[#c8a97e]/30 text-[#c8a97e] px-2 py-1 rounded-lg tracking-wider backdrop-blur-sm bg-black/30">YOLOv8</span>
+                            <span class="text-[10px] border border-[#c8a97e]/30 text-[#c8a97e] px-2 py-1 rounded-lg tracking-wider backdrop-blur-sm bg-black/30">n8n</span>
+                        </div>
+                        <h3 class="text-2xl md:text-4xl font-bold text-white mb-4 group-hover:text-[#c8a97e] transition-colors duration-300 drop-shadow-md">Smart Safety Care</h3>
+                        <p class="text-sm md:text-base text-white/70 max-w-2xl font-light tracking-wide mb-6 drop-shadow-md">
+                            基於邊緣計算的 AI 居家安全監控系統。透過輕量化 YOLO 模型實現跌倒偵測，並結合 n8n 工作流，在異常發生時自動觸發即時群組通報機制。
+                        </p>
+                        <div class="flex items-center text-[#c8a97e] text-sm tracking-widest font-medium opacity-100 md:opacity-0 group-hover:opacity-100 transform translate-y-0 md:translate-y-2 group-hover:translate-y-0 transition-all duration-300 drop-shadow-md">
+                            CLICK TO VIEW PRESENTATION <span class="ml-2">→</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- 02 / CROSS-DOMAIN CAPABILITY 跨域整合量能 -->
+            <div id="capabilities" class="mb-16 md:mb-24">
+                <div class="mb-16 md:mb-20">
+                    <div class="text-[10px] tracking-[0.3em] text-[#c8a97e] mb-4 uppercase">02 — Cross-Domain Capability</div>
+                    <h2 class="text-3xl md:text-5xl font-black tracking-tight text-white/90">跨域整合量能</h2>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
+                    <!-- Card 1: Computer Vision -->
+                    <div class="bg-[#111111] border border-white/5 rounded-3xl p-8 md:p-10 flex flex-col hover:border-[#c8a97e]/30 transition-colors duration-500">
+                        <div class="flex items-baseline mb-6">
+                            <span class="text-[#c8a97e] font-bold tracking-widest text-sm mr-4">01</span>
+                            <h3 class="text-2xl font-bold text-white tracking-wide">Computer Vision</h3>
+                        </div>
+                        <p class="text-sm text-white/50 leading-relaxed font-light tracking-wide mb-10 flex-grow">
+                            專注模型輕量化與邊緣推論加速，開發高穩定性的即時影像辨識系統，將 AI 視覺技術精準落地於實務場域。
+                        </p>
+                        <div class="flex flex-wrap gap-2.5 mt-auto">
+                            <span class="text-xs px-3 py-1.5 border border-white/10 rounded-lg text-white/70 bg-transparent hover:border-[#c8a97e]/50 hover:text-white transition-colors cursor-default">Python</span>
+                            <span class="text-xs px-3 py-1.5 border border-white/10 rounded-lg text-white/70 bg-transparent hover:border-[#c8a97e]/50 hover:text-white transition-colors cursor-default">PyTorch</span>
+                            <span class="text-xs px-3 py-1.5 border border-white/10 rounded-lg text-white/70 bg-transparent hover:border-[#c8a97e]/50 hover:text-white transition-colors cursor-default">OpenCV</span>
+                            <span class="text-xs px-3 py-1.5 border border-white/10 rounded-lg text-white/70 bg-transparent hover:border-[#c8a97e]/50 hover:text-white transition-colors cursor-default">YOLOv8</span>
+                            <span class="text-xs px-3 py-1.5 border border-white/10 rounded-lg text-white/70 bg-transparent hover:border-[#c8a97e]/50 hover:text-white transition-colors cursor-default">TensorRT</span>
+                            <span class="text-xs px-3 py-1.5 border border-white/10 rounded-lg text-white/70 bg-transparent hover:border-[#c8a97e]/50 hover:text-white transition-colors cursor-default">FastAPI</span>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Workflow Automation -->
+                    <div class="bg-[#111111] border border-white/5 rounded-3xl p-8 md:p-10 flex flex-col hover:border-[#c8a97e]/30 transition-colors duration-500">
+                        <div class="flex items-baseline mb-6">
+                            <span class="text-[#c8a97e] font-bold tracking-widest text-sm mr-4">02</span>
+                            <h3 class="text-2xl font-bold text-white tracking-wide">Workflow Automation</h3>
+                        </div>
+                        <p class="text-sm text-white/50 leading-relaxed font-light tracking-wide mb-10 flex-grow">
+                            運用 n8n 與 API 串接技術，將繁雜的資料處理與警報通報全面自動化，建構如神經網絡般的高效工作流。
+                        </p>
+                        <div class="flex flex-wrap gap-2.5 mt-auto">
+                            <span class="text-xs px-3 py-1.5 border border-white/10 rounded-lg text-white/70 bg-transparent hover:border-[#c8a97e]/50 hover:text-white transition-colors cursor-default">n8n</span>
+                            <span class="text-xs px-3 py-1.5 border border-white/10 rounded-lg text-white/70 bg-transparent hover:border-[#c8a97e]/50 hover:text-white transition-colors cursor-default">Docker</span>
+                            <span class="text-xs px-3 py-1.5 border border-white/10 rounded-lg text-white/70 bg-transparent hover:border-[#c8a97e]/50 hover:text-white transition-colors cursor-default">Linux</span>
+                            <span class="text-xs px-3 py-1.5 border border-white/10 rounded-lg text-white/70 bg-transparent hover:border-[#c8a97e]/50 hover:text-white transition-colors cursor-default">Webhooks</span>
+                            <span class="text-xs px-3 py-1.5 border border-white/10 rounded-lg text-white/70 bg-transparent hover:border-[#c8a97e]/50 hover:text-white transition-colors cursor-default">API Integration</span>
+                            <span class="text-xs px-3 py-1.5 border border-white/10 rounded-lg text-white/70 bg-transparent hover:border-[#c8a97e]/50 hover:text-white transition-colors cursor-default">Git</span>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Audio-Visual Engineering -->
+                    <div class="bg-[#111111] border border-white/5 rounded-3xl p-8 md:p-10 flex flex-col hover:border-[#c8a97e]/30 transition-colors duration-500">
+                        <div class="flex items-baseline mb-6">
+                            <span class="text-[#c8a97e] font-bold tracking-widest text-sm mr-4">03</span>
+                            <h3 class="text-2xl font-bold text-white tracking-wide">Audio-Visual Engineering</h3>
+                        </div>
+                        <p class="text-sm text-white/50 leading-relaxed font-light tracking-wide mb-10 flex-grow">
+                            深諳影音訊號處理與多媒體系統整合，以工程思維解構藝術創作，實現從訊號源到終端展演的無縫傳遞。
+                        </p>
+                        <div class="flex flex-wrap gap-2.5 mt-auto">
+                            <span class="text-xs px-3 py-1.5 border border-white/10 rounded-lg text-white/70 bg-transparent hover:border-[#c8a97e]/50 hover:text-white transition-colors cursor-default">Logic Pro</span>
+                            <span class="text-xs px-3 py-1.5 border border-white/10 rounded-lg text-white/70 bg-transparent hover:border-[#c8a97e]/50 hover:text-white transition-colors cursor-default">Cubase</span>
+                            <span class="text-xs px-3 py-1.5 border border-white/10 rounded-lg text-white/70 bg-transparent hover:border-[#c8a97e]/50 hover:text-white transition-colors cursor-default">DaVinci Resolve</span>
+                            <span class="text-xs px-3 py-1.5 border border-white/10 rounded-lg text-white/70 bg-transparent hover:border-[#c8a97e]/50 hover:text-white transition-colors cursor-default">After Effects</span>
+                            <span class="text-xs px-3 py-1.5 border border-white/10 rounded-lg text-white/70 bg-transparent hover:border-[#c8a97e]/50 hover:text-white transition-colors cursor-default">MAonPC</span>
+                            <span class="text-xs px-3 py-1.5 border border-white/10 rounded-lg text-white/70 bg-transparent hover:border-[#c8a97e]/50 hover:text-white transition-colors cursor-default">Imagine Communications - ADC</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
         </div>
     </section>
     
-    <!-- 修改 duration-400 為 duration-500 -->
+    <!-- 彈出視窗 -->
     <div id="presentation-modal" class="fixed inset-0 z-[85] hidden flex-col items-center justify-center bg-black opacity-0 transition-opacity duration-500 px-0 pt-14 pb-0 md:p-8 md:pt-20">
         
-        <!-- 頂部標題與關閉按鈕 -->
         <div class="absolute top-0 left-0 w-full h-14 md:h-20 flex items-center justify-center z-50">
-            <span class="text-white/50 text-sm font-light tracking-wide pointer-events-none">Smart Safety Care</span>
+            <span id="modal-title-text" class="text-white/50 text-sm font-light tracking-wide pointer-events-none">Smart Safety Care</span>
             
             <button id="close-modal-btn" class="absolute right-4 md:right-8 text-white/50 hover:text-white transition-all cursor-pointer p-2 md:p-2.5 rounded-full border border-white/20 hover:border-white/60 hover:bg-white/10">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -345,7 +422,6 @@
             </button>
         </div>
 
-        <!-- 修改 duration-400 為 duration-500 -->
         <div id="modal-content" class="w-full h-full md:max-w-[1440px] flex flex-col scale-95 transition-transform duration-500">
             <div class="w-full h-full relative bg-white rounded-t-xl md:rounded-xl overflow-hidden shadow-2xl shadow-black">
                 <iframe src="portfolio/ssc.html" class="absolute inset-0 w-full h-full border-none" allowfullscreen></iframe>
@@ -355,13 +431,13 @@
     
 <script>
     // ==========================================
-    // 動畫狀態控制器 (決定目前播放哪種特效)
+    // 動畫狀態控制器
     // ==========================================
     let isPathsActive = true; 
     let isCVActive = false;
 
     // ==========================================
-    // 游標全域變數 (供兩種特效追蹤位置)
+    // 游標全域變數
     // ==========================================
     let cursorX = window.innerWidth / 2;
     let cursorY = window.innerHeight / 2;
@@ -462,7 +538,7 @@
     animatePaths();
 
     // ==========================================
-    // 2. 第二頁特效：幾何視覺鎖定 (Vision Tracking Nodes)
+    // 2. 第二頁特效：幾何視覺鎖定
     // ==========================================
     const cvCanvas = document.getElementById('cv-canvas');
     const cvCtx = cvCanvas.getContext('2d');
@@ -547,20 +623,13 @@
         scanner.y = lerp(scanner.y, cursorY, 0.1);
 
         const spotRadius = 450; 
-        const spotlight = cvCtx.createRadialGradient(
-            scanner.x, scanner.y, 0, 
-            scanner.x, scanner.y, spotRadius
-        );
-        
+        const spotlight = cvCtx.createRadialGradient(scanner.x, scanner.y, 0, scanner.x, scanner.y, spotRadius);
         spotlight.addColorStop(0, 'rgba(200, 169, 126, 0.12)'); 
         spotlight.addColorStop(0.4, 'rgba(200, 169, 126, 0.04)'); 
         spotlight.addColorStop(1, 'rgba(5, 5, 5, 0)');            
-
         cvCtx.fillStyle = spotlight;
         cvCtx.fillRect(0, 0, cvCanvas.width, cvCanvas.height);
-
         for (let i = 0; i < cvTargets.length; i++) cvTargets[i].update();
-
         drawCorners(scanner.x, scanner.y, scanner.size, 'rgba(200, 169, 126, 0.6)');
         drawCross(scanner.x, scanner.y, 12, 'rgba(200, 169, 126, 0.4)');
     }
@@ -614,14 +683,11 @@
             const y = e.clientY - rect.top - rect.height / 2;
             magneticBtn.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
         });
-
-        magneticBtn.addEventListener('mouseleave', () => {
-            magneticBtn.style.transform = `translate(0px, 0px)`;
-        });
+        magneticBtn.addEventListener('mouseleave', () => { magneticBtn.style.transform = `translate(0px, 0px)`; });
     }
 
     // ==========================================
-    // 5. 無縫切換頁面與特效控制 (SPA Transition)
+    // 5. 無縫切換頁面
     // ==========================================
     const enterBtn = document.getElementById('enter-btn');
     const pageHero = document.getElementById('page-hero');
@@ -629,77 +695,24 @@
     const ambientBreathe = document.getElementById('ambient-breathe');
     const pathwayCanvas = document.getElementById('pathway-canvas');
     const visionCanvas = document.getElementById('cv-canvas');
-    const globalNav = document.getElementById('global-nav');
-    const logoBtn = document.getElementById('logo-btn');
 
     if(enterBtn) {
         enterBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            
             document.body.classList.add('transition-active');
-
             setTimeout(() => {
                 pageHero.classList.add('hidden-page');      
                 pageWorks.classList.remove('hidden-page');  
                 window.scrollTo(0, 0);                      
-
                 ambientBreathe.classList.add('hidden-page');
                 pathwayCanvas.classList.add('hidden-page');
                 isPathsActive = false; 
-
                 visionCanvas.classList.remove('hidden-page');
                 isCVActive = true; 
-                initCV();      
-                animateCV();   
-
-                // 顯示導覽列
-                if(globalNav) {
-                    globalNav.classList.remove('-translate-y-full', 'opacity-0');
-                    globalNav.classList.add('translate-y-0', 'opacity-100');
-                }
-
+                initCV(); animateCV();   
                 document.body.classList.remove('transition-active');
                 document.body.classList.add('transition-out');
-
-                setTimeout(() => {
-                    document.body.classList.remove('transition-out');
-                }, 600);
-            }, 600);
-        });
-    }
-
-    // 點擊左上角 Logo 返回首頁
-    if(logoBtn) {
-        logoBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            if(isPathsActive) return; // 已經在首頁就略過不做事
-
-            document.body.classList.add('transition-active');
-
-            setTimeout(() => {
-                pageWorks.classList.add('hidden-page');      
-                pageHero.classList.remove('hidden-page');  
-                window.scrollTo(0, 0);                      
-
-                ambientBreathe.classList.remove('hidden-page');
-                pathwayCanvas.classList.remove('hidden-page');
-                isPathsActive = true; 
-
-                visionCanvas.classList.add('hidden-page');
-                isCVActive = false; 
-
-                // 隱藏導覽列
-                if(globalNav) {
-                    globalNav.classList.add('-translate-y-full', 'opacity-0');
-                    globalNav.classList.remove('translate-y-0', 'opacity-100');
-                }
-
-                document.body.classList.remove('transition-active');
-                document.body.classList.add('transition-out');
-
-                setTimeout(() => {
-                    document.body.classList.remove('transition-out');
-                }, 600);
+                setTimeout(() => { document.body.classList.remove('transition-out'); }, 600);
             }, 600);
         });
     }
@@ -710,45 +723,80 @@
     const modal = document.getElementById('presentation-modal');
     const modalContent = document.getElementById('modal-content');
     const closeModalBtn = document.getElementById('close-modal-btn');
-    const triggerPresentation = document.getElementById('trigger-presentation');
+    const modalTitleText = document.getElementById('modal-title-text');
+    const triggers = document.querySelectorAll('.trigger-modal-btn');
 
-    function openModal() {
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-        document.body.classList.add('no-scroll'); // 防止背景網頁可以上下捲動
-        
-        // 延遲一點點讓 display:flex 生效後再執行 opacity 動畫
-        setTimeout(() => {
-            modal.classList.remove('opacity-0');
-            modalContent.classList.remove('scale-95');
-            modalContent.classList.add('scale-100');
-        }, 10);
+    function openModal(e) {
+        if (e && e.currentTarget && modalTitleText) {
+            const title = e.currentTarget.getAttribute('data-title');
+            if (title) modalTitleText.innerText = title;
+        }
+        modal.classList.remove('hidden'); modal.classList.add('flex');
+        document.body.classList.add('no-scroll');
+        setTimeout(() => { modal.classList.remove('opacity-0'); modalContent.classList.remove('scale-95'); modalContent.classList.add('scale-100'); }, 10);
     }
 
     function closeModal() {
-        modal.classList.add('opacity-0');
-        modalContent.classList.remove('scale-100');
-        modalContent.classList.add('scale-95');
+        modal.classList.add('opacity-0'); modalContent.classList.remove('scale-100'); modalContent.classList.add('scale-95');
         document.body.classList.remove('no-scroll');
-        
-        // 等待動畫秒數(500ms)結束後再隱藏 DOM
-        setTimeout(() => {
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }, 500); 
+        setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 500); 
     }
 
-    if(triggerPresentation && modal && closeModalBtn) {
-        // 點擊專案卡片打開
-        triggerPresentation.addEventListener('click', openModal);
-        
-        // 點擊 X 按鈕關閉
+    if(triggers.length > 0 && modal && closeModalBtn) {
+        triggers.forEach(trigger => { trigger.addEventListener('click', openModal); });
         closeModalBtn.addEventListener('click', closeModal);
-        
-        // 點擊黑色背景遮罩也可以關閉
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                closeModal();
+        modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+    }
+
+    // ==========================================
+    // 7. 標題粒子爆炸特效
+    // ==========================================
+    const titleText = document.getElementById('scatter-title');
+    if (titleText) {
+        const words = titleText.innerText.split(' ');
+        titleText.innerHTML = '';
+        words.forEach((word, index) => {
+            const wordSpan = document.createElement('span');
+            wordSpan.className = 'inline-block whitespace-nowrap';
+            word.split('').forEach(char => {
+                const charWrapper = document.createElement('span');
+                charWrapper.className = 'relative inline-block';
+                const charSpan = document.createElement('span');
+                charSpan.className = 'scatter-letter relative inline-block cursor-default';
+                charSpan.innerText = char;
+                charWrapper.appendChild(charSpan);
+                charWrapper.addEventListener('mouseenter', function() {
+                    if (charSpan.classList.contains('scattering')) return;
+                    charSpan.classList.add('scattering');
+                    charSpan.style.opacity = '0';
+                    charSpan.style.transform = `scale(0.2) translate(${(Math.random()-0.5)*40}px, ${(Math.random()-0.5)*40}px) rotate(${(Math.random()-0.5)*90}deg)`;
+                    charSpan.style.color = '#ffffff';
+                    charSpan.style.textShadow = '0 0 15px #c8a97e, 0 0 30px #c8a97e';
+                    const particleCount = Math.floor(Math.random() * 4) + 5;
+                    for(let i = 0; i < particleCount; i++) {
+                        const p = document.createElement('span');
+                        p.className = 'real-particle';
+                        p.style.setProperty('--px', `${(Math.random() - 0.5) * 200}px`);
+                        p.style.setProperty('--py', `${(Math.random() - 0.5) * 200}px`);
+                        const pSize = Math.random() * 3 + 2;
+                        p.style.width = `${pSize}px`; p.style.height = `${pSize}px`;
+                        this.appendChild(p);
+                        setTimeout(() => { if (this.contains(p)) p.remove(); }, 700);
+                    }
+                    setTimeout(() => {
+                        charSpan.classList.remove('scattering'); charSpan.style.opacity = '1';
+                        charSpan.style.transform = 'scale(1) translate(0px, 0px) rotate(0deg)';
+                        charSpan.style.color = 'rgba(255, 255, 255, 0.9)';
+                        charSpan.style.textShadow = '0 0 15px rgba(200, 169, 126, 0.1)';
+                    }, 1200);
+                });
+                wordSpan.appendChild(charWrapper);
+            });
+            titleText.appendChild(wordSpan);
+            if (index < words.length - 1) {
+                const space = document.createElement('span');
+                space.innerHTML = '&nbsp;';
+                titleText.appendChild(space);
             }
         });
     }
