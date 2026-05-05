@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ROY | AI Engineering Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://gs.jurieo.com/gemini/fonts-googleapis/css2?family=Inter:wght@300;400;700;900&family=Noto+Sans+TC:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=Noto+Sans+TC:wght@300;400;700;900&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -195,12 +195,34 @@
         .no-scroll {
             overflow: hidden;
         }
+
+        /* 導覽列平滑滾動設定 */
+        html {
+            scroll-behavior: smooth;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col relative selection:bg-white/20 selection:text-white">
 
     <div id="ambient-breathe" class="ambient-breathe"></div>
     <div id="page-transition"></div>
+
+    <!-- 導覽列 (預設隱藏，進入系統後滑出) -->
+    <header id="global-nav" class="fixed w-full top-0 left-0 z-[80] flex justify-between items-center px-6 md:px-12 py-5 transition-all duration-1000 transform -translate-y-full opacity-0 bg-[#050505]/80 backdrop-blur-md border-b border-white/5">
+        <a href="#" id="logo-btn" class="text-white font-black tracking-widest text-xl group cursor-pointer">
+            R<span class="text-[#c8a97e] group-hover:text-white transition-colors">.</span>
+        </a>
+        
+        <nav class="hidden sm:flex space-x-8 md:space-x-12 text-[10px] md:text-xs tracking-[0.25em] text-white/50 font-light">
+            <a href="#capabilities" class="hover:text-[#c8a97e] transition-colors duration-300">CAPABILITIES</a>
+            <a href="#archives" class="hover:text-[#c8a97e] transition-colors duration-300">ARCHIVES</a>
+        </nav>
+        
+        <div class="text-[9px] tracking-[0.2em] text-[#c8a97e] flex items-center gap-2">
+            <span class="w-1.5 h-1.5 bg-[#c8a97e] rounded-full animate-pulse shadow-[0_0_8px_#c8a97e]"></span>
+            <span class="hidden sm:inline">SYSTEM ONLINE</span>
+        </div>
+    </header>
 
     <div id="cursor-dot" class="hidden md:block pointer-events-none fixed top-0 left-0 w-2 h-2 bg-[#c8a97e] rounded-full z-[100] transform -translate-x-1/2 -translate-y-1/2 transition-transform duration-100"></div>
     <div id="cursor-ring" class="hidden md:block pointer-events-none fixed top-0 left-0 w-10 h-10 border border-[#c8a97e]/50 rounded-full z-[99] transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ease-out"></div>
@@ -209,9 +231,11 @@
     <canvas id="cv-canvas" class="hidden-page"></canvas>
 
     <main id="page-hero" class="flex-grow flex items-center justify-center px-4 md:px-8 relative z-10 min-h-screen w-full"> 
+        <!-- 移除先前的整體往上移動，讓標題維持原位 -->
         <div class="w-full px-4 md:px-8 lg:px-20 mx-auto flex flex-col items-center justify-center text-center"> 
             
-            <div class="animate-fade-in-up delay-100 text-xs md:text-sm font-bold tracking-[0.5em] text-white/80 mb-6 md:mb-10 pl-[0.5em]">K U A N . 2 0 2 6</div>
+            <!-- 加上 relative 與 top 屬性，讓它單獨往下移動且不影響下方元素排版 -->
+            <div class="animate-fade-in-up delay-100 text-xs md:text-sm font-bold tracking-[0.5em] text-white/80 mb-6 md:mb-10 pl-[0.5em] relative top-8 md:top-12">K U A N . 2 0 2 6</div>
 
             <div class="animate-fade-in-up delay-300 overflow-visible w-full flex items-center justify-center relative top-10 md:top-20">
                 <h1 class="watermark-title inline-block px-4 py-2 text-[4rem] sm:text-[6rem] md:text-[8rem] lg:text-[10rem] font-black leading-none tracking-tighter overflow-visible mb-12 md:mb-20" data-text="ROY">
@@ -224,7 +248,8 @@
                 「從實務現場跨越至演算法開發，以精準的自動化邏輯，重構視覺工程的無限可能。」
             </p>
 
-            <div class="animate-fade-in-up delay-700 pt-16 md:pt-24 flex flex-col items-center space-y-6 z-10">
+            <!-- 縮小 padding-top 並且加上負位移，只讓這個按鈕區塊往上調 -->
+            <div class="animate-fade-in-up delay-700 pt-6 md:pt-10 -translate-y-4 md:-translate-y-8 flex flex-col items-center space-y-6 z-10">
                 <button id="enter-btn" class="btn-capsule group inline-flex items-center justify-center px-10 py-3 md:py-4 rounded-full text-sm font-medium tracking-[0.2em] transition-all duration-300">
                     <span class="pl-[0.2em]">進入系統</span>
                     <span class="ml-4 font-inter text-lg group-hover:translate-x-1 transition-transform duration-300">→</span>
@@ -241,7 +266,8 @@
     <section id="works" class="w-full min-h-screen relative z-10 py-24 md:py-40 hidden-page">
         <div class="max-w-7xl mx-auto px-5 md:px-8 lg:px-20">
             
-            <div class="mb-20 md:mb-32">
+            <!-- 加入 id="capabilities" 以及 pt-24 -mt-24 解決導覽列遮擋問題 -->
+            <div id="capabilities" class="mb-20 md:mb-32 pt-24 -mt-24">
                 <div class="text-[10px] tracking-[0.3em] text-[#c8a97e] mb-4">01 / CAPABILITIES</div>
                 <h2 class="text-3xl md:text-5xl font-black tracking-tight text-white/90">系統核心模組</h2>
             </div>
@@ -270,7 +296,8 @@
                 </div>
             </div>
 
-            <div class="mb-16 md:mb-24">
+            <!-- 加入 id="archives" 以及 pt-24 -mt-24 解決導覽列遮擋問題 -->
+            <div id="archives" class="mb-16 md:mb-24 pt-24 -mt-24">
                 <div class="text-[10px] tracking-[0.3em] text-[#c8a97e] mb-4">02 / ARCHIVES</div>
                 <h2 class="text-3xl md:text-5xl font-black tracking-tight text-white/90">精選專案實績</h2>
             </div>
@@ -304,7 +331,8 @@
         </div>
     </section>
     
-    <div id="presentation-modal" class="fixed inset-0 z-[85] hidden flex-col items-center justify-center bg-black opacity-0 transition-opacity duration-400 px-0 pt-14 pb-0 md:p-8 md:pt-20">
+    <!-- 修改 duration-400 為 duration-500 -->
+    <div id="presentation-modal" class="fixed inset-0 z-[85] hidden flex-col items-center justify-center bg-black opacity-0 transition-opacity duration-500 px-0 pt-14 pb-0 md:p-8 md:pt-20">
         
         <!-- 頂部標題與關閉按鈕 -->
         <div class="absolute top-0 left-0 w-full h-14 md:h-20 flex items-center justify-center z-50">
@@ -317,7 +345,8 @@
             </button>
         </div>
 
-        <div id="modal-content" class="w-full h-full md:max-w-[1440px] flex flex-col scale-95 transition-transform duration-400">
+        <!-- 修改 duration-400 為 duration-500 -->
+        <div id="modal-content" class="w-full h-full md:max-w-[1440px] flex flex-col scale-95 transition-transform duration-500">
             <div class="w-full h-full relative bg-white rounded-t-xl md:rounded-xl overflow-hidden shadow-2xl shadow-black">
                 <iframe src="portfolio/ssc.html" class="absolute inset-0 w-full h-full border-none" allowfullscreen></iframe>
             </div>
@@ -600,6 +629,8 @@
     const ambientBreathe = document.getElementById('ambient-breathe');
     const pathwayCanvas = document.getElementById('pathway-canvas');
     const visionCanvas = document.getElementById('cv-canvas');
+    const globalNav = document.getElementById('global-nav');
+    const logoBtn = document.getElementById('logo-btn');
 
     if(enterBtn) {
         enterBtn.addEventListener('click', (e) => {
@@ -620,6 +651,48 @@
                 isCVActive = true; 
                 initCV();      
                 animateCV();   
+
+                // 顯示導覽列
+                if(globalNav) {
+                    globalNav.classList.remove('-translate-y-full', 'opacity-0');
+                    globalNav.classList.add('translate-y-0', 'opacity-100');
+                }
+
+                document.body.classList.remove('transition-active');
+                document.body.classList.add('transition-out');
+
+                setTimeout(() => {
+                    document.body.classList.remove('transition-out');
+                }, 600);
+            }, 600);
+        });
+    }
+
+    // 點擊左上角 Logo 返回首頁
+    if(logoBtn) {
+        logoBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if(isPathsActive) return; // 已經在首頁就略過不做事
+
+            document.body.classList.add('transition-active');
+
+            setTimeout(() => {
+                pageWorks.classList.add('hidden-page');      
+                pageHero.classList.remove('hidden-page');  
+                window.scrollTo(0, 0);                      
+
+                ambientBreathe.classList.remove('hidden-page');
+                pathwayCanvas.classList.remove('hidden-page');
+                isPathsActive = true; 
+
+                visionCanvas.classList.add('hidden-page');
+                isCVActive = false; 
+
+                // 隱藏導覽列
+                if(globalNav) {
+                    globalNav.classList.add('-translate-y-full', 'opacity-0');
+                    globalNav.classList.remove('translate-y-0', 'opacity-100');
+                }
 
                 document.body.classList.remove('transition-active');
                 document.body.classList.add('transition-out');
@@ -658,11 +731,11 @@
         modalContent.classList.add('scale-95');
         document.body.classList.remove('no-scroll');
         
-        // 等待動畫秒數(400ms)結束後再隱藏 DOM
+        // 等待動畫秒數(500ms)結束後再隱藏 DOM
         setTimeout(() => {
             modal.classList.add('hidden');
             modal.classList.remove('flex');
-        }, 400); 
+        }, 500); 
     }
 
     if(triggerPresentation && modal && closeModalBtn) {
