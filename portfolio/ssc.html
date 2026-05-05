@@ -633,22 +633,25 @@
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 md:gap-6 w-full items-stretch">
                     <div class="lg:col-span-5">
                         <div class="bg-slate-800 rounded-xl overflow-hidden shadow-sm h-full flex flex-col border border-slate-700">
-                            <div class="flex-grow img-placeholder relative min-h-[250px] md:min-h-[350px]">
-                                <img src="pictures/v2.0 PR Curve.png" class="absolute inset-0 w-full h-full object-cover chart-wipe" style="--anim-delay: 0.3s;" alt="v2.0 PR Curve" onerror="this.style.display='none'">
+                            <!-- ✅ 加入 !bg-transparent 讓底色融合卡片，並改用 object-contain 讓圖片完整顯示不裁切 -->
+                            <div class="flex-grow img-placeholder !bg-transparent relative min-h-[250px] md:min-h-[350px]">
+                                <img src="pictures/v2.0 PR Curve.png" class="absolute inset-0 w-full h-full object-contain chart-wipe" style="--anim-delay: 0.3s;" alt="v2.0 PR Curve" onerror="this.style.display='none'">
                             </div>
-                            <div class="bg-slate-900/80 py-1.5 md:py-2 text-center text-[9px] md:text-[10px] text-slate-400 border-t border-slate-700">v2.0 PR Curve — mAP@0.5 = 0.758</div>
+                            <div class="bg-slate-900/80 py-1.5 md:py-2 text-center text-[9px] md:text-[10px] text-slate-400 border-t border-slate-700 mt-auto">v2.0 PR Curve — mAP@0.5 = 0.758</div>
                         </div>
                     </div>
                     <div class="lg:col-span-7 flex flex-col gap-4 md:gap-5">
                         <div class="bg-slate-800 rounded-xl overflow-hidden shadow-sm flex-1 flex flex-col border border-slate-700">
-                            <div class="flex-grow img-placeholder relative min-h-[140px] md:min-h-[160px]">
-                                <img src="pictures/sample 2.png" class="absolute inset-0 w-full h-full object-cover object-center" alt="v2.0 Sample 1" onerror="this.style.display='none'">
+                            <!-- ✅ 加入 !bg-transparent，並改用 object-contain -->
+                            <div class="flex-grow img-placeholder !bg-transparent relative min-h-[140px] md:min-h-[160px]">
+                                <img src="pictures/sample 2.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="v2.0 Sample 1" onerror="this.style.display='none'">
                             </div>
                             <div class="bg-slate-900/80 py-1.5 md:py-2 text-center text-[9px] md:text-[10px] text-slate-400 border-t border-slate-700 mt-auto">偵測樣本 1</div>
                         </div>
                         <div class="bg-slate-800 rounded-xl overflow-hidden shadow-sm flex-1 flex flex-col border border-slate-700">
-                            <div class="flex-grow img-placeholder relative min-h-[140px] md:min-h-[160px]">
-                                <img src="pictures/sample 5.png" class="absolute inset-0 w-full h-full object-cover object-center" alt="v2.0 Sample 2" onerror="this.style.display='none'">
+                            <!-- ✅ 加入 !bg-transparent，並改用 object-contain -->
+                            <div class="flex-grow img-placeholder !bg-transparent relative min-h-[140px] md:min-h-[160px]">
+                                <img src="pictures/sample 5.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="v2.0 Sample 2" onerror="this.style.display='none'">
                             </div>
                             <div class="bg-slate-900/80 py-1.5 md:py-2 text-center text-[9px] md:text-[10px] text-slate-400 border-t border-slate-700 mt-auto">偵測樣本 2</div>
                         </div>
