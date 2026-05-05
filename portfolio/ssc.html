@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>安全居家照護系統 | 專題介紹網站</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://gs.jurieo.com/gemini/fonts-googleapis/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -23,13 +23,12 @@
         }
     </script>
     <style>
-        /* 💡 核心縮小魔法：改變基基準字體大小，所有 rem 單位 (padding, text, gap, max-w) 會等比縮小，不破壞任何原版 class！ */
-        html { font-size: 13px; } /* 桌機與小視窗：整體等比例縮小約 18% */
+        /* 💡 核心縮小魔法 */
+        html { font-size: 13px; }
         @media (max-width: 768px) {
-            html { font-size: 11px; } /* 手機端：整體等比例縮小約 31% */
+            html { font-size: 11px; }
         }
 
-        /* 基礎設定：防止最外層滾動，將滾動控制權交給內部橫向輪播 */
         body { 
             background-color: #0f172a; 
             color: #f8fafc; 
@@ -40,62 +39,68 @@
             padding: 0;
         }
 
-        /* 橫向輪播主容器 */
+        /* 👑 全新過場主容器設定：改為相對定位，隱藏原生滾動軸 */
         #presentation {
-            display: flex !important;
-            flex-direction: row;
-            flex-wrap: nowrap;
+            position: relative;
             width: 100vw;
             height: 100vh;
-            overflow-x: auto;
-            overflow-y: hidden;
-            scroll-snap-type: x mandatory;
-            scroll-behavior: smooth;
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-        #presentation::-webkit-scrollbar {
-            display: none;
+            overflow: hidden;
         }
         
-        /* 單一頁面外部容器：解鎖垂直滾動！ */
+        /* 👑 全新單一頁面容器：絕對定位、淡入縮放 (Fade & Scale) 效果 */
         .slide-wrapper { 
-            flex: 0 0 100vw;
+            position: absolute;
+            top: 0; 
+            left: 0;
             width: 100vw;
             height: 100vh;
-            scroll-snap-align: start; /* 滑動對齊頂部 */
-            overflow-y: auto;         /* ✅ 解鎖垂直滾動：手機版或內容太多時可上下滑，絕對防裁切！ */
+            overflow-y: auto; /* 依然保留內容過長時的垂直滾動 */
             overflow-x: hidden;
             display: flex; 
             flex-direction: column;
-            position: relative;
+            
+            /* 離開時的狀態 (未啟動) */
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.97) translateY(10px);
+            transition: opacity 0.7s cubic-bezier(0.25, 1, 0.5, 1), 
+                        transform 0.7s cubic-bezier(0.25, 1, 0.5, 1),
+                        visibility 0.7s;
+            z-index: 0;
+        }
+
+        /* 👑 當前頁面啟動時的狀態 */
+        .slide-wrapper.active {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1) translateY(0);
+            z-index: 10;
         }
         
-        /* 內部真實內容容器：響應式自適應 */
+        /* 內部真實內容容器 */
         .slide-content {
             width: 100%;
-            max-width: 72rem; /* 對應原本的 max-w-6xl */
+            max-width: 72rem;
             margin: 0 auto;
-            min-height: 100%; /* 確保內容少時垂直居中，內容多時往下長 */
+            min-height: 100%; 
             display: flex;
             flex-direction: column;
             justify-content: center;
-            padding: 4rem 2rem 6rem 2rem; /* 保留底部空間給導覽列 */
+            padding: 4rem 2rem 6rem 2rem; 
             box-sizing: border-box;
             
-            /* 動畫初始狀態 */
+            /* 內部元素的二次上浮效果，搭配主過場更有層次 */
             opacity: 0;
             transform: translateY(20px);
-            transition: opacity 0.6s ease, transform 0.6s ease;
+            transition: opacity 0.6s ease 0.2s, transform 0.6s ease 0.2s;
         }
 
-        /* 滾動到畫面中時觸發 */
         .slide-wrapper.active .slide-content { 
             opacity: 1;
             transform: translateY(0);
         }
         
-        /* 保留您原本的特效與動畫設定 */
+        /* 數據圖表動畫 */
         .chart-bar {
             width: 0;
             opacity: 0;
@@ -103,7 +108,7 @@
             white-space: nowrap;
         }
         .slide-wrapper.active .chart-bar {
-            animation: growBar 1s cubic-bezier(0.22, 1, 0.36, 1) var(--anim-delay, 0.4s) forwards;
+            animation: growBar 1s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--anim-delay, 0.4s) + 0.3s) forwards;
         }
         @keyframes growBar {
             0% { width: 0; opacity: 0; }
@@ -111,10 +116,10 @@
         }
 
         .slide-wrapper.active .venn-left {
-            animation: slideVennLeft 1s cubic-bezier(0.16, 1, 0.3, 1) 0.4s backwards;
+            animation: slideVennLeft 1s cubic-bezier(0.16, 1, 0.3, 1) 0.6s backwards;
         }
         .slide-wrapper.active .venn-right {
-            animation: slideVennRight 1s cubic-bezier(0.16, 1, 0.3, 1) 0.4s backwards;
+            animation: slideVennRight 1s cubic-bezier(0.16, 1, 0.3, 1) 0.6s backwards;
         }
         @keyframes slideVennLeft { from { transform: translateX(-30px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         @keyframes slideVennRight { from { transform: translateX(30px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
@@ -124,14 +129,14 @@
             opacity: 0;
         }
         .slide-wrapper.active .chart-wipe {
-            animation: wipeRight 1s cubic-bezier(0.22, 1, 0.36, 1) var(--anim-delay, 0.3s) forwards;
+            animation: wipeRight 1s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--anim-delay, 0.3s) + 0.3s) forwards;
         }
         .slide-content .chart-zoom {
             transform: scale(0.85);
             opacity: 0;
         }
         .slide-wrapper.active .chart-zoom {
-            animation: popZoom 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) var(--anim-delay, 0.3s) forwards;
+            animation: popZoom 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) calc(var(--anim-delay, 0.3s) + 0.2s) forwards;
         }
         @keyframes wipeRight {
             0% { clip-path: inset(0 100% 0 0); opacity: 0; transform: translateX(-20px); }
@@ -146,6 +151,20 @@
             0% { background-position: 200% center; }
             100% { background-position: -200% center; }
         }
+
+        /* 👑 箭頭流動動畫 */
+        @keyframes arrowFlowX {
+            0% { transform: translateX(-4px); opacity: 0.3; }
+            50% { opacity: 1; }
+            100% { transform: translateX(4px); opacity: 0.3; }
+        }
+        @keyframes arrowFlowY {
+            0% { transform: translateY(-4px); opacity: 0.3; }
+            50% { opacity: 1; }
+            100% { transform: translateY(4px); opacity: 0.3; }
+        }
+        .arrow-flow-x { animation: arrowFlowX 1.5s infinite ease-in-out; }
+        .arrow-flow-y { animation: arrowFlowY 1.5s infinite ease-in-out; }
 
         .img-placeholder {
             background-color: #0f172a; 
@@ -162,7 +181,6 @@
             box-shadow: 0 0 15px rgba(34, 211, 238, 0.15);
         }
         
-        /* 美化內部滾動條 */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
@@ -171,7 +189,7 @@
 </head>
 <body class="text-slate-50 relative selection:bg-primary selection:text-darkbg">
 
-    <div id="progress-bar" class="fixed top-0 left-0 h-1 bg-primary z-[60] w-0 shadow-[0_0_10px_#22d3ee] transition-all duration-300"></div>
+    <div id="progress-bar" class="fixed top-0 left-0 h-1 bg-primary z-[60] w-0 shadow-[0_0_10px_#22d3ee] transition-all duration-500 ease-out"></div>
 
     <div class="fixed top-6 right-8 z-50">
         <div class="flex items-center gap-2 border border-slate-700 rounded-lg py-1.5 px-3 bg-slate-800/80 backdrop-blur-sm shadow-sm">
@@ -180,7 +198,7 @@
         </div>
     </div>
 
-    <!-- 橫向滑動主容器 -->
+    <!-- 簡報主容器 -->
     <div id="presentation">
         
         <!-- Slide 1: 封面 -->
@@ -222,7 +240,6 @@
                     <div class="inline-block bg-slate-800 text-primary border border-slate-700 px-4 py-1 rounded-md text-xs font-bold tracking-widest mb-4 uppercase font-mono">/ Motivation</div>
                     <h2 class="text-4xl font-black text-white">專題動機</h2>
                 </div>
-                <!-- ✅ 加入 md: 斷點，讓手機自動變上下直排不擠壓 -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-16 mt-8 items-center w-full">
                     <div class="space-y-8">
                         <div class="flex gap-4">
@@ -255,7 +272,6 @@
                                 系統偵測到<strong class="text-white">人靠近危險物品</strong> → 即時計算危險分數 → <strong class="text-red-400">自動通報警告</strong>，成功阻止意外。
                             </p>
                         </div>
-                        <!-- ✅ 手機上若太擠會自動換行 (sm:grid-cols-3) -->
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                             <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center shadow-sm">
                                 <div class="text-4xl font-black text-red-400 mb-1">24<span class="text-lg text-slate-500 font-medium">/7</span></div>
@@ -306,51 +322,65 @@
                 </div>
                 
                 <div class="relative w-full mt-6 py-4">
-                    <div class="hidden md:block absolute top-[2.5rem] left-[10%] right-[10%] h-1.5 bg-slate-800 rounded-full shadow-inner">
-                        <div class="absolute inset-0 bg-gradient-to-r from-slate-600 via-primary to-emerald-500 opacity-80" style="background-size: 200% 100%; animation: flowGradient 3s linear infinite;"></div>
-                    </div>
-                    
                     <div class="flex flex-col md:flex-row items-center md:items-start justify-between relative z-10 w-full px-8 gap-8 md:gap-0">
                         <div class="flex flex-col items-center flex-1 chart-zoom" style="--anim-delay: 0.2s;">
-                            <div class="w-20 h-20 bg-slate-900 border-2 border-slate-600 rounded-full flex items-center justify-center text-3xl shadow-lg relative z-10">
-                                📷
-                            </div>
+                            <div class="w-20 h-20 bg-slate-900 border-2 border-slate-600 rounded-full flex items-center justify-center text-3xl shadow-lg relative z-10">📷</div>
                             <div class="mt-4 text-center">
                                 <div class="text-sm font-bold text-slate-200">影像來源</div>
                                 <div class="text-[10px] text-slate-500 mt-1 font-mono">4K Camera</div>
                             </div>
                         </div>
+
+                        <!-- 互動箭頭 1 -->
+                        <div class="flex-none flex items-center justify-center md:pt-6 chart-zoom z-10" style="--anim-delay: 0.25s;">
+                            <svg class="hidden md:block w-8 h-8 text-primary arrow-flow-x drop-shadow-[0_0_10px_rgba(34,211,238,0.8)]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+                            <svg class="block md:hidden w-8 h-8 text-primary arrow-flow-y drop-shadow-[0_0_10px_rgba(34,211,238,0.8)] my-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 9l7 7 7-7"></path></svg>
+                        </div>
+
                         <div class="flex flex-col items-center flex-1 chart-zoom" style="--anim-delay: 0.3s;">
-                            <div class="w-20 h-20 bg-slate-900 border-2 border-primary rounded-full flex items-center justify-center text-3xl shadow-[0_0_15px_rgba(34,211,238,0.2)] relative z-10">
-                                🤖
-                            </div>
+                            <div class="w-20 h-20 bg-slate-900 border-2 border-primary rounded-full flex items-center justify-center text-3xl shadow-[0_0_15px_rgba(34,211,238,0.2)] relative z-10">🤖</div>
                             <div class="mt-4 text-center">
                                 <div class="text-sm font-bold text-primary">YOLO 偵測</div>
                                 <div class="text-[10px] text-primary/70 mt-1 font-mono">Jetson Orin Nano</div>
                             </div>
                         </div>
+
+                        <!-- 互動箭頭 2 -->
+                        <div class="flex-none flex items-center justify-center md:pt-6 chart-zoom z-10" style="--anim-delay: 0.35s;">
+                            <svg class="hidden md:block w-8 h-8 text-orange-400 arrow-flow-x drop-shadow-[0_0_10px_rgba(251,146,60,0.8)]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+                            <svg class="block md:hidden w-8 h-8 text-orange-400 arrow-flow-y drop-shadow-[0_0_10px_rgba(251,146,60,0.8)] my-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 9l7 7 7-7"></path></svg>
+                        </div>
+
                         <div class="flex flex-col items-center flex-1 chart-zoom" style="--anim-delay: 0.4s;">
-                            <div class="w-20 h-20 bg-slate-900 border-2 border-orange-400 rounded-full flex items-center justify-center text-3xl shadow-[0_0_15px_rgba(251,146,60,0.2)] relative z-10">
-                                ⚠️
-                            </div>
+                            <div class="w-20 h-20 bg-slate-900 border-2 border-orange-400 rounded-full flex items-center justify-center text-3xl shadow-[0_0_15px_rgba(251,146,60,0.2)] relative z-10">⚠️</div>
                             <div class="mt-4 text-center">
                                 <div class="text-sm font-bold text-orange-400">危險分數</div>
                                 <div class="text-[10px] text-orange-400/70 mt-1 font-mono">多因子演算</div>
                             </div>
                         </div>
+
+                        <!-- 互動箭頭 3 -->
+                        <div class="flex-none flex items-center justify-center md:pt-6 chart-zoom z-10" style="--anim-delay: 0.45s;">
+                            <svg class="hidden md:block w-8 h-8 text-red-500 arrow-flow-x drop-shadow-[0_0_10px_rgba(239,68,68,0.8)]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+                            <svg class="block md:hidden w-8 h-8 text-red-500 arrow-flow-y drop-shadow-[0_0_10px_rgba(239,68,68,0.8)] my-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 9l7 7 7-7"></path></svg>
+                        </div>
+
                         <div class="flex flex-col items-center flex-1 chart-zoom" style="--anim-delay: 0.5s;">
-                            <div class="w-20 h-20 bg-slate-900 border-2 border-red-500 rounded-full flex items-center justify-center text-3xl shadow-[0_0_15px_rgba(239,68,68,0.2)] relative z-10">
-                                🔔
-                            </div>
+                            <div class="w-20 h-20 bg-slate-900 border-2 border-red-500 rounded-full flex items-center justify-center text-3xl shadow-[0_0_15px_rgba(239,68,68,0.2)] relative z-10">🔔</div>
                             <div class="mt-4 text-center">
                                 <div class="text-sm font-bold text-red-500">事件觸發</div>
                                 <div class="text-[10px] text-red-500/70 mt-1 font-mono">Webhook → n8n</div>
                             </div>
                         </div>
+
+                        <!-- 互動箭頭 4 -->
+                        <div class="flex-none flex items-center justify-center md:pt-6 chart-zoom z-10" style="--anim-delay: 0.55s;">
+                            <svg class="hidden md:block w-8 h-8 text-emerald-500 arrow-flow-x drop-shadow-[0_0_10px_rgba(16,185,129,0.8)]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+                            <svg class="block md:hidden w-8 h-8 text-emerald-500 arrow-flow-y drop-shadow-[0_0_10px_rgba(16,185,129,0.8)] my-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 9l7 7 7-7"></path></svg>
+                        </div>
+
                         <div class="flex flex-col items-center flex-1 chart-zoom" style="--anim-delay: 0.6s;">
-                            <div class="w-20 h-20 bg-slate-900 border-2 border-emerald-500 rounded-full flex items-center justify-center text-3xl shadow-[0_0_15px_rgba(16,185,129,0.2)] relative z-10">
-                                📤
-                            </div>
+                            <div class="w-20 h-20 bg-slate-900 border-2 border-emerald-500 rounded-full flex items-center justify-center text-3xl shadow-[0_0_15px_rgba(16,185,129,0.2)] relative z-10">📤</div>
                             <div class="mt-4 text-center">
                                 <div class="text-sm font-bold text-emerald-500">通知發送</div>
                                 <div class="text-[10px] text-emerald-500/70 mt-1 font-mono">LINE / Email / DB</div>
@@ -633,7 +663,6 @@
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 md:gap-6 w-full items-stretch">
                     <div class="lg:col-span-5">
                         <div class="bg-slate-800 rounded-xl overflow-hidden shadow-sm h-full flex flex-col border border-slate-700">
-                            <!-- ✅ 拿掉 !bg-transparent -->
                             <div class="flex-grow img-placeholder relative min-h-[250px] md:min-h-[350px]">
                                 <img src="pictures/v2.0 PR Curve.png" class="absolute inset-0 w-full h-full object-contain chart-wipe" style="--anim-delay: 0.3s;" alt="v2.0 PR Curve" onerror="this.style.display='none'">
                             </div>
@@ -642,14 +671,12 @@
                     </div>
                     <div class="lg:col-span-7 flex flex-col gap-4 md:gap-5">
                         <div class="bg-slate-800 rounded-xl overflow-hidden shadow-sm flex-1 flex flex-col border border-slate-700">
-                            <!-- ✅ 拿掉 !bg-transparent -->
                             <div class="flex-grow img-placeholder relative min-h-[140px] md:min-h-[160px]">
                                 <img src="pictures/sample 2.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="v2.0 Sample 1" onerror="this.style.display='none'">
                             </div>
                             <div class="bg-slate-900/80 py-1.5 md:py-2 text-center text-[9px] md:text-[10px] text-slate-400 border-t border-slate-700 mt-auto">偵測樣本 1</div>
                         </div>
                         <div class="bg-slate-800 rounded-xl overflow-hidden shadow-sm flex-1 flex flex-col border border-slate-700">
-                            <!-- ✅ 拿掉 !bg-transparent -->
                             <div class="flex-grow img-placeholder relative min-h-[140px] md:min-h-[160px]">
                                 <img src="pictures/sample 5.png" class="absolute inset-0 w-full h-full object-contain object-center" alt="v2.0 Sample 2" onerror="this.style.display='none'">
                             </div>
@@ -922,10 +949,6 @@
                 </div>
                 
                 <div class="relative w-full mb-12 mt-6 py-4 px-8">
-                    <div class="hidden md:block absolute top-[2.5rem] left-[12%] right-[12%] h-1.5 bg-slate-800 rounded-full shadow-inner">
-                        <div class="absolute inset-0 bg-gradient-to-r from-red-500 via-purple-500 to-emerald-500 opacity-80" style="background-size: 200% 100%; animation: flowGradient 3s linear infinite;"></div>
-                    </div>
-                    
                     <div class="flex flex-col md:flex-row items-center justify-between relative z-10 w-full gap-6 md:gap-0">
                         <div class="flex flex-col items-center flex-1 chart-zoom" style="--anim-delay: 0.2s;">
                             <div class="w-20 h-20 bg-slate-900 border-2 border-red-500 rounded-2xl rotate-45 flex items-center justify-center shadow-[0_0_15px_rgba(239,68,68,0.3)] relative z-10">
@@ -936,6 +959,13 @@
                                 <p class="text-xs text-slate-400 font-mono">分數超標</p>
                             </div>
                         </div>
+
+                        <!-- 互動箭頭 1 -->
+                        <div class="flex-none flex items-center justify-center md:pb-12 chart-zoom z-10" style="--anim-delay: 0.3s;">
+                            <svg class="hidden md:block w-8 h-8 text-purple-500 arrow-flow-x drop-shadow-[0_0_10px_rgba(168,85,247,0.8)]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+                            <svg class="block md:hidden w-8 h-8 text-purple-500 arrow-flow-y drop-shadow-[0_0_10px_rgba(168,85,247,0.8)] my-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 9l7 7 7-7"></path></svg>
+                        </div>
+
                         <div class="flex flex-col items-center flex-1 chart-zoom" style="--anim-delay: 0.4s;">
                             <div class="w-20 h-20 bg-slate-900 border-2 border-purple-500 rounded-2xl rotate-45 flex items-center justify-center shadow-[0_0_15px_rgba(168,85,247,0.3)] relative z-10">
                                 <div class="-rotate-45 text-3xl leading-none flex items-center justify-center w-full h-full">🔗</div>
@@ -945,6 +975,13 @@
                                 <p class="text-xs text-slate-400 font-mono">HTTP POST</p>
                             </div>
                         </div>
+
+                        <!-- 互動箭頭 2 -->
+                        <div class="flex-none flex items-center justify-center md:pb-12 chart-zoom z-10" style="--anim-delay: 0.5s;">
+                            <svg class="hidden md:block w-8 h-8 text-amber-500 arrow-flow-x drop-shadow-[0_0_10px_rgba(245,158,11,0.8)]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+                            <svg class="block md:hidden w-8 h-8 text-amber-500 arrow-flow-y drop-shadow-[0_0_10px_rgba(245,158,11,0.8)] my-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 9l7 7 7-7"></path></svg>
+                        </div>
+
                         <div class="flex flex-col items-center flex-1 chart-zoom" style="--anim-delay: 0.6s;">
                             <div class="w-20 h-20 bg-slate-900 border-2 border-amber-500 rounded-2xl rotate-45 flex items-center justify-center shadow-[0_0_15px_rgba(245,158,11,0.3)] relative z-10">
                                 <div class="-rotate-45 text-3xl leading-none flex items-center justify-center w-full h-full">⚙️</div>
@@ -954,6 +991,13 @@
                                 <p class="text-xs text-slate-400 font-mono">工作流引擎</p>
                             </div>
                         </div>
+
+                        <!-- 互動箭頭 3 -->
+                        <div class="flex-none flex items-center justify-center md:pb-12 chart-zoom z-10" style="--anim-delay: 0.7s;">
+                            <svg class="hidden md:block w-8 h-8 text-emerald-500 arrow-flow-x drop-shadow-[0_0_10px_rgba(16,185,129,0.8)]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+                            <svg class="block md:hidden w-8 h-8 text-emerald-500 arrow-flow-y drop-shadow-[0_0_10px_rgba(16,185,129,0.8)] my-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 9l7 7 7-7"></path></svg>
+                        </div>
+
                         <div class="flex flex-col items-center flex-1 chart-zoom" style="--anim-delay: 0.8s;">
                             <div class="w-20 h-20 bg-slate-900 border-2 border-emerald-500 rounded-2xl rotate-45 flex items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.3)] relative z-10">
                                 <div class="-rotate-45 text-3xl leading-none flex items-center justify-center w-full h-full">📤</div>
@@ -1155,48 +1199,103 @@
         </div>
     </div>
 
+    <!-- ✨ 全新 JS 控制邏輯：處理絕對定位、狀態切換與自訂事件 (Swipe, Wheel) -->
     <script>
         let currentIdx = 0;
         const wrappers = document.querySelectorAll('.slide-wrapper');
         const totalSlides = wrappers.length;
-        const presentation = document.getElementById('presentation');
-        document.getElementById('total-pages').innerText = totalSlides; 
+        document.getElementById('total-pages').innerText = totalSlides;
 
-        // 交集觀察器：觸發動畫與頁碼更新
-        const observerOptions = {
-            root: presentation,
-            rootMargin: '0px',
-            threshold: 0.5 
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                const content = entry.target.querySelector('.slide-content');
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                    const index = Array.from(wrappers).indexOf(entry.target);
-                    currentIdx = index;
-                    document.getElementById('current-page').innerText = index + 1;
-                    if (!content.dataset.animated) {
-                        animateCounters(content);
-                        content.dataset.animated = "true";
-                    }
+        // 統一的狀態更新函式
+        function updateSlideState() {
+            wrappers.forEach((wrapper, index) => {
+                const content = wrapper.querySelector('.slide-content');
+                if (index === currentIdx) {
+                    wrapper.classList.add('active');
+                    // 每次進入頁面都重新延遲觸發數據動畫
+                    setTimeout(() => animateCounters(content), 300);
                 } else {
-                    entry.target.classList.remove('active');
-                    content.dataset.animated = ""; 
+                    wrapper.classList.remove('active');
+                    // 離開頁面時歸零數字，確保下次進入有重新跳動感
+                    resetCounters(content);
                 }
             });
-        }, observerOptions);
-
-        wrappers.forEach(wrapper => observer.observe(wrapper));
-
-        presentation.addEventListener('scroll', () => {
-            const scrollLeft = presentation.scrollLeft;
-            const docWidth = presentation.scrollWidth - presentation.clientWidth;
-            const progress = docWidth > 0 ? (scrollLeft / docWidth) * 100 : 0;
+            
+            document.getElementById('current-page').innerText = currentIdx + 1;
+            
+            // 更新進度條
+            const progress = totalSlides > 1 ? (currentIdx / (totalSlides - 1)) * 100 : 0;
             document.getElementById('progress-bar').style.width = `${progress}%`;
+        }
+
+        // 跳轉至指定頁面
+        function goToSlide(index) {
+            if (index >= 0 && index < totalSlides && index !== currentIdx) {
+                currentIdx = index;
+                updateSlideState();
+                wrappers[currentIdx].scrollTop = 0; // 確保新頁面從最上方開始顯示
+            }
+        }
+
+        function nextSlide() { if (currentIdx < totalSlides - 1) goToSlide(currentIdx + 1); }
+        function prevSlide() { if (currentIdx > 0) goToSlide(currentIdx - 1); }
+
+        // 1. 支援鍵盤左右鍵與 PageUp/PageDown
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'PageDown') nextSlide();
+            if (e.key === 'ArrowLeft' || e.key === 'PageUp') prevSlide();
         });
 
+        // 2. 支援手機左右滑動 (Swipe)
+        let touchStartX = 0;
+        let touchStartY = 0;
+        
+        window.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+        }, { passive: true });
+        
+        window.addEventListener('touchend', e => {
+            let touchEndX = e.changedTouches[0].screenX;
+            let touchEndY = e.changedTouches[0].screenY;
+            let dx = touchEndX - touchStartX;
+            let dy = touchEndY - touchStartY;
+
+            // 如果是水平滑動（大於垂直滑動），且滑動距離超過 50px
+            if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+                if (dx < 0) nextSlide(); // 向左滑：下一頁
+                else prevSlide();        // 向右滑：上一頁
+            }
+        }, { passive: true });
+
+        // 3. 支援滑鼠滾輪 (整合內部滾動檢測)
+        let isWheeling = false;
+        window.addEventListener('wheel', (e) => {
+            if (isWheeling) return; // 防抖期間不處理
+            
+            const wrapper = wrappers[currentIdx];
+            
+            // 檢查當前幻燈片內部是否還有可以滾動的空間
+            const canScrollUp = wrapper.scrollTop > 0;
+            // 加上 1 像素容錯，避免小數點導致計算誤差
+            const canScrollDown = Math.ceil(wrapper.scrollTop + wrapper.clientHeight) < wrapper.scrollHeight - 1;
+
+            if (e.deltaY > 0 && canScrollDown) return; // 內部還能往下滾，放行
+            if (e.deltaY < 0 && canScrollUp) return;   // 內部還能往上滾，放行
+
+            // 若內部滾到底/頂了，則觸發翻頁
+            isWheeling = true;
+            if (e.deltaY > 30) {
+                nextSlide();
+            } else if (e.deltaY < -30) {
+                prevSlide();
+            }
+            
+            // 鎖定 800ms 防抖，避免滾動一次滑鼠直接跳好幾頁
+            setTimeout(() => { isWheeling = false; }, 800); 
+        }, { passive: true });
+
+        // 處理數據增長動畫
         function animateCounters(contentContainer) {
             const counters = contentContainer.querySelectorAll('.counter');
             counters.forEach(counter => {
@@ -1233,30 +1332,24 @@
             });
         }
 
-        function goToSlide(index) {
-            if (index >= 0 && index < totalSlides) {
-                wrappers[index].scrollTop = 0; // 回到該頁的最頂端
-                presentation.scrollTo({
-                    left: index * window.innerWidth,
-                    behavior: 'smooth'
-                });
-            }
+        // 重置數字回到初始狀態（離開頁面時觸發）
+        function resetCounters(contentContainer) {
+            const counters = contentContainer.querySelectorAll('.counter');
+            counters.forEach(counter => {
+                counter.innerText = "0";
+            });
+
+            const floatCounters = contentContainer.querySelectorAll('.counter-float');
+            floatCounters.forEach(counter => {
+                const decimals = parseInt(counter.getAttribute('data-decimals')) || 1;
+                const prefix = counter.getAttribute('data-prefix') || '';
+                counter.innerText = prefix + (0).toFixed(decimals);
+            });
         }
 
-        function nextSlide() {
-            if (currentIdx < totalSlides - 1) goToSlide(currentIdx + 1);
-        }
+        // 頁面載入時初始化第一頁狀態
+        updateSlideState();
 
-        function prevSlide() {
-            if (currentIdx > 0) goToSlide(currentIdx - 1);
-        }
-
-        window.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight') nextSlide();
-            if (e.key === 'ArrowLeft') prevSlide();
-        });
-
-        // 取消了所有會綁架滑鼠或觸控板的強制事件，還給您原生的上下左右滑動體驗。
     </script>
 </body>
 </html>
