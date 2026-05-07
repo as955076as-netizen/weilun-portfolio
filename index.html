@@ -278,8 +278,8 @@
     </main>
     
     <section id="works" class="w-full min-h-screen relative z-10 py-24 md:py-40 hidden-page">
-        <!-- ✅ 幫你把容器寬度大幅縮小為 max-w-5xl，讓卡片更精緻聚焦、左右留白更充裕！ -->
-        <div class="max-w-5xl mx-auto px-5 md:px-8 lg:px-10">
+        <!-- ✅ 精準設定容器最大寬度為 1152px (max-w-6xl)，並在超大螢幕移除內縮，確保卡片呈現剛好的 1152px -->
+        <div class="max-w-6xl mx-auto px-5 md:px-8 xl:px-0">
             
             <!-- 頁面 Hero Title：核心理念 (不編號) -->
             <div id="philosophy" class="mb-32 md:mb-48">
@@ -342,7 +342,7 @@
                     </a>
 
                     <!-- 膠囊按鈕 2：訓練數據報告 -->
-                    <a href="javascript:void(0)" class="trigger-modal-btn group relative inline-flex items-center justify-center px-6 py-3.5 md:px-8 md:py-4 rounded-full bg-white/[0.04] border border-white/10 backdrop-blur-md hover:-translate-y-1.5 hover:bg-[#c8a97e]/15 hover:border-[#c8a97e]/80 hover:shadow-[0_10px_30px_-10px_rgba(200,169,126,0.5)] transition-all duration-400 ease-out cursor-pointer overflow-hidden" data-title="訓練數據報告" data-url="portfolio/data-report.pdf">
+                    <a href="javascript:void(0)" class="trigger-modal-btn group relative inline-flex items-center justify-center px-6 py-3.5 md:px-8 md:py-4 rounded-full bg-white/[0.04] border border-white/10 backdrop-blur-md hover:-translate-y-1.5 hover:bg-[#c8a97e]/15 hover:border-[#c8a97e]/80 hover:shadow-[0_10px_30px_-10px_rgba(200,169,126,0.5)] transition-all duration-400 ease-out cursor-pointer overflow-hidden" data-title="訓練數據報告" data-url="portfolio/data-report.html">
                         <div class="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none z-0"></div>
                         <!-- 數據圖表 Icon -->
                         <svg class="w-4 h-4 md:w-5 md:h-5 mr-3 text-white/50 group-hover:text-[#c8a97e] group-hover:scale-125 group-hover:-rotate-6 transition-all duration-400 ease-out z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -468,11 +468,9 @@
             </button>
         </div>
 
-        <!-- ✅ 再次縮小彈出視窗的寬度，改為更聚焦的 md:max-w-5xl lg:max-w-6xl -->
-        <div id="modal-content" class="w-full h-full md:h-[85vh] md:max-w-5xl lg:max-w-6xl flex flex-col scale-95 transition-transform duration-500">
-            <!-- ✅ 移除 bg-white，改為 bg-[#050505]，徹底解決圖片/影片塞不滿時產生的白邊問題 -->
+        <!-- ✅ 精準設定彈出視窗的寬度為 1200px (md:max-w-[1200px]) -->
+        <div id="modal-content" class="w-full h-full md:h-[85vh] md:max-w-[1200px] flex flex-col scale-95 transition-transform duration-500">
             <div class="w-full h-full relative bg-[#050505] rounded-t-xl md:rounded-xl overflow-hidden shadow-2xl shadow-black border border-white/10">
-                <!-- 💡 注意這裡：加入了 id="modal-iframe"，讓 JS 知道要替換這裡的網址 -->
                 <iframe id="modal-iframe" src="" class="absolute inset-0 w-full h-full border-none" allowfullscreen></iframe>
             </div>
         </div>
