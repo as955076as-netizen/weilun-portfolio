@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智慧照護系統互動簡報</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Noto Sans TC"', 'sans-serif'],
+                        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', "Liberation Mono", "Courier New", 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        /* Custom Scrollbar for Phone Mockup */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        .hide-scroll-bar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scroll-bar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Animations */
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            100% { transform: scale(1.3); opacity: 0; }
+        }
+        .animate-pulse-ring::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 3px solid #93c5fd;
+            animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+
+        /* Slide Transitions */
+        .slide-content {
+            display: none;
+            animation: slideUpFade 0.5s ease-out forwards;
+        }
+        .slide-content.active {
+            display: block;
+        }
+        @keyframes slideUpFade {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Overlay Transitions */
+        .overlay-enter {
+            animation: slideInBottom 0.3s ease-out forwards;
+        }
+        @keyframes slideInBottom {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-slate-50 flex items-center justify-center p-4 sm:p-8 selection:bg-blue-200">
+
+    <div class="max-w-6xl w-full bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row border border-slate-100 min-h-[850px]">
+        
+        <!-- Left Side: Interactive Phone Mockup -->
+        <div class="w-full md:w-[480px] bg-[#eef2f6] flex items-center justify-center relative overflow-hidden flex-shrink-0 min-h-[700px] md:min-h-0 py-8 border-r border-slate-100">
+            <!-- Decorative background blobs -->
+            <div class="absolute top-10 left-10 w-64 h-64 bg-blue-200/50 rounded-full mix-blend-multiply filter blur-3xl animate-pulse"></div>
+            <div class="absolute bottom-10 right-10 w-64 h-64 bg-teal-200/50 rounded-full mix-blend-multiply filter blur-3xl animate-pulse delay-1000"></div>
+            
+            <div class="transform scale-90 sm:scale-100 origin-center transition-transform">
+                
+                <!-- Phone Container -->
+                <div class="w-[375px] h-[812px] bg-[#f0f4f9] rounded-[3rem] shadow-2xl border-[10px] border-white relative overflow-hidden flex flex-col">
+                    
+                    <!-- Phone Header / Status Bar -->
+                    <div class="h-7 w-full absolute top-0 left-0 z-[60] flex justify-center">
+                        <div class="w-1/3 h-[24px] bg-white rounded-b-2xl"></div>
+                    </div>
+
+                    <!-- Main Scrollable Content -->
+                    <div id="phone-scroll-container" class="flex-1 overflow-y-auto pb-28 custom-scrollbar relative scroll-smooth">
+                        
+                        <!-- ========================================== -->
+                        <!-- TAB: MONITOR (監控) -->
+                        <!-- ========================================== -->
+                        <div id="tab-monitor" class="block">
+                            <!-- Top Controls -->
+                            <div class="flex items-center justify-between px-5 pt-12 pb-3 relative z-40">
+                                <div class="flex bg-white/80 backdrop-blur-md rounded-full p-1 shadow-sm border border-slate-100" id="channel-btns">
+                                    <button onclick="app.setChannel('1CH')" class="ch-btn px-4 py-1.5 text-xs font-bold rounded-full transition-all" data-ch="1CH">1CH</button>
+                                    <button onclick="app.setChannel('4CH')" class="ch-btn px-4 py-1.5 text-xs font-bold rounded-full transition-all" data-ch="4CH">4CH</button>
+                                    <button onclick="app.setChannel('ALL')" class="ch-btn px-4 py-1.5 text-xs font-bold rounded-full transition-all" data-ch="ALL">ALL</button>
+                                </div>
+                                <div class="flex gap-2 items-center">
+                                    <button class="w-8 h-8 bg-white/80 backdrop-blur-md rounded-full flex justify-center items-center shadow-sm border border-slate-100 hover:bg-white transition-colors">
+                                        <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-blue-500"></i>
+                                    </button>
+                                    <div class="flex items-center gap-1.5 bg-white/80 backdrop-blur-md rounded-full px-3 py-1.5 shadow-sm border border-slate-100">
+                                        <i data-lucide="wifi" class="w-3.5 h-3.5 text-blue-500"></i>
+                                        <span class="text-[10px] font-extrabold text-slate-600 tracking-wider">LIVE</span>
+                                        <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.6)]"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Video Area -->
+                            <div class="px-5 relative z-10 mt-1">
+                                <!-- Security Alert Toast Overlay -->
+                                <div id="alert-toast" class="absolute top-0 left-5 right-5 bg-red-50 backdrop-blur-md border border-red-200 shadow-xl rounded-t-2xl rounded-b-lg p-3 z-30 flex items-start gap-3 transition-all duration-300 transform -translate-y-full opacity-0 pointer-events-none">
+                                    <div class="bg-red-500 p-2 rounded-full text-white shrink-0 shadow-md">
+                                        <i data-lucide="bell" class="w-4.5 h-4.5 animate-pulse"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="flex justify-between items-center">
+                                            <h4 class="text-red-700 font-extrabold text-[13px] tracking-wide">SECURITY ALERT</h4>
+                                            <span class="text-[9px] font-bold text-red-400 bg-red-100 px-1.5 rounded">NOW</span>
+                                        </div>
+                                        <p class="text-red-900 text-xs font-bold mt-0.5">感應到異常威脅！ (風險: 100%)</p>
+                                        <p class="text-red-600 text-[10px] mt-1 font-medium">點擊立即查看照護分頁截圖檔案</p>
+                                    </div>
+                                </div>
+
+                                <div id="video-container" class="bg-[#0f172a] border border-slate-800 rounded-2xl overflow-hidden relative shadow-md transition-all duration-300 h-[220px] w-full flex">
+                                    
+                                    <!-- 1CH View -->
+                                    <div id="view-1CH" class="w-full h-full relative bg-slate-800 flex-1 hidden">
+                                        <div id="view-1CH-alert" class="absolute inset-0 bg-slate-800/80 hidden">
+                                            <div class="w-full h-full bg-slate-700 opacity-90 flex items-center justify-center overflow-hidden relative">
+                                                <div class="absolute inset-0 bg-slate-800 flex flex-col items-center justify-center"><i data-lucide="video" class="w-12 h-12 text-slate-600 mb-2"></i><span class="text-slate-500 text-sm font-bold">CAMERA FEED</span></div>
+                                            </div>
+                                            <div class="absolute top-[10%] bottom-[10%] left-[10%] w-[50%] border-2 border-blue-500 z-10 bg-blue-500/10">
+                                                <div class="bg-blue-500 text-white text-[11px] font-mono px-1.5 py-0.5 absolute -top-[22px] -left-[2px] whitespace-nowrap font-bold">person 0.95</div>
+                                            </div>
+                                            <div class="absolute top-[40%] left-[30%] w-[35%] h-[35%] border-2 border-red-500 z-20 bg-red-500/20">
+                                                <div class="bg-red-500 text-white text-[11px] font-mono px-1.5 py-0.5 absolute -top-[22px] -left-[2px] whitespace-nowrap font-bold">scissors 0.39</div>
+                                            </div>
+                                        </div>
+                                        <div id="view-1CH-normal" class="absolute inset-0 flex flex-col justify-end p-3 bg-slate-800">
+                                            <div class="absolute inset-0 w-full h-full bg-slate-800 opacity-80 flex flex-col items-center justify-center"><i data-lucide="video" class="w-12 h-12 text-slate-600 mb-2"></i><span class="text-slate-500 text-sm font-bold">CAMERA FEED</span></div>
+                                            <div class="flex justify-between w-full relative z-10">
+                                                <div class="bg-white/90 backdrop-blur text-[11px] font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 text-slate-700 shadow-sm">
+                                                    <i data-lucide="eye" class="w-3 h-3 text-blue-600"></i> CAM-01 · 客廳
+                                                </div>
+                                                <div class="bg-white/90 backdrop-blur text-[11px] font-bold px-3 py-1.5 rounded-full text-slate-700 shadow-sm font-mono">
+                                                    19:25:46
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 4CH View -->
+                                    <div id="view-4CH" class="grid grid-cols-2 gap-1 w-full h-full p-1 bg-slate-900 hidden">
+                                        <div class="bg-slate-800 rounded-lg relative overflow-hidden ring-2 ring-blue-500 ring-inset">
+                                            <div class="absolute inset-0 w-full h-full bg-slate-800 opacity-70 flex items-center justify-center"><i data-lucide="video" class="w-6 h-6 text-slate-600"></i></div>
+                                            <div class="absolute bottom-2 left-2 bg-white/90 backdrop-blur text-[9px] font-bold px-2 py-1 rounded-full flex items-center gap-1 text-slate-700 shadow-sm z-10">
+                                                <i data-lucide="eye" class="w-2.5 h-2.5 text-blue-600"></i> CAM-01 · 客廳
+                                            </div>
+                                        </div>
+                                        <div class="bg-slate-800 rounded-lg relative overflow-hidden flex items-center justify-center"><div class="text-slate-600 text-[10px] font-mono">NO SIGNAL</div></div>
+                                        <div class="bg-slate-800 rounded-lg relative overflow-hidden flex items-center justify-center"><div class="text-slate-600 text-[10px] font-mono">NO SIGNAL</div></div>
+                                        <div class="bg-slate-800 rounded-lg relative overflow-hidden flex items-center justify-center"><div class="text-slate-600 text-[10px] font-mono">NO SIGNAL</div></div>
+                                    </div>
+
+                                    <!-- ALL View -->
+                                    <div id="view-ALL" class="grid grid-cols-3 gap-1 w-full h-full p-1 bg-slate-900 hidden">
+                                        <div class="bg-slate-800 rounded-md relative overflow-hidden ring-2 ring-blue-500 ring-inset">
+                                             <div class="absolute inset-0 w-full h-full bg-slate-800 opacity-70 flex items-center justify-center"><i data-lucide="video" class="w-4 h-4 text-slate-600"></i></div>
+                                            <div class="absolute bottom-1 left-1 bg-white/90 backdrop-blur text-[8px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-1 text-slate-700 z-10">
+                                                <i data-lucide="eye" class="w-2 h-2 text-blue-600"></i> CAM-01
+                                            </div>
+                                        </div>
+                                        <div class="bg-slate-800 rounded-md"></div><div class="bg-slate-800 rounded-md"></div>
+                                        <div class="bg-slate-800 rounded-md"></div><div class="bg-slate-800 rounded-md"></div>
+                                        <div class="bg-slate-800 rounded-md"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Risk Assessment Card -->
+                            <div class="px-5 mt-5">
+                                <div class="bg-white rounded-[1.25rem] p-5 shadow-[0_4px_20px_rgba(0,0,0,0.03)] flex gap-5 border border-slate-100 relative">
+                                    <!-- Circle UI -->
+                                    <div class="w-24 h-24 flex-shrink-0 relative flex flex-col items-center justify-center bg-slate-50 rounded-full shadow-inner">
+                                        <svg class="w-24 h-24 transform -rotate-90 absolute top-0 left-0 drop-shadow-sm">
+                                            <circle cx="48" cy="48" r="38" stroke="currentColor" stroke-width="6" fill="transparent" class="text-slate-200" />
+                                            <circle id="risk-circle" cx="48" cy="48" r="38" stroke="currentColor" stroke-width="6" fill="transparent" stroke-linecap="round" stroke-dasharray="238.76" stroke-dashoffset="238.76" class="transition-all duration-1000 ease-in-out text-teal-400" />
+                                            <circle cx="48" cy="10" r="3" fill="#8b5cf6" />
+                                        </svg>
+                                        <div class="relative z-10 flex flex-col items-center justify-center">
+                                            <span id="risk-score" class="text-3xl font-extrabold leading-none text-teal-500">0</span>
+                                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Risk</span>
+                                        </div>
+                                        <div id="risk-glow" class="absolute inset-0 rounded-full ring-4 ring-red-500/20 animate-pulse hidden"></div>
+                                    </div>
+
+                                    <!-- Risk Stats -->
+                                    <div class="flex-1 flex flex-col justify-center gap-2.5">
+                                        <div class="flex justify-between items-start mb-0.5">
+                                            <div>
+                                                <h5 class="font-bold text-slate-800 text-[13px]">風險評估中心</h5>
+                                                <p class="text-[10px] font-medium text-slate-400 mt-0.5">即時動態評分</p>
+                                            </div>
+                                            <!-- Simulated Sparkline Chart -->
+                                            <div class="flex items-end gap-[2px] h-5">
+                                                <div id="spark-1" class="w-1 bg-slate-200 rounded-t-sm h-[40%] transition-all duration-500"></div>
+                                                <div id="spark-2" class="w-1 bg-slate-200 rounded-t-sm h-[30%] transition-all duration-500"></div>
+                                                <div id="spark-3" class="w-1 bg-slate-200 rounded-t-sm h-[60%] transition-all duration-500"></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="space-y-2.5 w-full">
+                                            <!-- Sub Bars -->
+                                            <div class="flex items-center gap-3 text-[10px]">
+                                                <span class="text-slate-500 w-16 font-bold">距離 (近度)</span>
+                                                <div class="flex-1 h-[5px] bg-slate-100 rounded-full overflow-hidden">
+                                                    <div id="bar-dist" class="h-full rounded-full transition-all duration-1000 ease-out bg-blue-400" style="width: 0%"></div>
+                                                </div>
+                                                <span id="val-dist" class="font-extrabold w-8 text-right font-mono text-blue-500">0%</span>
+                                            </div>
+                                            <div class="flex items-center gap-3 text-[10px]">
+                                                <span class="text-slate-500 w-16 font-bold">危險等級</span>
+                                                <div class="flex-1 h-[5px] bg-slate-100 rounded-full overflow-hidden">
+                                                    <div id="bar-level" class="h-full rounded-full transition-all duration-1000 ease-out bg-blue-400" style="width: 0%"></div>
+                                                </div>
+                                                <span id="val-level" class="font-extrabold w-8 text-right font-mono text-blue-500">0%</span>
+                                            </div>
+                                            <div class="flex items-center gap-3 text-[10px]">
+                                                <span class="text-slate-500 w-16 font-bold">持續時間</span>
+                                                <div class="flex-1 h-[5px] bg-slate-100 rounded-full overflow-hidden">
+                                                    <div id="bar-time" class="h-full rounded-full transition-all duration-1000 ease-out bg-blue-400" style="width: 0%"></div>
+                                                </div>
+                                                <span id="val-time" class="font-extrabold w-8 text-right font-mono text-blue-500">0%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Task Card -->
+                            <div class="px-5 mt-5">
+                                <button onclick="app.toggleMainTask()" id="main-task-btn" class="w-full bg-white rounded-[1.25rem] p-5 shadow-[0_4px_20px_rgba(0,0,0,0.03)] flex items-center justify-center gap-4 transition-all active:scale-[0.98] border border-slate-100 hover:border-blue-200 hover:shadow-md group">
+                                    <!-- Injected via JS -->
+                                </button>
+                            </div>
+
+                            <!-- Playback Button -->
+                            <div class="px-5 mt-5 mb-6">
+                                <button onclick="app.setShowPlayback(true)" class="w-full bg-white rounded-xl py-3.5 shadow-sm border border-slate-100 flex items-center justify-center gap-2 text-blue-600 font-bold text-[13px] hover:bg-slate-50 transition-colors">
+                                    <i data-lucide="history" class="w-4 h-4"></i> 查看歷史影像與回放
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- ========================================== -->
+                        <!-- TAB: HEALTH (健康) -->
+                        <!-- ========================================== -->
+                        <div id="tab-health" class="hidden">
+                            <div class="flex justify-between items-start px-6 pt-12 pb-2">
+                                <div>
+                                    <h1 class="text-2xl font-extrabold text-slate-800 tracking-tight">健康數據</h1>
+                                    <p class="text-xs text-slate-500 font-medium mt-1">今日生理指標追蹤</p>
+                                </div>
+                                <button onclick="app.setShowSmartAnalysis(true)" class="bg-gradient-to-r from-cyan-400 to-blue-500 text-white px-4 py-2 rounded-full font-bold text-xs flex items-center gap-1.5 shadow-lg shadow-cyan-200 transition-transform hover:scale-105 active:scale-95">
+                                    <i data-lucide="lightbulb" class="w-3.5 h-3.5 fill-white text-white"></i> 智慧分析
+                                </button>
+                            </div>
+                            
+                            <!-- ECG -->
+                            <div class="px-5 mt-4">
+                                <div class="bg-white rounded-[1.5rem] p-5 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100">
+                                    <div class="flex justify-between items-start mb-4">
+                                        <div>
+                                            <h3 class="font-bold text-slate-800 text-sm">實時心電圖 (ECG)</h3>
+                                            <p class="text-[10px] text-slate-400 mt-0.5">即時波形監控</p>
+                                        </div>
+                                        <div class="flex items-baseline gap-1 text-blue-500">
+                                            <span class="text-3xl font-bold font-mono tracking-tighter">73</span>
+                                            <span class="text-xs font-bold">bpm</span>
+                                        </div>
+                                    </div>
+                                    <div class="h-28 bg-[#eef2f6] rounded-xl relative overflow-hidden flex items-center shadow-inner border border-slate-200/50">
+                                        <div class="absolute inset-0" style="background-image: linear-gradient(#dde4ed 1px, transparent 1px), linear-gradient(90deg, #dde4ed 1px, transparent 1px); background-size: 16px 16px"></div>
+                                        <svg class="w-[150%] h-full relative z-10 -ml-12 opacity-80" viewBox="0 0 500 100" preserveAspectRatio="none">
+                                            <path d="M0,50 L40,50 L45,40 L50,60 L60,10 L70,80 L75,45 L80,55 L85,50 L140,50 L145,40 L150,60 L160,10 L170,80 L175,45 L180,55 L185,50 L240,50 L245,40 L250,60 L260,10 L270,80 L275,45 L280,55 L285,50 L500,50" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+                                            <circle cx="285" cy="50" r="4" fill="#06b6d4" class="animate-pulse" />
+                                        </svg>
+                                        <div class="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-[#eef2f6] to-transparent z-20"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 4 Grid Metrics -->
+                            <div class="px-5 mt-4 grid grid-cols-2 gap-4">
+                                <div class="bg-white rounded-[1.5rem] p-4 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100 flex flex-col justify-between h-32">
+                                    <div class="flex justify-between items-start">
+                                        <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center"><i data-lucide="heart" class="w-5 h-5 text-blue-500 fill-blue-500/20"></i></div>
+                                        <span class="text-[10px] bg-blue-50 text-blue-500 px-2 py-0.5 rounded-full font-bold">正常</span>
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] text-slate-400 font-bold mb-0.5">心率 HEART RATE</p>
+                                        <div class="flex items-baseline gap-1"><span class="text-2xl font-bold text-slate-800">73</span><span class="text-[10px] text-slate-500">bpm</span></div>
+                                    </div>
+                                </div>
+                                <div class="bg-white rounded-[1.5rem] p-4 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100 flex flex-col justify-between h-32 relative overflow-hidden">
+                                    <div class="absolute top-2 left-2 w-14 h-14 bg-teal-100/50 rounded-full animate-pulse border-2 border-teal-200"></div>
+                                    <div class="flex justify-between items-start relative z-10">
+                                        <div class="w-10 h-10 rounded-full bg-teal-400 flex items-center justify-center shadow-lg shadow-teal-200"><i data-lucide="droplet" class="w-[18px] h-[18px] text-white fill-white"></i></div>
+                                        <span class="text-[10px] bg-teal-50 text-teal-600 px-2 py-0.5 rounded-full font-bold">優良</span>
+                                    </div>
+                                    <div class="relative z-10">
+                                        <p class="text-[10px] text-slate-400 font-bold mb-0.5">血壓 BLOOD PRESSURE</p>
+                                        <div class="flex items-baseline gap-1"><span class="text-2xl font-bold text-slate-800 tracking-tighter">118/76</span><span class="text-[10px] text-slate-500">mmHg</span></div>
+                                    </div>
+                                </div>
+                                <div class="bg-white rounded-[1.5rem] p-4 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100 flex flex-col justify-between h-32">
+                                    <div class="flex justify-between items-start">
+                                        <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center"><i data-lucide="wind" class="w-5 h-5 text-purple-400 fill-purple-400/20"></i></div>
+                                        <span class="text-[10px] bg-purple-50 text-purple-600 px-2 py-0.5 rounded-full font-bold">優良</span>
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] text-slate-400 font-bold mb-0.5">血氧 SpO₂</p>
+                                        <div class="flex items-baseline gap-1"><span class="text-2xl font-bold text-slate-800">98.4</span><span class="text-[10px] text-slate-500">%</span></div>
+                                    </div>
+                                </div>
+                                <div class="bg-white rounded-[1.5rem] p-4 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100 flex flex-col justify-between h-32">
+                                    <div class="flex justify-between items-start">
+                                        <div class="w-10 h-10 rounded-full bg-amber-400 flex items-center justify-center shadow-lg shadow-amber-200"><i data-lucide="thermometer" class="w-5 h-5 text-white"></i></div>
+                                        <span class="text-[10px] bg-amber-50 text-amber-600 px-2 py-0.5 rounded-full font-bold">正常</span>
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] text-slate-400 font-bold mb-0.5">體溫 TEMPERATURE</p>
+                                        <div class="flex items-baseline gap-1"><span class="text-2xl font-bold text-slate-800">36.7</span><span class="text-[10px] text-slate-500">°C</span></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Summary Banner -->
+                            <div class="px-5 mt-5 mb-6 cursor-pointer transform transition-transform hover:scale-[1.02]" onclick="app.setShowAIReport(true)">
+                                <div class="bg-gradient-to-r from-blue-400 to-cyan-400 rounded-[1.5rem] p-5 shadow-lg shadow-cyan-200/50 flex justify-between items-end overflow-hidden relative">
+                                    <div class="absolute right-0 top-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
+                                    <div class="relative z-10">
+                                        <p class="text-[11px] text-blue-50 font-bold mb-1">今日 健康總評</p>
+                                        <div class="flex items-baseline gap-1"><span class="text-2xl font-bold text-white tracking-wide">優良 · 85</span><span class="text-sm text-blue-100 font-medium">/100</span></div>
+                                    </div>
+                                    <div class="relative z-10 bg-white/20 backdrop-blur p-2.5 rounded-xl border border-white/30"><i data-lucide="trophy" class="w-6 h-6 text-amber-300 fill-amber-300"></i></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ========================================== -->
+                        <!-- TAB: CARE (照護) -->
+                        <!-- ========================================== -->
+                        <div id="tab-care" class="hidden">
+                            <div class="flex justify-between items-start px-6 pt-12 pb-2">
+                                <div>
+                                    <h1 class="text-2xl font-extrabold text-slate-800 tracking-tight">照護管理</h1>
+                                    <p class="text-xs text-slate-500 font-medium mt-1">任務與事件紀錄</p>
+                                </div>
+                                <button onclick="app.setShowAddTaskModal(true)" class="w-10 h-10 bg-gradient-to-br from-cyan-300 to-cyan-500 text-white rounded-2xl flex justify-center items-center shadow-lg shadow-cyan-200 transition-transform hover:scale-105 active:scale-95">
+                                    <i data-lucide="plus" class="w-5 h-5 stroke-[2.5]"></i>
+                                </button>
+                            </div>
+
+                            <!-- Care Sub Tabs -->
+                            <div class="px-5 mt-3 mb-5">
+                                <div class="bg-white rounded-2xl p-1.5 shadow-sm border border-slate-100 flex relative">
+                                    <button onclick="app.setCareSubTab('tasks')" id="btn-care-tasks" class="flex-1 py-3 text-sm font-bold rounded-xl transition-all duration-300 z-10 flex items-center justify-center gap-2 text-white"><i data-lucide="list-todo" class="w-4 h-4"></i> 待辦任務</button>
+                                    <button onclick="app.setCareSubTab('logs')" id="btn-care-logs" class="flex-1 py-3 text-sm font-bold rounded-xl transition-all duration-300 z-10 flex items-center justify-center gap-2 text-slate-500 hover:text-slate-700"><i data-lucide="book-open" class="w-4 h-4"></i> 事件日誌</button>
+                                    <div id="care-sub-indicator" class="absolute top-1.5 bottom-1.5 w-[calc(50%-6px)] rounded-xl transition-all duration-300 bg-blue-600 shadow-md left-1.5"></div>
+                                </div>
+                            </div>
+
+                            <!-- TASKS View -->
+                            <div id="care-view-tasks" class="px-5 pb-8 block">
+                                <!-- Alert Card (Conditional) -->
+                                <div id="care-alert-card" class="bg-red-50 border border-red-200 rounded-[1.25rem] p-4 mb-5 shadow-sm hidden">
+                                    <div class="flex justify-between items-center mb-3">
+                                        <h3 class="text-red-600 font-extrabold flex items-center gap-2 text-sm"><span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span> 緊急安全警訊</h3>
+                                        <span class="text-[9px] font-bold text-red-400 tracking-wider">LIVE EVIDENCE</span>
+                                    </div>
+                                    <div class="flex gap-4 mb-4">
+                                        <div class="w-20 h-20 rounded-xl overflow-hidden shadow-sm relative shrink-0 bg-slate-800">
+                                            <div class="w-full h-full flex flex-col items-center justify-center bg-slate-700 text-slate-500"><i data-lucide="camera" class="w-6 h-6 mb-1"></i><span class="text-[8px] font-bold">EVIDENCE</span></div>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-slate-800 text-sm mb-1">偵測到異常活動</h4>
+                                            <p class="text-xs text-slate-600">影像已存檔於系統目錄</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <button class="flex-[4] bg-red-600 text-white text-xs font-bold py-2.5 rounded-xl shadow-sm shadow-red-200">查看原圖</button>
+                                        <button class="flex-[3] bg-white text-slate-600 text-xs font-bold py-2.5 rounded-xl border border-slate-200">暫時隱藏</button>
+                                    </div>
+                                    <button onclick="app.setShowSecurityArchive(true)" class="w-full mt-3 flex items-center justify-center gap-2 text-red-500 hover:text-red-600 font-bold text-xs py-2.5 bg-red-100/50 hover:bg-red-100 rounded-xl transition-colors">
+                                        <i data-lucide="history" class="w-3.5 h-3.5"></i> 查看歷史紀錄存檔庫
+                                    </button>
+                                </div>
+
+                                <!-- Progress Bar -->
+                                <div class="bg-white rounded-[1.25rem] p-5 shadow-sm border border-slate-100 mb-4">
+                                    <div class="flex justify-between text-sm font-bold text-slate-700 mb-3">
+                                        <span id="task-progress-text">今日進度 · 0/5</span>
+                                        <span id="task-progress-percent" class="text-blue-500">0%</span>
+                                    </div>
+                                    <div class="h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                                        <div id="task-progress-bar" class="h-full bg-gradient-to-r from-blue-400 to-cyan-400 transition-all duration-700 ease-out rounded-full" style="width: 0%"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Dynamic Task List -->
+                                <div id="care-task-list" class="space-y-3"></div>
+                            </div>
+
+                            <!-- LOGS View -->
+                            <div id="care-view-logs" class="px-5 pb-8 hidden">
+                                <div class="bg-white rounded-2xl p-2 shadow-sm border border-slate-100 flex items-center gap-3 mb-4">
+                                    <i data-lucide="search" class="w-4.5 h-4.5 text-slate-400 ml-2"></i>
+                                    <input type="text" placeholder="搜尋事件或紀錄..." class="flex-1 text-sm bg-transparent outline-none text-slate-700 placeholder:text-slate-400">
+                                </div>
+                                <div class="flex gap-2 overflow-x-auto pb-2 custom-scrollbar hide-scroll-bar">
+                                    <button class="px-5 py-2 rounded-full bg-blue-600 text-white text-xs font-bold whitespace-nowrap shadow-md shadow-blue-200 flex items-center gap-1.5"><i data-lucide="search" class="w-3 h-3"></i> 全部</button>
+                                    <button class="px-5 py-2 rounded-full bg-white border border-slate-200 text-slate-600 text-xs font-bold whitespace-nowrap hover:bg-slate-50">🚨 警報</button>
+                                    <button class="px-5 py-2 rounded-full bg-white border border-slate-200 text-slate-600 text-xs font-bold whitespace-nowrap hover:bg-slate-50">💊 用藥</button>
+                                    <button class="px-5 py-2 rounded-full bg-white border border-slate-200 text-slate-600 text-xs font-bold whitespace-nowrap hover:bg-slate-50">👤 人員</button>
+                                </div>
+                                <div class="flex justify-between items-center my-4">
+                                    <div class="flex items-center gap-2 text-blue-600 font-bold text-sm"><i data-lucide="clock" class="w-4 h-4"></i> 歷史日期</div>
+                                    <div class="flex gap-2 text-sm font-bold">
+                                        <span class="w-8 h-8 rounded-full flex justify-center items-center text-slate-400">18</span>
+                                        <span class="w-8 h-8 rounded-full flex justify-center items-center text-slate-400">19</span>
+                                        <span class="w-8 h-8 rounded-full flex justify-center items-center text-slate-800 bg-white shadow-sm border border-slate-200">20</span>
+                                    </div>
+                                </div>
+                                <div class="bg-gradient-to-br from-[#eaf5ff] to-[#f0f9ff] border border-blue-100 rounded-[1.25rem] p-5 mb-5 shadow-sm">
+                                    <div class="flex items-center gap-3 mb-3">
+                                        <div class="w-8 h-8 bg-blue-500 rounded-full flex justify-center items-center text-white shadow-sm"><i data-lucide="info" class="w-4 h-4"></i></div>
+                                        <h3 class="font-bold text-blue-800 text-sm">AI 今日生活觀察總結</h3>
+                                    </div>
+                                    <p class="text-xs text-blue-900/80 leading-relaxed font-medium">今日整體狀況穩定。上午完成散步活動，步態指標正常；血壓量測紀錄與服藥行為皆準時完成。中午有陌生訪客（推測為外送員），目前防護狀態良好。</p>
+                                </div>
+                                <div class="space-y-3">
+                                    <div class="bg-white rounded-[1.25rem] p-4 shadow-sm border border-slate-100 flex items-center gap-4">
+                                        <div class="w-2.5 h-2.5 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)]"></div>
+                                        <div class="flex-1">
+                                            <div class="flex justify-between items-start mb-1"><h4 class="font-bold text-sm text-red-500 flex items-center gap-1.5"><i data-lucide="alert-triangle" class="w-3.5 h-3.5"></i> 危險警報</h4><span class="text-[10px] text-slate-400 font-medium flex items-center gap-1"><i data-lucide="clock" class="w-2.5 h-2.5"></i> 14:32</span></div>
+                                            <p class="text-xs text-slate-600 font-medium">偵測到疑似火源，已通知管理員</p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-white rounded-[1.25rem] p-4 shadow-sm border border-slate-100 flex items-center gap-4">
+                                        <div class="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.6)]"></div>
+                                        <div class="flex-1">
+                                            <div class="flex justify-between items-start mb-1"><h4 class="font-bold text-sm text-blue-700 flex items-center gap-1.5"><i data-lucide="user" class="w-3.5 h-3.5"></i> 人員偵測</h4><span class="text-[10px] text-slate-400 font-medium flex items-center gap-1"><i data-lucide="clock" class="w-2.5 h-2.5"></i> 12:08</span></div>
+                                            <p class="text-xs text-slate-600 font-medium">陌生訪客進入玄關區域</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ========================================== -->
+                        <!-- TAB: SETTINGS (設置) -->
+                        <!-- ========================================== -->
+                        <div id="tab-settings" class="hidden">
+                            <div class="flex justify-between items-start px-6 pt-12 pb-4">
+                                <div>
+                                    <h1 class="text-2xl font-extrabold text-slate-800 tracking-tight">系統設置</h1>
+                                    <p class="text-xs text-slate-500 font-medium mt-1">配置核心感應與通訊參數</p>
+                                </div>
+                                <button class="w-10 h-10 bg-white border border-slate-100 text-blue-500 rounded-2xl flex justify-center items-center shadow-sm hover:shadow-md transition-shadow">
+                                    <i data-lucide="save" class="w-4.5 h-4.5"></i>
+                                </button>
+                            </div>
+
+                            <div class="px-5 mb-6">
+                                <h3 class="flex items-center gap-2 text-blue-600 font-extrabold text-sm mb-3 ml-1"><i data-lucide="globe" class="w-4 h-4"></i> 通訊配置</h3>
+                                <div class="bg-white rounded-[1.5rem] p-5 shadow-sm border border-slate-100 space-y-5">
+                                    <div>
+                                        <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+                                            <label class="text-sm font-bold text-slate-700 w-24">伺服器位址</label>
+                                            <div class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 shadow-inner"><span class="text-slate-600 text-sm font-mono">http://127.0.0.1:8080</span></div>
+                                        </div>
+                                        <p class="text-[10px] text-slate-400 mt-2 font-medium">影像辨識後端 API 的入口位址。</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="px-5 mb-6">
+                                <h3 class="flex items-center gap-2 text-blue-600 font-extrabold text-sm mb-3 ml-1"><i data-lucide="mail" class="w-4 h-4"></i> 電子郵件通知</h3>
+                                <div class="bg-white rounded-[1.5rem] p-5 shadow-sm border border-slate-100 space-y-5">
+                                    <div class="flex justify-between items-center">
+                                        <label class="text-sm font-bold text-slate-700">啟用郵件通知</label>
+                                        <div onclick="app.toggleSetting('email')" id="toggle-email" class="w-12 h-[26px] rounded-full p-1 cursor-pointer transition-colors bg-[#38bdf8]">
+                                            <div id="toggle-email-knob" class="w-[18px] h-[18px] rounded-full bg-white shadow-sm transition-transform duration-300 translate-x-6"></div>
+                                        </div>
+                                    </div>
+                                    <div id="email-content" class="transition-opacity duration-300 opacity-100">
+                                        <div class="flex flex-col sm:flex-row sm:items-center gap-3 mb-3">
+                                            <label class="text-sm font-bold text-slate-700 w-24">收件人信箱</label>
+                                            <div class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 shadow-inner">
+                                                <input type="text" class="bg-transparent w-full text-sm text-slate-600 outline-none" placeholder="yourname@example.com">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="px-5 mb-6">
+                                <h3 class="flex items-center gap-2 text-blue-600 font-extrabold text-sm mb-3 ml-1"><i data-lucide="smartphone" class="w-4 h-4"></i> 設備設置</h3>
+                                <div class="bg-white rounded-[1.5rem] p-5 shadow-sm border border-slate-100 space-y-5">
+                                    <div class="flex justify-between items-center">
+                                        <label class="text-sm font-bold text-slate-700">影像串流品質</label>
+                                        <div class="bg-slate-100 rounded-full p-1 flex" id="quality-btns">
+                                            <button onclick="app.setQuality('L')" class="w-10 py-1.5 text-xs font-bold rounded-full transition-all text-slate-400" data-q="L">L</button>
+                                            <button onclick="app.setQuality('M')" class="w-10 py-1.5 text-xs font-bold rounded-full transition-all text-slate-400" data-q="M">M</button>
+                                            <button onclick="app.setQuality('H')" class="w-10 py-1.5 text-xs font-bold rounded-full transition-all bg-white text-slate-800 shadow-sm" data-q="H">H</button>
+                                        </div>
+                                    </div>
+                                    <hr class="border-slate-100">
+                                    <div class="flex justify-between items-center">
+                                        <label class="text-sm font-bold text-slate-700">現場收音開關</label>
+                                        <div onclick="app.toggleSetting('audio')" id="toggle-audio" class="w-12 h-[26px] rounded-full p-1 cursor-pointer transition-colors bg-[#38bdf8]">
+                                            <div id="toggle-audio-knob" class="w-[18px] h-[18px] rounded-full bg-white shadow-sm transition-transform duration-300 translate-x-6"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="px-5 pb-8">
+                                <h3 class="flex items-center gap-2 text-blue-600 font-extrabold text-sm mb-3 ml-1"><i data-lucide="info" class="w-4 h-4"></i> 系統狀態</h3>
+                                <div class="bg-[#111827] rounded-[1.5rem] p-5 shadow-lg shadow-slate-300 relative overflow-hidden mt-4">
+                                    <i data-lucide="shield" class="absolute -right-4 -bottom-4 w-32 h-32 text-white/5 stroke-[1]"></i>
+                                    <div class="relative z-10">
+                                        <h4 class="text-white font-extrabold text-sm mb-2 flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#10b981] shadow-[0_0_8px_rgba(16,185,129,0.8)]"></span> 系統安全性已啟用</h4>
+                                        <p class="text-slate-400 text-[11px] leading-relaxed font-medium mb-4 pr-6">所有生理數據與監控影像均經過端對端加密傳輸，本機運算確保隱私不外洩。</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Floating Mic Button -->
+                    <button id="floating-mic" onclick="app.toggleRecording()" class="absolute right-3 top-[55%] z-[45] w-14 h-14 bg-[#e8efff]/90 backdrop-blur-md border border-blue-200 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center justify-center transition-all duration-300 hover:bg-blue-200 active:scale-90">
+                        <div id="mic-icon-container">
+                            <i data-lucide="mic" class="w-6.5 h-6.5 text-blue-400"></i>
+                        </div>
+                        <div id="mic-pulse" class="absolute inset-0 rounded-full border-[3px] border-blue-300 animate-ping opacity-75 hidden"></div>
+                    </button>
+
+                    <!-- Bottom Nav -->
+                    <div class="absolute bottom-0 left-0 right-0 bg-white/90 backdrop-blur-xl border-t border-slate-100 px-6 py-5 rounded-b-[3rem] flex justify-between items-end z-50 pb-8">
+                        <div class="flex flex-col items-center gap-1.5 w-16 relative cursor-pointer group" onclick="app.setTab('monitor')">
+                            <div id="nav-btn-monitor" class="w-[52px] h-[52px] rounded-[1.1rem] flex items-center justify-center transition-all bg-blue-500 text-white shadow-lg shadow-blue-200 absolute -top-8">
+                                <i data-lucide="search" class="w-5.5 h-5.5 stroke-[2.5]"></i>
+                            </div>
+                            <span id="nav-lbl-monitor" class="text-[11px] font-extrabold text-blue-600 mt-5">監控</span>
+                        </div>
+                        <div class="flex flex-col items-center gap-1.5 w-16 relative cursor-pointer group" onclick="app.setTab('health')">
+                            <div id="nav-btn-health" class="w-[52px] h-[52px] rounded-[1.1rem] flex items-center justify-center transition-all text-slate-400 group-hover:bg-slate-50">
+                                <i data-lucide="heart" class="w-5.5 h-5.5 fill-current text-pink-200"></i>
+                            </div>
+                            <span id="nav-lbl-health" class="text-[11px] font-bold text-slate-400">健康</span>
+                        </div>
+                        <div class="flex flex-col items-center gap-1.5 w-16 relative cursor-pointer group" onclick="app.setTab('care')">
+                            <div id="nav-btn-care" class="w-[52px] h-[52px] rounded-[1.1rem] flex items-center justify-center transition-all text-slate-400 group-hover:bg-slate-50">
+                                <i data-lucide="handshake" class="w-5.5 h-5.5 fill-current text-yellow-200"></i>
+                            </div>
+                            <span id="nav-lbl-care" class="text-[11px] font-bold text-slate-400">照護</span>
+                        </div>
+                        <div class="flex flex-col items-center gap-1.5 w-16 relative cursor-pointer group" onclick="app.setTab('settings')">
+                            <div id="nav-btn-settings" class="w-[52px] h-[52px] rounded-[1.1rem] flex items-center justify-center transition-all text-slate-400 group-hover:bg-slate-50">
+                                <i data-lucide="settings" class="w-5.5 h-5.5"></i>
+                            </div>
+                            <span id="nav-lbl-settings" class="text-[11px] font-bold text-slate-400">設置</span>
+                        </div>
+                    </div>
+
+                    <!-- ========================================== -->
+                    <!-- OVERLAYS (Absolute full screen) -->
+                    <!-- ========================================== -->
+
+                    <!-- Playback Overlay -->
+                    <div id="overlay-playback" class="absolute inset-x-0 top-0 bottom-[88px] bg-[#0b101e] z-50 flex-col overlay-enter rounded-t-[2.5rem] overflow-hidden hidden">
+                        <div class="relative h-[35%] bg-black flex items-center justify-center group w-full pt-6">
+                            <button onclick="app.setShowPlayback(false)" class="absolute top-6 right-5 text-slate-400 hover:text-white p-2 z-10 transition-colors bg-black/50 rounded-full backdrop-blur-sm"><i data-lucide="x" class="w-5 h-5"></i></button>
+                            <div class="flex flex-col items-center gap-3 text-white/40"><i data-lucide="play-circle" class="w-14 h-14 stroke-[1]"></i><span class="text-[10px] font-bold tracking-[0.2em]">VIDEO PLAYBACK</span></div>
+                        </div>
+                        <div class="flex-1 bg-[#0f1523] p-6 flex flex-col gap-8">
+                            <div class="flex justify-between items-end border-b border-slate-800 pb-4">
+                                <div><h2 class="text-white text-lg font-bold mb-1">CAM-01 · 客廳</h2><p class="text-blue-400 text-[11px] font-mono font-bold">2026/03/17 12:00:00</p></div>
+                                <div class="flex items-center gap-5 text-slate-300 mb-1"><i data-lucide="rewind" class="w-5.5 h-5.5"></i><i data-lucide="play" class="w-6.5 h-6.5 fill-current"></i><i data-lucide="fast-forward" class="w-5.5 h-5.5"></i></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Smart Analysis Overlay -->
+                    <div id="overlay-smart" class="absolute inset-x-0 top-0 bottom-0 bg-white/40 backdrop-blur-md z-[55] flex-col justify-end pt-24 hidden">
+                        <div class="bg-[#eef2f6] h-[85%] rounded-t-[2.5rem] shadow-2xl relative flex flex-col border-t border-white/50 pb-24 overlay-enter">
+                            <button onclick="app.setShowSmartAnalysis(false)" class="absolute top-6 right-6 w-8 h-8 bg-white rounded-full flex justify-center items-center shadow-sm text-slate-400"><i data-lucide="x" class="w-4 h-4"></i></button>
+                            <div class="px-6 pt-6 pb-4">
+                                <div class="flex items-center gap-2 mb-1"><i data-lucide="lightbulb" class="w-5 h-5 text-yellow-500 fill-yellow-500"></i><h2 class="text-xl font-extrabold text-slate-800">智慧分析中心</h2></div>
+                            </div>
+                            <div class="mx-6 bg-[#d9e1ec] rounded-full p-1 flex relative mb-6">
+                                <button onclick="app.setAnalysisTab('30days')" id="btn-ana-30days" class="flex-1 py-2 text-xs font-bold rounded-full z-10 text-white">詳細日誌 (30天)</button>
+                                <button onclick="app.setAnalysisTab('1year')" id="btn-ana-1year" class="flex-1 py-2 text-xs font-bold rounded-full z-10 text-slate-500">統計摘要 (1年)</button>
+                                <div id="ana-indicator" class="absolute top-1 bottom-1 w-[calc(50%-4px)] rounded-full transition-all duration-300 bg-gradient-to-r shadow-md left-1 from-cyan-400 to-blue-500"></div>
+                            </div>
+                            <!-- Mock content inside -->
+                            <div class="flex-1 overflow-y-auto px-6 custom-scrollbar pb-6">
+                                <div id="view-ana-30days" class="bg-white rounded-[1.25rem] p-4 shadow-sm">
+                                    <h4 class="text-xs font-bold text-slate-600 mb-4">平均心率波動 (bpm)</h4>
+                                    <div class="h-24 bg-gradient-to-t from-blue-300 to-cyan-400 rounded-md opacity-50 flex items-center justify-center"><span class="text-white text-xs font-bold">Chart Data...</span></div>
+                                </div>
+                                <div id="view-ana-1year" class="hidden space-y-3">
+                                    <div class="bg-white rounded-[1.25rem] p-4 shadow-sm">
+                                        <h4 class="text-xs font-bold text-slate-600 mb-4">極端風險平均指標</h4>
+                                        <div class="h-28 bg-gradient-to-t from-red-100 to-red-200 rounded-md opacity-50 flex items-center justify-center"><span class="text-red-500 text-xs font-bold">Yearly Data...</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI Report Overlay -->
+                    <div id="overlay-ai" class="absolute inset-x-0 top-0 bottom-0 bg-[#f0f4f9] z-[55] flex-col pt-12 overlay-enter hidden">
+                        <div class="px-6 pb-4 relative">
+                            <button onclick="app.setShowAIReport(false)" class="absolute top-0 right-6 w-8 h-8 bg-white rounded-full flex justify-center items-center shadow-sm text-slate-400"><i data-lucide="x" class="w-4 h-4"></i></button>
+                            <h2 class="text-2xl font-extrabold text-slate-800">AI 健康診斷報告</h2>
+                        </div>
+                        <div class="flex-1 overflow-y-auto px-6 custom-scrollbar pb-24">
+                            <div class="bg-gradient-to-r from-blue-500 to-cyan-400 rounded-2xl p-6 shadow-lg shadow-blue-200 text-white relative mb-6">
+                                <p class="text-xs font-bold text-blue-100 mb-1">當前健康分</p>
+                                <div class="flex items-baseline gap-1 mb-3"><span class="text-5xl font-bold tracking-tight">85</span><span class="text-lg text-blue-100">/100</span></div>
+                                <div class="inline-block bg-white/20 backdrop-blur-sm border border-white/30 px-3 py-1 rounded-full text-[10px] font-bold">今日狀態: 良好</div>
+                            </div>
+                            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+                                <ul class="space-y-3">
+                                    <li class="flex gap-2 text-xs text-slate-600 font-medium"><span class="text-blue-500">•</span> 繼續保持目前的規律作息。</li>
+                                    <li class="flex gap-2 text-xs text-slate-600 font-medium"><span class="text-blue-500">•</span> 建議下午進行 15 分鐘拉伸運動。</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Add Task Modal -->
+                    <div id="overlay-addtask" class="absolute inset-x-0 top-0 bottom-0 bg-white/40 backdrop-blur-sm z-[55] flex-col justify-end hidden">
+                        <div class="bg-[#f0f4f9] rounded-t-[2.5rem] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] p-6 overlay-enter pb-28 border-t border-white">
+                            <div class="flex justify-between items-center mb-6">
+                                <h2 class="text-xl font-extrabold text-slate-800">新增照護任務</h2>
+                                <button onclick="app.setShowAddTaskModal(false)" class="w-8 h-8 bg-white rounded-full flex justify-center items-center shadow-sm text-slate-400"><i data-lucide="x" class="w-4 h-4"></i></button>
+                            </div>
+                            <div class="space-y-4">
+                                <div><label class="text-[11px] font-bold text-slate-500 mb-1.5 block">任務名稱 *</label><input type="text" placeholder="輸入任務名稱..." class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-4 text-sm font-medium text-slate-700 outline-none"></div>
+                                <button onclick="app.setShowAddTaskModal(false)" class="w-full mt-4 bg-blue-500 text-white font-bold py-4 rounded-[1.25rem] shadow-lg shadow-blue-200">+ 新增照護任務</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Security Archive -->
+                    <div id="overlay-archive" class="absolute inset-x-0 top-0 bottom-0 bg-[#f0f4f9] z-[55] flex-col pt-12 overlay-enter hidden">
+                        <div class="px-6 pb-4 relative bg-white border-b border-slate-100 rounded-b-3xl shadow-sm z-20">
+                            <button onclick="app.setShowSecurityArchive(false)" class="absolute top-0 right-6 w-8 h-8 bg-white rounded-full flex justify-center items-center shadow-sm text-slate-400"><i data-lucide="x" class="w-4 h-4"></i></button>
+                            <h2 class="text-xl font-extrabold text-slate-800 tracking-tight">安全紀錄檔案庫</h2>
+                        </div>
+                        <div class="flex-1 overflow-y-auto px-5 pt-6 pb-24 custom-scrollbar space-y-6">
+                            <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+                                <div class="aspect-[4/3] bg-slate-900 relative">
+                                    <div class="w-full h-full bg-slate-800 flex flex-col items-center justify-center text-slate-600"><i data-lucide="camera" class="w-10 h-10 mb-2"></i><span class="text-xs font-bold tracking-widest">ARCHIVED FOOTAGE</span></div>
+                                    <div class="absolute top-2 right-2 bg-blue-600/90 backdrop-blur-sm text-white text-[10px] font-mono px-2 py-1 rounded border border-blue-400 font-bold">YOLOv8 DETECT</div>
+                                </div>
+                                <div class="p-5">
+                                    <div class="flex justify-between items-center mb-4"><span class="text-xs font-mono text-slate-500 font-bold">20260317 161334</span><span class="text-sm font-extrabold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">SCORE 100</span></div>
+                                    <button class="w-full py-3.5 bg-slate-50 text-slate-500 rounded-xl text-xs font-bold flex items-center justify-center gap-2"><i data-lucide="trash-2" class="w-4 h-4"></i> 移除檔案</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side: Presentation Content -->
+        <div class="flex-1 p-8 sm:p-12 md:p-16 flex flex-col justify-between bg-white relative">
+            <div class="flex-1 flex flex-col justify-center" id="presentation-container">
+                <!-- Slides will be handled by JS array mapping or class toggling -->
+                
+                <!-- Slide 0 -->
+                <div class="slide-content active" data-slide="0">
+                    <h1 class="text-4xl font-extrabold text-slate-800 mb-4">智慧照護監控系統</h1>
+                    <h2 class="text-2xl text-blue-600 mb-8 font-medium">產品功能互動展示</h2>
+                    <p class="text-lg text-slate-600 mb-6 leading-relaxed">
+                      歡迎體驗這套結合 <strong>AI 視覺辨識</strong> 與 <strong>照護管理</strong> 的全新系統介面。
+                    </p>
+                    <div class="bg-blue-50 border-l-4 border-blue-500 p-5 rounded-r-xl shadow-sm">
+                      <p class="text-blue-800 font-bold text-lg mb-2">本簡報將帶您依序體驗以下特色：</p>
+                      <ul class="list-disc ml-6 mt-2 text-blue-700 space-y-2 font-medium">
+                        <li>多頻道監控視角切換</li>
+                        <li>YOLO 危險物品預警機制</li>
+                        <li>日常照護任務互動管理</li>
+                      </ul>
+                    </div>
+                    <p class="mt-8 text-slate-500 font-medium animate-pulse">💡 提示：點擊右下角「下一頁」，或直接操作左側手機介面進行體驗。</p>
+                </div>
+
+                <!-- Slide 1 -->
+                <div class="slide-content" data-slide="1">
+                    <h2 class="text-3xl font-extrabold text-slate-800 mb-6 flex items-center gap-3">
+                        <span class="bg-blue-100 text-blue-600 p-2 rounded-xl"><i data-lucide="eye" class="w-7 h-7"></i></span>
+                        1. 彈性監控視角切換
+                    </h2>
+                    <p class="text-lg text-slate-600 mb-8 leading-relaxed">系統首頁最上方提供直覺的頻道切換功能。不論是單一重點監看，或是全區域掌握，皆可一鍵完成，適應各種照護場景。</p>
+                    <div class="flex flex-wrap gap-4 mb-8" id="slide1-btns"></div>
+                </div>
+
+                <!-- Slide 2 -->
+                <div class="slide-content" data-slide="2">
+                    <h2 class="text-3xl font-extrabold text-slate-800 mb-4 flex items-center gap-3"><span class="bg-red-100 text-red-600 p-2 rounded-xl"><i data-lucide="alert-triangle" class="w-7 h-7"></i></span>2. YOLO AI 風險評估模組</h2>
+                    <p class="text-lg text-slate-600 mb-4 leading-relaxed">核心亮點功能！系統透過即時影像分析自動辨識危險物品，保障受照護者安全。</p>
+                    <div class="bg-white border rounded-2xl p-6 mb-6 shadow-sm relative overflow-hidden">
+                      <div class="absolute top-0 left-0 w-1 h-full bg-blue-500"></div>
+                      <h4 class="font-bold text-slate-800 mb-3 text-lg">危險計算邏輯機制：</h4>
+                      <ol class="list-decimal ml-5 text-slate-600 space-y-2 font-medium">
+                        <li>計算 <code class="bg-slate-100 px-1.5 py-0.5 rounded text-pink-600 font-mono text-sm">person</code> 與危險物品的像素距離</li>
+                        <li>計算 <code class="bg-slate-100 px-1.5 py-0.5 rounded text-pink-600 font-mono text-sm">bbox IoU</code> 重疊率</li>
+                        <li>動態判定：只有當危險物品發生<strong>移動</strong>時，才開始累積持續時間</li>
+                        <li>計算綜合 <strong>危險指數</strong> (0~100)</li>
+                        <li>超過門檻時立即回傳警報資訊</li>
+                      </ol>
+                    </div>
+                    <div class="flex gap-4" id="slide2-btns"></div>
+                </div>
+
+                <!-- Slide 3 -->
+                <div class="slide-content" data-slide="3">
+                    <h2 class="text-3xl font-extrabold text-slate-800 mb-6 flex items-center gap-3"><span class="bg-green-100 text-green-600 p-2 rounded-xl"><i data-lucide="mic" class="w-7 h-7"></i></span>3. 照護任務與語音紀錄</h2>
+                    <div class="mb-8">
+                      <h3 class="text-xl font-bold text-slate-800 mb-2 flex items-center gap-2"><i data-lucide="check-circle-2" class="w-6 h-6 text-green-500"></i> 日常任務追蹤</h3>
+                      <p class="text-slate-600 mb-4">模擬器下方顯示當日待辦的照護任務，照護人員只需點擊該區塊，即可快速將任務標記為完成。</p>
+                      <div class="flex gap-4 mb-6" id="slide3-btns-task"></div>
+                    </div>
+                    <div class="pt-6 border-t border-slate-200">
+                      <h3 class="text-xl font-bold text-slate-800 mb-2 flex items-center gap-2"><i data-lucide="mic" class="w-6 h-6 text-blue-500"></i> 側邊語音快捷紀錄</h3>
+                      <p class="text-slate-600 mb-4">留意模擬器<strong>右下側的麥克風按鈕</strong>。當發生突發狀況或需要交班時，點擊即可進行語音紀錄事件。</p>
+                      <div id="slide3-btn-mic"></div>
+                    </div>
+                </div>
+
+                <!-- Slide 4 -->
+                <div class="slide-content" data-slide="4">
+                    <h2 class="text-3xl font-extrabold text-slate-800 mb-6 flex items-center gap-3"><span class="bg-slate-800 text-white p-2 rounded-xl"><i data-lucide="history" class="w-7 h-7"></i></span>4. 歷史影像與事件回放</h2>
+                    <p class="text-lg text-slate-600 mb-6 leading-relaxed">點擊系統首頁最下方的「查看歷史影像與回放」，將開啟專屬的暗黑模式回放介面。</p>
+                    <div class="bg-slate-50 border rounded-2xl p-6 mb-6 shadow-sm">
+                      <h4 class="font-bold text-slate-800 mb-3 text-lg">回放時間軸特色：</h4>
+                      <ul class="space-y-4">
+                        <li class="flex items-start gap-3"><div class="w-2 h-6 bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)] mt-0.5 rounded-sm"></div><span class="text-slate-600"><strong class="text-slate-800">紅色標記：</strong> 代表系統自動偵測到的高風險警報。</span></li>
+                        <li class="flex items-start gap-3"><div class="w-2 h-6 bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)] mt-0.5 rounded-sm"></div><span class="text-slate-600"><strong class="text-slate-800">藍色標記：</strong> 代表人員主動建立的事件。</span></li>
+                      </ul>
+                    </div>
+                    <div id="slide4-btn"></div>
+                </div>
+
+                <!-- Slide 5 -->
+                <div class="slide-content" data-slide="5">
+                    <h2 class="text-3xl font-extrabold text-slate-800 mb-6 flex items-center gap-3"><span class="bg-pink-100 text-pink-600 p-2 rounded-xl"><i data-lucide="heart" class="w-7 h-7"></i></span>5. 健康數據總覽</h2>
+                    <p class="text-lg text-slate-600 mb-6 leading-relaxed">透過底部導航列切換至<strong>「健康」</strong>分頁，這裡集中了受照護者的所有生理數值。</p>
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                      <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                        <i data-lucide="activity" class="w-6 h-6 text-blue-500 mb-2"></i><h4 class="font-bold text-slate-800">實時心電圖 (ECG)</h4><p class="text-sm text-slate-500 mt-1">即時波形監控與心率</p>
+                      </div>
+                      <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                        <i data-lucide="droplet" class="w-6 h-6 text-teal-500 mb-2"></i><h4 class="font-bold text-slate-800">四大生理指標</h4><p class="text-sm text-slate-500 mt-1">心率、血壓、血氧、體溫</p>
+                      </div>
+                    </div>
+                </div>
+
+                <!-- Slide 6 -->
+                <div class="slide-content" data-slide="6">
+                    <h2 class="text-3xl font-extrabold text-slate-800 mb-6 flex items-center gap-3"><span class="bg-yellow-100 text-yellow-600 p-2 rounded-xl"><i data-lucide="lightbulb" class="w-7 h-7"></i></span>6. 智慧分析中心 - 詳細日誌</h2>
+                    <p class="text-lg text-slate-600 mb-6 leading-relaxed">點擊右上角的智慧分析，系統會統整出長期的健康趨勢追蹤。</p>
+                    <div class="bg-white border rounded-2xl p-6 mb-6 shadow-sm border-blue-100 relative overflow-hidden">
+                      <div class="absolute top-0 left-0 w-1 h-full bg-blue-400"></div><h4 class="font-bold text-slate-800 mb-3 text-lg">30 天詳細日誌包含：</h4>
+                      <ul class="space-y-3">
+                        <li class="flex items-center gap-2 text-slate-600"><div class="w-3 h-3 rounded-full bg-blue-400"></div> 平均心率波動 (長條圖)</li>
+                        <li class="flex items-center gap-2 text-slate-600"><div class="w-3 h-3 rounded-full bg-red-400"></div> 異常/極端風險次數追蹤 (月曆點陣圖)</li>
+                      </ul>
+                    </div>
+                </div>
+
+                <!-- Slide 7 -->
+                <div class="slide-content" data-slide="7">
+                    <h2 class="text-3xl font-extrabold text-slate-800 mb-6 flex items-center gap-3"><span class="bg-purple-100 text-purple-600 p-2 rounded-xl"><i data-lucide="activity" class="w-7 h-7"></i></span>7. 智慧分析中心 - 統計摘要</h2>
+                    <p class="text-lg text-slate-600 mb-6 leading-relaxed">在智慧分析中心內，切換到「統計摘要 (1年)」，可以觀看更宏觀的年度數據。</p>
+                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
+                      <h4 class="font-bold text-slate-800 mb-2">年度洞察資料：</h4><p class="text-slate-600 mb-4">系統會繪製整年度的「極端風險平均指標」折線圖，並自動計算出：</p>
+                      <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-white border rounded-full text-sm font-bold text-slate-700">平均靜息心率</span>
+                        <span class="px-3 py-1 bg-white border rounded-full text-sm font-bold text-slate-700">血氧濃度穩定度</span>
+                        <span class="px-3 py-1 bg-white border rounded-full text-sm font-bold text-slate-700">年度最高風險月</span>
+                      </div>
+                    </div>
+                </div>
+
+                <!-- Slide 8 -->
+                <div class="slide-content" data-slide="8">
+                    <h2 class="text-3xl font-extrabold text-slate-800 mb-6 flex items-center gap-3"><span class="bg-cyan-100 text-cyan-600 p-2 rounded-xl"><i data-lucide="sparkles" class="w-7 h-7"></i></span>8. AI 健康診斷報告</h2>
+                    <p class="text-lg text-slate-600 mb-6 leading-relaxed">點擊健康首頁最下方的總評分數卡片，可一鍵產出客製化的「AI 健康診斷報告」。</p>
+                    <div class="space-y-4">
+                      <div class="p-4 bg-blue-50 rounded-xl border border-blue-100 flex items-start gap-3">
+                         <div class="bg-white p-2 rounded-lg text-blue-500 shadow-sm"><i data-lucide="heart" class="w-5 h-5"></i></div>
+                         <div><h4 class="font-bold text-slate-800">三大系統評估</h4><p class="text-sm text-slate-600">針對心血管、呼吸系統、體溫代謝進行即時文字分析。</p></div>
+                      </div>
+                      <div class="p-4 bg-blue-50 rounded-xl border border-blue-100 flex items-start gap-3">
+                         <div class="bg-white p-2 rounded-lg text-blue-500 shadow-sm"><i data-lucide="lightbulb" class="w-5 h-5"></i></div>
+                         <div><h4 class="font-bold text-slate-800">AI 專屬建議</h4><p class="text-sm text-slate-600">基於今日數據，給予作息、運動與環境溫度的具體改善建議。</p></div>
+                      </div>
+                    </div>
+                </div>
+
+                <!-- Slide 9 -->
+                <div class="slide-content" data-slide="9">
+                    <h2 class="text-3xl font-extrabold text-slate-800 mb-6 flex items-center gap-3"><span class="bg-amber-100 text-amber-600 p-2 rounded-xl"><i data-lucide="handshake" class="w-7 h-7"></i></span>9. 照護管理 - 任務清單</h2>
+                    <p class="text-lg text-slate-600 mb-6 leading-relaxed">進入<strong>「照護」</strong>分頁，首先映入眼簾的是「待辦任務」列表，方便護理人員或家屬掌握長輩的日常行程。</p>
+                    <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+                      <h4 class="font-bold text-slate-800 mb-3 text-lg flex items-center gap-2"><i data-lucide="list-todo" class="w-5 h-5 text-blue-500"></i> 特色功能：</h4>
+                      <ul class="space-y-3 text-slate-600 font-medium">
+                        <li>✅ 清晰的當日進度條 (0/5)</li>
+                        <li>✅ 結合彩色標籤的任務分類 (服藥、檢查、飲食)</li>
+                        <li>✅ 任務詳細時間與說明</li>
+                      </ul>
+                    </div>
+                </div>
+
+                <!-- Slide 10 -->
+                <div class="slide-content" data-slide="10">
+                    <h2 class="text-3xl font-extrabold text-slate-800 mb-6 flex items-center gap-3"><span class="bg-blue-100 text-blue-600 p-2 rounded-xl"><i data-lucide="check-circle-2" class="w-7 h-7"></i></span>10. 互動打卡與進度追蹤</h2>
+                    <p class="text-lg text-slate-600 mb-6 leading-relaxed">點擊任務左側的圓圈即可完成打卡，上方進度條會即時連動更新。</p>
+                    <div class="p-5 bg-blue-50 border border-blue-200 rounded-2xl">
+                      <p class="text-blue-800 font-bold flex items-center gap-2 mb-2"><i data-lucide="activity" class="w-4 h-4"></i> 視覺反饋設計</p>
+                      <p class="text-blue-700 text-sm">完成的任務會加上明顯的藍色勾勾圖示，並且上方的進度條會平滑地增長，提供使用者強烈的成就感與明確的進度指示。</p>
+                    </div>
+                    <p class="text-slate-500 text-sm mt-6 animate-pulse">💡 互動提示：您可以在左側模擬器中，親自點擊其他未完成的任務圓圈試試看！</p>
+                </div>
+
+                <!-- Slide 11 -->
+                <div class="slide-content" data-slide="11">
+                    <h2 class="text-3xl font-extrabold text-slate-800 mb-6 flex items-center gap-3"><span class="bg-cyan-100 text-cyan-600 p-2 rounded-xl"><i data-lucide="plus" class="w-7 h-7"></i></span>11. 新增照護任務表單</h2>
+                    <p class="text-lg text-slate-600 mb-6 leading-relaxed">點擊畫面右上角的 <span class="inline-flex items-center justify-center w-6 h-6 bg-gradient-to-r from-cyan-400 to-blue-500 text-white rounded-full mx-1"><i data-lucide="plus" class="w-3.5 h-3.5"></i></span> 按鈕，可以快速新增臨時任務。</p>
+                    <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 shadow-sm">
+                       <h4 class="font-bold text-slate-800 mb-3 text-lg">快速輸入介面：</h4>
+                       <ul class="space-y-3 text-slate-600 font-medium">
+                         <li>📝 任務名稱與選填備註</li>
+                         <li>🕒 時間設定 (整合時鐘選擇器)</li>
+                         <li>🏷️ 直覺的「類別選擇」按鈕群組，用圖示取代繁瑣的下拉選單</li>
+                       </ul>
+                    </div>
+                </div>
+
+                <!-- Slide 12 -->
+                <div class="slide-content" data-slide="12">
+                    <h2 class="text-3xl font-extrabold text-slate-800 mb-6 flex items-center gap-3"><span class="bg-purple-100 text-purple-600 p-2 rounded-xl"><i data-lucide="book-open" class="w-7 h-7"></i></span>12. 事件日誌與 AI 總結</h2>
+                    <p class="text-lg text-slate-600 mb-6 leading-relaxed">透過上方的 Switch 切換到「事件日誌」，可以檢視所有歷史事件、異常警報與活動紀錄。</p>
+                    <div class="space-y-4">
+                       <div class="p-4 bg-white border border-slate-200 rounded-xl shadow-sm flex items-start gap-3">
+                          <div class="bg-blue-50 p-2 rounded-lg text-blue-500"><i data-lucide="info" class="w-5 h-5"></i></div>
+                          <div><h4 class="font-bold text-slate-800 text-sm mb-1">AI 今日生活觀察總結</h4><p class="text-xs text-slate-500 leading-relaxed">每天自動生成總結報告，將零碎的事件化為一段易讀的文字，方便家屬快速了解長輩一整天的生活全貌。</p></div>
+                       </div>
+                    </div>
+                </div>
+
+                <!-- Slide 13 -->
+                <div class="slide-content" data-slide="13">
+                    <h2 class="text-3xl font-extrabold text-slate-800 mb-6 flex items-center gap-3"><span class="bg-red-100 text-red-600 p-2 rounded-xl"><i data-lucide="alert-triangle" class="w-7 h-7"></i></span>13. 跨頁面緊急安全警訊</h2>
+                    <p class="text-lg text-slate-600 mb-6 leading-relaxed">即使使用者正在「照護管理」分頁安排任務，一旦前端 YOLO 系統偵測到危險，系統依舊會立即推播緊急警訊！</p>
+                    <div class="bg-red-50 border border-red-200 rounded-2xl p-6 shadow-sm">
+                       <h4 class="font-bold text-red-800 mb-3 text-lg flex items-center gap-2"><i data-lucide="image" class="w-5 h-5"></i> 視覺化證據 (Live Evidence)</h4>
+                       <p class="text-red-700 text-sm leading-relaxed mb-4">警訊卡片會直接附上觸發警報當下的<strong>截圖畫面與辨識框</strong>，讓照護人員無須切回監控畫面，就能第一時間判斷狀況嚴重性。</p>
+                    </div>
+                    <p class="text-slate-500 text-sm mt-6 animate-pulse">💡 互動提示：請點擊左側警訊卡片最下方的「查看歷史紀錄存檔庫」。</p>
+                </div>
+
+                <!-- Slide 14 -->
+                <div class="slide-content" data-slide="14">
+                    <h2 class="text-3xl font-extrabold text-slate-800 mb-6 flex items-center gap-3"><span class="bg-indigo-100 text-indigo-600 p-2 rounded-xl"><i data-lucide="archive" class="w-7 h-7"></i></span>14. 安全紀錄檔案庫</h2>
+                    <p class="text-lg text-slate-600 mb-6 leading-relaxed">點擊警訊下方的按鈕後，會進入「安全紀錄檔案庫」。這裡集中保存了系統自動擷取的所有高風險畫面截圖。</p>
+                    <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+                       <h4 class="font-bold text-slate-800 mb-3 text-lg flex items-center gap-2"><i data-lucide="shield-check" class="w-5 h-5 text-indigo-500"></i> 證據保全功能</h4>
+                       <ul class="space-y-3 text-slate-600 font-medium">
+                         <li>📸 完整保留 YOLO 辨識框 (Bounding boxes) 與信心指數。</li>
+                         <li>⏱️ 每張影像附帶精確的 Timestamp 與風險評分 (SCORE)。</li>
+                         <li>🗑️ 提供一鍵移除檔案功能，方便清理誤報資訊。</li>
+                       </ul>
+                    </div>
+                </div>
+
+                <!-- Slide 15 -->
+                <div class="slide-content" data-slide="15">
+                    <h2 class="text-3xl font-extrabold text-slate-800 mb-6 flex items-center gap-3"><span class="bg-blue-100 text-blue-600 p-2 rounded-xl"><i data-lucide="globe" class="w-7 h-7"></i></span>15. 系統設置與通訊配置</h2>
+                    <p class="text-lg text-slate-600 mb-6 leading-relaxed">點擊底部導航的最右側進入<strong>「設置」</strong>分頁。這裡提供高度的客製化與系統擴展性。</p>
+                    <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
+                       <div><h4 class="font-bold text-slate-800 mb-1 flex items-center gap-2"><i data-lucide="globe" class="w-4 h-4 text-blue-500"></i> API 與 Webhook 支援</h4><p class="text-sm text-slate-600">允許直接設定伺服器位址，並支援將警報推播至 n8n 等自動化平台工作流。</p></div>
+                       <div class="border-t border-slate-100 pt-4"><h4 class="font-bold text-slate-800 mb-1 flex items-center gap-2"><i data-lucide="mail" class="w-4 h-4 text-blue-500"></i> 即時郵件通知</h4><p class="text-sm text-slate-600">內建郵件發送功能，只需填入收件人，系統會自動在偵測到高風險時發送證據截圖給家屬。</p></div>
+                    </div>
+                </div>
+
+                <!-- Slide 16 -->
+                <div class="slide-content" data-slide="16">
+                    <h2 class="text-3xl font-extrabold text-slate-800 mb-6 flex items-center gap-3"><span class="bg-slate-800 text-white p-2 rounded-xl"><i data-lucide="shield" class="w-7 h-7"></i></span>16. 邊緣運算與設備安全</h2>
+                    <p class="text-lg text-slate-600 mb-6 leading-relaxed">在設置頁的下方，可以調整硬體設備參數，並查看核心的隱私安全狀態。</p>
+                    <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 shadow-sm">
+                       <ul class="space-y-4 text-slate-600 font-medium">
+                         <li>📷 <strong class="text-slate-800">攝影機配置：</strong> 支援輸入 RTSP 串流位址，並可自由切換 L/M/H 畫質以適應網路環境。</li>
+                         <li>🧠 <strong class="text-slate-800">YOLOv8 邊緣運算：</strong> 標示系統搭載 YOLOv8-PyTorch 核心引擎，強調理賠辨識的速度與精確度。</li>
+                         <li>🔒 <strong class="text-slate-800">隱私與安全性：</strong> 透過「端對端加密」與「本機運算」，確保長輩的生理數據與監視畫面絕不外洩。</li>
+                       </ul>
+                    </div>
+                    <p class="text-slate-500 text-sm mt-6 animate-pulse">💡 互動提示：您可以在左側點擊切換畫質 (H/M/L) 或是各種開關。</p>
+                </div>
+            </div>
+
+            <!-- Presentation Navigation Controls -->
+            <div class="flex items-center justify-between pt-8 border-t mt-12 relative z-50">
+                <button onclick="app.prevSlide()" id="btn-prev" class="px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2 text-slate-300 cursor-not-allowed">← 上一頁</button>
+                <div class="flex gap-2 flex-wrap justify-center max-w-[280px]" id="slide-indicators">
+                    <!-- Injected via JS -->
+                </div>
+                <button onclick="app.nextSlide()" id="btn-next" class="px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2 bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-200">下一頁 →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        const app = {
+            state: {
+                slide: 0,
+                channel: '1CH',
+                isAlert: false,
+                taskCompleted: false,
+                isRecording: false,
+                showPlayback: false,
+                currentTab: 'monitor',
+                showSmartAnalysis: false,
+                analysisTab: '30days',
+                showAIReport: false,
+                careSubTab: 'tasks',
+                showAddTaskModal: false,
+                showCareAlert: false,
+                showSecurityArchive: false,
+                emailEnabled: true,
+                audioEnabled: true,
+                streamQuality: 'H',
+                careTasks: [
+                    { id: 1, title: '服用早晨藥物', desc: '降血壓藥 x 1 顆', type: '服藥', color: 'red', icon: 'pill', time: '08:00', completed: false },
+                    { id: 2, title: '量測血壓', desc: '記錄數值回報醫師', type: '檢查', color: 'purple', icon: 'activity', time: '09:00', completed: false },
+                    { id: 3, title: '午餐均衡飲食', desc: '低鹽低糖原則', type: '飲食', color: 'green', icon: 'utensils', time: '12:00', completed: false },
+                    { id: 4, title: '散步 30 分鐘', desc: '飯後緩步行走', type: '運動', color: 'blue', icon: 'person-standing', time: '15:30', completed: false },
+                    { id: 5, title: '晚間關懷通話', desc: '確認今日狀況', type: '一般', color: 'amber', icon: 'file-text', time: '19:00', completed: false },
+                ]
+            },
+
+            init() {
+                this.renderIndicators();
+                this.renderSlideDynamicButtons();
+                this.syncSlide();
+                this.updateCareTasksUI();
+                lucide.createIcons();
+            },
+
+            // Navigation
+            nextSlide() {
+                if (this.state.slide < 16) {
+                    this.state.slide++;
+                    this.syncSlide();
+                }
+            },
+            prevSlide() {
+                if (this.state.slide > 0) {
+                    this.state.slide--;
+                    this.syncSlide();
+                }
+            },
+            gotoSlide(index) {
+                this.state.slide = index;
+                this.syncSlide();
+            },
+
+            // Sync logical state based on slide number (replicates React useEffect)
+            syncSlide() {
+                const s = this.state.slide;
+                
+                // Reset states to default
+                this.state.currentTab = 'monitor';
+                this.state.channel = '1CH';
+                this.state.isAlert = false;
+                this.state.taskCompleted = false;
+                this.state.isRecording = false;
+                this.state.showPlayback = false;
+                this.state.showSmartAnalysis = false;
+                this.state.showAIReport = false;
+                this.state.showAddTaskModal = false;
+                this.state.showCareAlert = false;
+                this.state.showSecurityArchive = false;
+                
+                // Reset tasks
+                this.state.careTasks.forEach(t => t.completed = false);
+
+                // Specific Slide overrides
+                if (s === 1) this.state.channel = '4CH';
+                else if (s === 2) this.state.isAlert = true;
+                else if (s === 3) { this.state.taskCompleted = true; this.state.isRecording = true; }
+                else if (s === 4) this.state.showPlayback = true;
+                else if (s === 5) this.state.currentTab = 'health';
+                else if (s === 6) { this.state.currentTab = 'health'; this.state.showSmartAnalysis = true; this.state.analysisTab = '30days'; }
+                else if (s === 7) { this.state.currentTab = 'health'; this.state.showSmartAnalysis = true; this.state.analysisTab = '1year'; }
+                else if (s === 8) { this.state.currentTab = 'health'; this.state.showAIReport = true; }
+                else if (s === 9) { this.state.currentTab = 'care'; this.state.careSubTab = 'tasks'; }
+                else if (s === 10) { this.state.currentTab = 'care'; this.state.careSubTab = 'tasks'; this.state.careTasks[0].completed = true; this.state.careTasks[1].completed = true; }
+                else if (s === 11) { this.state.currentTab = 'care'; this.state.careSubTab = 'tasks'; this.state.showAddTaskModal = true; }
+                else if (s === 12) { this.state.currentTab = 'care'; this.state.careSubTab = 'logs'; }
+                else if (s === 13) { this.state.currentTab = 'care'; this.state.careSubTab = 'tasks'; this.state.showCareAlert = true; }
+                else if (s === 14) { this.state.currentTab = 'care'; this.state.careSubTab = 'tasks'; this.state.showCareAlert = true; this.state.showSecurityArchive = true; }
+                else if (s === 15) { this.state.currentTab = 'settings'; }
+                else if (s === 16) { 
+                    this.state.currentTab = 'settings'; 
+                    setTimeout(() => {
+                        const container = document.getElementById('phone-scroll-container');
+                        if (container) container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+                    }, 100);
+                }
+
+                this.updateFullUI();
+            },
+
+            // Core UI Update function
+            updateFullUI() {
+                this.updatePresentationContent();
+                this.updateTabs();
+                this.updateMonitorUI();
+                this.updateCareTasksUI();
+                this.updateSettingsUI();
+                this.updateOverlays();
+                this.updateSlideDynamicButtons();
+                lucide.createIcons();
+            },
+
+            // --- Sub UI Updates ---
+            updatePresentationContent() {
+                // Toggle slide visibility
+                document.querySelectorAll('.slide-content').forEach((el, index) => {
+                    if (index === this.state.slide) el.classList.add('active');
+                    else el.classList.remove('active');
+                });
+
+                // Update indicators
+                document.querySelectorAll('#slide-indicators button').forEach((el, index) => {
+                    if (index === this.state.slide) {
+                        el.className = 'h-2.5 rounded-full transition-all duration-300 mb-1 bg-blue-600 w-8';
+                    } else {
+                        el.className = 'h-2.5 rounded-full transition-all duration-300 mb-1 bg-slate-200 w-2.5 hover:bg-slate-300';
+                    }
+                });
+
+                // Update Prev/Next buttons
+                const btnPrev = document.getElementById('btn-prev');
+                const btnNext = document.getElementById('btn-next');
+                
+                if (this.state.slide === 0) {
+                    btnPrev.className = 'px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2 text-slate-300 cursor-not-allowed';
+                    btnPrev.disabled = true;
+                } else {
+                    btnPrev.className = 'px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2 text-slate-600 hover:bg-slate-100';
+                    btnPrev.disabled = false;
+                }
+
+                if (this.state.slide === 16) {
+                    btnNext.className = 'px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2 text-slate-300 cursor-not-allowed';
+                    btnNext.disabled = true;
+                } else {
+                    btnNext.className = 'px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2 bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-200';
+                    btnNext.disabled = false;
+                }
+            },
+
+            updateTabs() {
+                // Hide/Show main content
+                ['monitor', 'health', 'care', 'settings'].forEach(tab => {
+                    document.getElementById(`tab-${tab}`).classList.toggle('hidden', this.state.currentTab !== tab);
+                    document.getElementById(`tab-${tab}`).classList.toggle('block', this.state.currentTab === tab);
+                });
+
+                // Update bottom nav styling
+                const tabs = {
+                    'monitor': { icon: 'search', activeClasses: 'bg-blue-500 text-white shadow-lg shadow-blue-200 absolute -top-8', inactiveClasses: 'text-slate-400 group-hover:bg-slate-50' },
+                    'health': { icon: 'heart', activeClasses: 'bg-blue-500 text-white shadow-lg shadow-blue-200 absolute -top-8', inactiveClasses: 'text-slate-400 group-hover:bg-slate-50' },
+                    'care': { icon: 'handshake', activeClasses: 'bg-blue-500 text-white shadow-lg shadow-blue-200 absolute -top-8', inactiveClasses: 'text-slate-400 group-hover:bg-slate-50' },
+                    'settings': { icon: 'settings', activeClasses: 'bg-blue-500 text-white shadow-lg shadow-blue-200 absolute -top-8', inactiveClasses: 'text-slate-400 group-hover:bg-slate-50' }
+                };
+
+                for (const [key, value] of Object.entries(tabs)) {
+                    const btn = document.getElementById(`nav-btn-${key}`);
+                    const lbl = document.getElementById(`nav-lbl-${key}`);
+                    const isAct = this.state.currentTab === key;
+                    
+                    btn.className = `w-[52px] h-[52px] rounded-[1.1rem] flex items-center justify-center transition-all ${isAct ? value.activeClasses : value.inactiveClasses}`;
+                    lbl.className = `text-[11px] font-bold ${isAct ? 'text-blue-600 mt-5' : 'text-slate-400'}`;
+                    
+                    // specific icon class logic based on active state (simplified for plain HTML)
+                    let iconHtml = `<i data-lucide="${value.icon}" class="w-5.5 h-5.5 ${isAct ? 'text-white' : ''} ${key==='health' && !isAct ? 'fill-current text-pink-200':''} ${key==='care' && !isAct ? 'fill-current text-yellow-200':''}"></i>`;
+                    btn.innerHTML = iconHtml;
+                }
+
+                // Handle Mic visibility
+                const mic = document.getElementById('floating-mic');
+                const isCareTasksNotModal = (this.state.currentTab === 'care' && this.state.careSubTab === 'tasks' && !this.state.showAddTaskModal);
+                const isMonitorMain = (!this.state.showPlayback && !this.state.showSmartAnalysis && !this.state.showAIReport && this.state.currentTab === 'monitor');
+                
+                if (isMonitorMain || isCareTasksNotModal) {
+                    mic.style.display = 'flex';
+                    if(isMonitorMain) mic.className = "absolute right-3 top-[55%] z-[45] w-14 h-14 bg-[#e8efff]/90 backdrop-blur-md border border-blue-200 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center justify-center transition-all duration-300 hover:bg-blue-200 active:scale-90";
+                    if(isCareTasksNotModal) mic.className = "absolute right-3 top-[65%] z-[45] w-12 h-12 bg-[#e8efff]/90 backdrop-blur-md border border-blue-200 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 active:scale-90";
+                } else {
+                    mic.style.display = 'none';
+                }
+            },
+
+            updateMonitorUI() {
+                // Channel Buttons
+                document.querySelectorAll('.ch-btn').forEach(btn => {
+                    const isAct = btn.dataset.ch === this.state.channel;
+                    btn.className = `ch-btn px-4 py-1.5 text-xs font-bold rounded-full transition-all ${isAct ? 'bg-blue-500 text-white shadow-md' : 'text-slate-500 hover:text-slate-700'}`;
+                });
+
+                // Video Views
+                ['1CH', '4CH', 'ALL'].forEach(ch => {
+                    document.getElementById(`view-${ch}`).classList.toggle('hidden', this.state.channel !== ch);
+                });
+
+                // Alert State
+                const alertToast = document.getElementById('alert-toast');
+                const videoContainer = document.getElementById('video-container');
+                const view1CHAlert = document.getElementById('view-1CH-alert');
+                const view1CHNormal = document.getElementById('view-1CH-normal');
+                const riskCircle = document.getElementById('risk-circle');
+                const riskScore = document.getElementById('risk-score');
+                const riskGlow = document.getElementById('risk-glow');
+
+                if (this.state.isAlert) {
+                    alertToast.classList.remove('-translate-y-full', 'opacity-0', 'pointer-events-none');
+                    alertToast.classList.add('translate-y-0', 'opacity-100');
+                    videoContainer.classList.add('border-2', 'border-red-500', 'ring-4', 'ring-red-500/20');
+                    videoContainer.classList.remove('border-slate-800');
+                    view1CHAlert.classList.remove('hidden');
+                    view1CHNormal.classList.add('hidden');
+                    
+                    riskCircle.style.strokeDashoffset = '0';
+                    riskCircle.classList.remove('text-teal-400');
+                    riskCircle.classList.add('text-red-500');
+                    riskScore.innerText = '100';
+                    riskScore.classList.replace('text-teal-500', 'text-red-500');
+                    riskGlow.classList.remove('hidden');
+
+                    document.getElementById('spark-1').classList.replace('h-[40%]', 'h-[60%]'); document.getElementById('spark-1').classList.add('bg-red-400');
+                    document.getElementById('spark-2').classList.replace('h-[30%]', 'h-[80%]'); document.getElementById('spark-2').classList.add('bg-red-500');
+                    document.getElementById('spark-3').classList.replace('h-[60%]', 'h-[100%]'); document.getElementById('spark-3').classList.add('bg-red-600');
+
+                    this.setRiskBar('dist', 76, true);
+                    this.setRiskBar('level', 80, true);
+                    this.setRiskBar('time', 100, true);
+
+                } else {
+                    alertToast.classList.add('-translate-y-full', 'opacity-0', 'pointer-events-none');
+                    alertToast.classList.remove('translate-y-0', 'opacity-100');
+                    videoContainer.classList.remove('border-2', 'border-red-500', 'ring-4', 'ring-red-500/20');
+                    videoContainer.classList.add('border-slate-800');
+                    view1CHAlert.classList.add('hidden');
+                    view1CHNormal.classList.remove('hidden');
+
+                    riskCircle.style.strokeDashoffset = '238.76';
+                    riskCircle.classList.add('text-teal-400');
+                    riskCircle.classList.remove('text-red-500');
+                    riskScore.innerText = '0';
+                    riskScore.classList.replace('text-red-500', 'text-teal-500');
+                    riskGlow.classList.add('hidden');
+
+                    document.getElementById('spark-1').className = 'w-1 bg-slate-200 rounded-t-sm h-[40%] transition-all duration-500';
+                    document.getElementById('spark-2').className = 'w-1 bg-slate-200 rounded-t-sm h-[30%] transition-all duration-500';
+                    document.getElementById('spark-3').className = 'w-1 bg-slate-200 rounded-t-sm h-[60%] transition-all duration-500';
+
+                    this.setRiskBar('dist', 0, false);
+                    this.setRiskBar('level', 0, false);
+                    this.setRiskBar('time', 0, false);
+                }
+
+                // Main Task Card
+                const mainTaskBtn = document.getElementById('main-task-btn');
+                if (this.state.taskCompleted) {
+                    mainTaskBtn.innerHTML = `
+                        <div class="flex items-center gap-4 w-full px-2">
+                            <div class="text-3xl bg-green-50 w-12 h-12 rounded-full flex items-center justify-center">🎉</div>
+                            <div class="text-left flex-1">
+                                <h5 class="font-extrabold text-slate-800 text-sm">今日進度已完成</h5>
+                                <p class="text-xs font-medium text-slate-400 mt-0.5">已完成所有照護任務</p>
+                            </div>
+                            <i data-lucide="check-circle-2" class="w-6 h-6 text-green-500 opacity-50"></i>
+                        </div>
+                    `;
+                } else {
+                    mainTaskBtn.innerHTML = `
+                        <div class="flex items-center gap-4 w-full px-2">
+                            <div class="text-3xl bg-orange-50 w-12 h-12 rounded-full flex items-center justify-center">🥗</div>
+                            <div class="text-left flex-1">
+                                <h5 class="font-extrabold text-slate-800 text-sm">午餐均衡飲食</h5>
+                                <p class="text-[11px] font-medium text-slate-400 mt-0.5">12:00 · 飲食 · 點擊完成</p>
+                            </div>
+                            <div class="w-5 h-5 rounded-full border-2 border-slate-200 group-hover:border-blue-400"></div>
+                        </div>
+                    `;
+                }
+
+                // Mic Recording
+                const micPulse = document.getElementById('mic-pulse');
+                const micIcon = document.getElementById('mic-icon-container');
+                if (this.state.isRecording) {
+                    micPulse.classList.remove('hidden');
+                    micIcon.innerHTML = `<i data-lucide="sparkles" class="w-6.5 h-6.5 text-blue-500 animate-pulse"></i>`;
+                } else {
+                    micPulse.classList.add('hidden');
+                    micIcon.innerHTML = `<i data-lucide="mic" class="w-6.5 h-6.5 text-blue-400"></i>`;
+                }
+            },
+
+            setRiskBar(id, val, isAlert) {
+                document.getElementById(`bar-${id}`).style.width = `${val}%`;
+                document.getElementById(`bar-${id}`).className = `h-full rounded-full transition-all duration-1000 ease-out ${isAlert ? 'bg-red-500' : 'bg-blue-400'}`;
+                document.getElementById(`val-${id}`).innerText = `${val}%`;
+                document.getElementById(`val-${id}`).className = `font-extrabold w-8 text-right font-mono ${isAlert ? 'text-red-500' : 'text-blue-500'}`;
+            },
+
+            updateCareTasksUI() {
+                // Sub Tabs switch
+                const isTasks = this.state.careSubTab === 'tasks';
+                document.getElementById('care-view-tasks').style.display = isTasks ? 'block' : 'none';
+                document.getElementById('care-view-logs').style.display = isTasks ? 'none' : 'block';
+                document.getElementById('btn-care-tasks').className = `flex-1 py-3 text-sm font-bold rounded-xl transition-all duration-300 z-10 flex items-center justify-center gap-2 ${isTasks ? 'text-white' : 'text-slate-500 hover:text-slate-700'}`;
+                document.getElementById('btn-care-logs').className = `flex-1 py-3 text-sm font-bold rounded-xl transition-all duration-300 z-10 flex items-center justify-center gap-2 ${!isTasks ? 'text-white' : 'text-slate-500 hover:text-slate-700'}`;
+                document.getElementById('care-sub-indicator').className = `absolute top-1.5 bottom-1.5 w-[calc(50%-6px)] rounded-xl transition-all duration-300 bg-blue-600 shadow-md ${isTasks ? 'left-1.5' : 'left-[50%]'}`;
+
+                // Alert Card
+                document.getElementById('care-alert-card').style.display = this.state.showCareAlert ? 'block' : 'none';
+
+                // Render List
+                const listEl = document.getElementById('care-task-list');
+                const completedCount = this.state.careTasks.filter(t => t.completed).length;
+                const total = this.state.careTasks.length;
+                const percent = Math.round((completedCount / total) * 100);
+
+                document.getElementById('task-progress-text').innerText = `今日進度 · ${completedCount}/${total}`;
+                document.getElementById('task-progress-percent').innerText = `${percent}%`;
+                document.getElementById('task-progress-bar').style.width = `${percent}%`;
+
+                let html = '';
+                this.state.careTasks.forEach(task => {
+                    const colorMap = {
+                        red: 'bg-red-50 text-red-500',
+                        purple: 'bg-purple-50 text-purple-500',
+                        green: 'bg-green-50 text-green-500',
+                        blue: 'bg-blue-50 text-blue-500',
+                        amber: 'bg-amber-50 text-amber-500'
+                    };
+                    const badgeClass = colorMap[task.color];
+                    
+                    html += `
+                    <div class="bg-white rounded-[1.25rem] p-4 shadow-sm border border-slate-100 flex items-center gap-4 transition-all hover:border-blue-200">
+                       <button onclick="app.toggleCareTask(${task.id})" class="w-8 h-8 rounded-full flex justify-center items-center shrink-0 transition-all ${task.completed ? 'bg-cyan-400 shadow-md shadow-cyan-200 text-white' : 'border-2 border-slate-200 hover:border-cyan-400'}">
+                         ${task.completed ? '<i data-lucide="check-circle-2" class="w-4 h-4 stroke-[3]"></i>' : ''}
+                       </button>
+                       <div class="flex-1">
+                          <h4 class="font-bold text-sm mb-0.5 transition-colors ${task.completed ? 'text-slate-400 line-through' : 'text-slate-800'}">${task.title}</h4>
+                          <p class="text-xs font-medium mb-2 ${task.completed ? 'text-slate-300' : 'text-slate-500'}">${task.desc}</p>
+                          <div class="flex items-center gap-3">
+                            <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[9px] font-bold ${badgeClass}">
+                              <i data-lucide="${task.icon}" class="w-2.5 h-2.5 fill-current opacity-70"></i> ${task.type}
+                            </div>
+                            <div class="flex items-center gap-1 text-[10px] text-slate-400 font-medium">
+                              <i data-lucide="clock" class="w-2.5 h-2.5"></i> ${task.time}
+                            </div>
+                          </div>
+                       </div>
+                       <button class="w-8 h-8 rounded-full bg-slate-50 flex justify-center items-center text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors">
+                         <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                       </button>
+                    </div>`;
+                });
+                listEl.innerHTML = html;
+            },
+
+            updateSettingsUI() {
+                // Email
+                document.getElementById('toggle-email').className = `w-12 h-[26px] rounded-full p-1 cursor-pointer transition-colors ${this.state.emailEnabled ? 'bg-[#38bdf8]' : 'bg-slate-200'}`;
+                document.getElementById('toggle-email-knob').className = `w-[18px] h-[18px] rounded-full bg-white shadow-sm transition-transform duration-300 ${this.state.emailEnabled ? 'translate-x-6' : 'translate-x-0'}`;
+                document.getElementById('email-content').className = `transition-opacity duration-300 ${this.state.emailEnabled ? 'opacity-100' : 'opacity-50 pointer-events-none'}`;
+
+                // Audio
+                document.getElementById('toggle-audio').className = `w-12 h-[26px] rounded-full p-1 cursor-pointer transition-colors ${this.state.audioEnabled ? 'bg-[#38bdf8]' : 'bg-slate-200'}`;
+                document.getElementById('toggle-audio-knob').className = `w-[18px] h-[18px] rounded-full bg-white shadow-sm transition-transform duration-300 ${this.state.audioEnabled ? 'translate-x-6' : 'translate-x-0'}`;
+
+                // Quality
+                document.querySelectorAll('#quality-btns button').forEach(btn => {
+                    if (btn.dataset.q === this.state.streamQuality) {
+                        btn.className = 'w-10 py-1.5 text-xs font-bold rounded-full transition-all bg-white text-slate-800 shadow-sm';
+                    } else {
+                        btn.className = 'w-10 py-1.5 text-xs font-bold rounded-full transition-all text-slate-400 hover:text-slate-600';
+                    }
+                });
+            },
+
+            updateOverlays() {
+                document.getElementById('overlay-playback').style.display = this.state.showPlayback ? 'flex' : 'none';
+                document.getElementById('overlay-smart').style.display = this.state.showSmartAnalysis ? 'flex' : 'none';
+                document.getElementById('overlay-ai').style.display = this.state.showAIReport ? 'flex' : 'none';
+                document.getElementById('overlay-addtask').style.display = this.state.showAddTaskModal ? 'flex' : 'none';
+                document.getElementById('overlay-archive').style.display = this.state.showSecurityArchive ? 'flex' : 'none';
+
+                // Smart Analysis Tabs
+                const is30 = this.state.analysisTab === '30days';
+                document.getElementById('btn-ana-30days').className = `flex-1 py-2 text-xs font-bold rounded-full z-10 transition-colors ${is30 ? 'text-white' : 'text-slate-500'}`;
+                document.getElementById('btn-ana-1year').className = `flex-1 py-2 text-xs font-bold rounded-full z-10 transition-colors ${!is30 ? 'text-white' : 'text-slate-500'}`;
+                document.getElementById('ana-indicator').className = `absolute top-1 bottom-1 w-[calc(50%-4px)] rounded-full transition-all duration-300 bg-gradient-to-r shadow-md ${is30 ? 'left-1 from-cyan-400 to-blue-500' : 'left-[50%] from-purple-400 to-purple-500'}`;
+                
+                document.getElementById('view-ana-30days').style.display = is30 ? 'block' : 'none';
+                document.getElementById('view-ana-1year').style.display = is30 ? 'none' : 'block';
+            },
+
+            // Dynamic Presentation Buttons
+            updateSlideDynamicButtons() {
+                // Render slide-specific buttons safely inside presentation container
+                const setSlideBtn = (id, html) => {
+                    const el = document.getElementById(id);
+                    if(el) el.innerHTML = html;
+                }
+
+                // Slide 1
+                setSlideBtn('slide1-btns', `
+                    <button onclick="app.setChannel('1CH')" class="px-5 py-3 rounded-xl font-bold transition-all ${this.state.channel === '1CH' ? 'bg-blue-600 text-white shadow-lg shadow-blue-200 scale-105' : 'bg-white text-slate-600 border hover:bg-slate-50'}">1CH (單視角)</button>
+                    <button onclick="app.setChannel('4CH')" class="px-5 py-3 rounded-xl font-bold transition-all ${this.state.channel === '4CH' ? 'bg-blue-600 text-white shadow-lg shadow-blue-200 scale-105' : 'bg-white text-slate-600 border hover:bg-slate-50'}">4CH (四分割)</button>
+                    <button onclick="app.setChannel('ALL')" class="px-5 py-3 rounded-xl font-bold transition-all ${this.state.channel === 'ALL' ? 'bg-blue-600 text-white shadow-lg shadow-blue-200 scale-105' : 'bg-white text-slate-600 border hover:bg-slate-50'}">ALL (全螢幕)</button>
+                `);
+
+                // Slide 2
+                setSlideBtn('slide2-btns', `
+                    <button onclick="app.setIsAlert(false)" class="flex-1 py-3.5 rounded-xl font-bold transition-all flex items-center justify-center gap-2 ${!this.state.isAlert ? 'bg-teal-500 text-white shadow-lg shadow-teal-200 scale-105' : 'bg-white text-slate-600 border hover:bg-slate-50'}"><i data-lucide="shield-check" class="w-5 h-5"></i> 還原安全狀態</button>
+                    <button onclick="app.setIsAlert(true)" class="flex-1 py-3.5 rounded-xl font-bold transition-all flex items-center justify-center gap-2 ${this.state.isAlert ? 'bg-red-500 text-white shadow-lg shadow-red-200 scale-105' : 'bg-white text-red-600 border border-red-200 hover:bg-red-50'}"><i data-lucide="bell" class="w-5 h-5"></i> 模擬觸發警報</button>
+                `);
+
+                // Slide 3
+                setSlideBtn('slide3-btns-task', `
+                    <button onclick="app.setTaskCompleted(false)" class="px-6 py-3 rounded-xl font-bold transition-all ${!this.state.taskCompleted ? 'bg-blue-600 text-white shadow-md' : 'bg-white text-slate-600 border'}">重置任務狀態</button>
+                    <button onclick="app.setTaskCompleted(true)" class="px-6 py-3 rounded-xl font-bold transition-all ${this.state.taskCompleted ? 'bg-green-600 text-white shadow-md' : 'bg-white text-slate-600 border'}">標記完成任務 🎉</button>
+                `);
+                setSlideBtn('slide3-btn-mic', `
+                    <button onclick="app.toggleRecording()" class="w-full py-3.5 rounded-xl font-bold transition-all flex items-center justify-center gap-2 ${this.state.isRecording ? 'bg-blue-100 text-blue-700 border border-blue-300 shadow-inner' : 'bg-white text-slate-600 border hover:bg-slate-50'}">
+                        ${this.state.isRecording ? '<i data-lucide="sparkles" class="w-5 h-5 text-blue-500 animate-pulse"></i> 正在錄製語音事件中...' : '<i data-lucide="mic" class="w-5 h-5"></i> 模擬點擊語音按鈕'}
+                    </button>
+                `);
+
+                // Slide 4
+                setSlideBtn('slide4-btn', `
+                    <button onclick="app.setShowPlayback(${!this.state.showPlayback})" class="w-full py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-2 ${this.state.showPlayback ? 'bg-slate-800 text-white shadow-xl' : 'bg-white text-slate-700 border-2 border-slate-200 hover:border-slate-800'}">
+                        <i data-lucide="history" class="w-5 h-5"></i> ${this.state.showPlayback ? '關閉回放系統' : '模擬開啟回放系統'}
+                    </button>
+                `);
+            },
+
+            renderIndicators() {
+                let html = '';
+                for (let i = 0; i <= 16; i++) {
+                    html += `<button onclick="app.gotoSlide(${i})" class="h-2.5 rounded-full transition-all duration-300 mb-1 ${i===0 ? 'bg-blue-600 w-8' : 'bg-slate-200 w-2.5 hover:bg-slate-300'}"></button>`;
+                }
+                document.getElementById('slide-indicators').innerHTML = html;
+            },
+            
+            // --- Expose State Modifiers for HTML onclick ---
+            setTab(tab) { this.state.currentTab = tab; this.updateFullUI(); },
+            setChannel(ch) { this.state.channel = ch; this.updateFullUI(); },
+            setIsAlert(val) { this.state.isAlert = val; this.updateFullUI(); },
+            toggleMainTask() { this.state.taskCompleted = !this.state.taskCompleted; this.updateFullUI(); },
+            setTaskCompleted(val) { this.state.taskCompleted = val; this.updateFullUI(); },
+            toggleRecording() { this.state.isRecording = !this.state.isRecording; this.updateFullUI(); },
+            setShowPlayback(val) { this.state.showPlayback = val; this.updateFullUI(); },
+            setShowSmartAnalysis(val) { this.state.showSmartAnalysis = val; this.updateFullUI(); },
+            setAnalysisTab(tab) { this.state.analysisTab = tab; this.updateFullUI(); },
+            setShowAIReport(val) { this.state.showAIReport = val; this.updateFullUI(); },
+            setCareSubTab(tab) { this.state.careSubTab = tab; this.updateFullUI(); },
+            setShowAddTaskModal(val) { this.state.showAddTaskModal = val; this.updateFullUI(); },
+            toggleCareTask(id) { 
+                const task = this.state.careTasks.find(t => t.id === id);
+                if(task) task.completed = !task.completed;
+                this.updateFullUI(); 
+            },
+            setShowSecurityArchive(val) { this.state.showSecurityArchive = val; this.updateFullUI(); },
+            toggleSetting(type) {
+                if(type === 'email') this.state.emailEnabled = !this.state.emailEnabled;
+                if(type === 'audio') this.state.audioEnabled = !this.state.audioEnabled;
+                this.updateFullUI();
+            },
+            setQuality(q) { this.state.streamQuality = q; this.updateFullUI(); },
+
+            renderSlideDynamicButtons() {
+                // Initialize button HTML structures once before first sync
+                this.updateSlideDynamicButtons(); 
+            }
+        };
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', () => {
+            app.init();
+        });
+
+    </script>
+</body>
+</html>
