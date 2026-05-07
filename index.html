@@ -278,8 +278,8 @@
     </main>
     
     <section id="works" class="w-full min-h-screen relative z-10 py-24 md:py-40 hidden-page">
-        <!-- 💡 修改這裡：將 max-w-[90rem] 縮小改回 max-w-6xl，讓左右留出更多空間，達到截圖中的精緻卡片寬度 -->
-        <div class="max-w-6xl mx-auto px-5 md:px-8 lg:px-10">
+        <!-- ✅ 已經幫你把容器徹底復原為最寬廣的 max-w-[90rem]，讓卡片恢復大氣的寬幅比例！ -->
+        <div class="max-w-[90rem] mx-auto px-5 md:px-8 lg:px-12">
             
             <!-- 頁面 Hero Title：核心理念 (不編號) -->
             <div id="philosophy" class="mb-32 md:mb-48">
@@ -302,7 +302,7 @@
             <!-- 縮小了區塊間距 (space-y-6 md:space-y-8) 讓排版更緊湊精緻 -->
             <div class="flex flex-col space-y-6 md:space-y-8 mb-32 md:mb-48">
                 
-                <!-- 專案展示 1：實機 Demo (配合縮小後的容器寬度，維持完美比例) -->
+                <!-- 專案展示 1：實機 Demo (搭配放寬的容器，維持 md:h-[400px] 的霸氣寬高比) -->
                 <a href="#" target="_blank" rel="noopener noreferrer" class="relative block w-full h-[280px] md:h-[400px] bg-[#0a0a0a] border border-white/5 overflow-hidden rounded-[2rem] group cursor-pointer shadow-xl shadow-black/50">
                     <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="Smart Safety Care Cover" class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:scale-105 group-hover:opacity-70 transition-all duration-700 ease-out z-0">
                     <!-- 漸層遮罩 -->
@@ -455,8 +455,8 @@
 
         </div>
     </section>
-    <!-- 彈出視窗 (✅ 尺寸已縮小，並加入模糊背景增添浮動感) -->
-    <div id="presentation-modal" class="fixed inset-0 z-[85] hidden flex-col items-center justify-center bg-black/80 backdrop-blur-sm opacity-0 transition-opacity duration-500 px-0 pt-14 pb-0 md:p-8 md:pt-16">
+    <!-- 彈出視窗 (✅ 移除模糊背景、修正白邊、確實加寬了視窗比例) -->
+    <div id="presentation-modal" class="fixed inset-0 z-[85] hidden flex-col items-center justify-center bg-black/95 opacity-0 transition-opacity duration-500 px-0 pt-14 pb-0 md:p-8 md:pt-16">
         
         <div class="absolute top-0 left-0 w-full h-14 md:h-16 flex items-center justify-center z-50">
             <span id="modal-title-text" class="text-white/50 text-sm font-light tracking-wide pointer-events-none">Project Pitch Deck</span>
@@ -468,9 +468,10 @@
             </button>
         </div>
 
-        <!-- 縮小 Modal 尺寸：寬度改為 max-w-5xl，高度改為 85vh -->
-        <div id="modal-content" class="w-full h-full md:h-[85vh] md:max-w-5xl flex flex-col scale-95 transition-transform duration-500">
-            <div class="w-full h-full relative bg-white rounded-t-xl md:rounded-xl overflow-hidden shadow-2xl shadow-black border border-white/10">
+        <!-- ✅ 確實調整彈出視窗的寬度：md:max-w-7xl lg:max-w-[1400px] -->
+        <div id="modal-content" class="w-full h-full md:h-[85vh] md:max-w-7xl lg:max-w-[1400px] flex flex-col scale-95 transition-transform duration-500">
+            <!-- ✅ 移除 bg-white，改為 bg-[#050505]，徹底解決圖片/影片塞不滿時產生的白邊問題 -->
+            <div class="w-full h-full relative bg-[#050505] rounded-t-xl md:rounded-xl overflow-hidden shadow-2xl shadow-black border border-white/10">
                 <!-- 💡 注意這裡：加入了 id="modal-iframe"，讓 JS 知道要替換這裡的網址 -->
                 <iframe id="modal-iframe" src="" class="absolute inset-0 w-full h-full border-none" allowfullscreen></iframe>
             </div>
