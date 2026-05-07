@@ -298,72 +298,88 @@
                 <h2 class="text-3xl md:text-5xl font-black tracking-tight text-white/90">精選專案實績</h2>
             </div>
 
+            <!-- 縮小了區塊間距 (space-y-6 md:space-y-8) 讓排版更緊湊精緻 -->
             <div class="flex flex-col space-y-6 md:space-y-8 mb-32 md:mb-48">
                 
-                <!-- 專案卡片 1：實機 Demo (外部連結，全寬) -->
-                <a href="#" target="_blank" rel="noopener noreferrer" class="relative block w-full h-[420px] md:h-[500px] bg-[#0a0a0a] border border-white/5 overflow-hidden rounded-3xl group cursor-pointer">
+                <!-- 專案展示 1：實機 Demo (恢復背景圖卡片，並大幅縮小高度) -->
+                <a href="#" target="_blank" rel="noopener noreferrer" class="relative block w-full h-[280px] md:h-[360px] bg-[#0a0a0a] border border-white/5 overflow-hidden rounded-[2rem] group cursor-pointer shadow-xl shadow-black/50">
                     <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="Smart Safety Care Cover" class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:scale-105 group-hover:opacity-70 transition-all duration-700 ease-out z-0">
-                    <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/80 to-transparent pointer-events-none z-10"></div>
-                    <div class="absolute bottom-0 left-0 w-full h-full p-6 md:p-16 flex flex-col justify-end z-20">
-                        <div class="flex items-center space-x-3 mb-4 mt-auto md:mt-0">
+                    <!-- 漸層遮罩 -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/70 to-transparent pointer-events-none z-10"></div>
+                    
+                    <div class="absolute bottom-0 left-0 w-full p-6 md:p-10 flex flex-col justify-end z-20">
+                        <div class="flex items-center space-x-2 mb-3">
                             <span class="text-[10px] border border-[#c8a97e]/30 text-[#c8a97e] px-2 py-1 rounded-lg tracking-wider backdrop-blur-sm bg-black/30">YOLOv8</span>
                             <span class="text-[10px] border border-[#c8a97e]/30 text-[#c8a97e] px-2 py-1 rounded-lg tracking-wider backdrop-blur-sm bg-black/30">n8n</span>
                         </div>
-                        <h3 class="text-2xl md:text-4xl font-bold text-white mb-4 group-hover:text-[#c8a97e] transition-colors duration-300 drop-shadow-md">Smart Safety Care</h3>
-                        <p class="text-sm md:text-base text-white/70 max-w-2xl font-light tracking-wide mb-6 drop-shadow-md">
+                        <h3 class="text-2xl md:text-3xl font-bold text-white mb-3 group-hover:text-[#c8a97e] transition-colors duration-300 drop-shadow-md">Smart Safety Care</h3>
+                        <p class="text-xs md:text-sm text-white/70 max-w-2xl font-light tracking-wide leading-relaxed drop-shadow-md line-clamp-2 md:line-clamp-none">
                             基於邊緣計算的 AI 居家安全監控系統。透過輕量化 YOLO 模型實現跌倒偵測，並結合 n8n 工作流，在異常發生時自動觸發即時群組通報機制。
                         </p>
-                        <div class="flex items-center text-[#c8a97e] text-sm tracking-widest font-medium opacity-100 md:opacity-0 group-hover:opacity-100 transform translate-y-0 md:translate-y-2 group-hover:translate-y-0 transition-all duration-300 drop-shadow-md">
+                        
+                        <!-- 把浮現指標加回來，並設定為 Hover 時才出現 -->
+                        <div class="mt-4 flex items-center text-[#c8a97e] text-[10px] md:text-xs tracking-widest font-medium opacity-100 md:opacity-0 group-hover:opacity-100 transform translate-y-0 md:translate-y-2 group-hover:translate-y-0 transition-all duration-300 drop-shadow-md">
                             CLICK TO VIEW DEMO <span class="ml-2">↗</span>
                         </div>
                     </div>
                 </a>
 
-                <!-- 專案卡片 2, 3, 4：並列在一個三欄式網格中 -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                <!-- 專屬簡報與附件 (升級版高互動感膠囊按鈕) -->
+                <div class="flex flex-wrap items-center gap-4 md:gap-5 w-full pt-4 md:pt-6">
                     
-                    <!-- 專案卡片 2：專案介紹簡報 -->
-                    <a href="javascript:void(0)" class="trigger-modal-btn relative block w-full h-[380px] md:h-[450px] bg-[#0a0a0a] border border-white/5 overflow-hidden rounded-3xl group cursor-pointer" data-title="專案介紹簡報" data-url="portfolio/ssc.html">
-                        <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="Pitch Deck Cover" class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:scale-105 group-hover:opacity-70 transition-all duration-700 ease-out z-0 filter grayscale group-hover:grayscale-0">
-                        <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/80 to-transparent pointer-events-none z-10"></div>
-                        <div class="absolute bottom-0 left-0 w-full h-full p-6 md:p-10 flex flex-col justify-end z-20">
-                            <!-- 只有標題，置底對齊 -->
-                            <h3 class="text-2xl md:text-3xl font-bold text-white mb-4 mt-auto group-hover:text-[#c8a97e] transition-colors duration-300 drop-shadow-md">專案介紹簡報</h3>
-                            
-                            <div class="flex items-center text-[#c8a97e] text-xs md:text-sm tracking-widest font-medium opacity-100 md:opacity-0 group-hover:opacity-100 transform translate-y-0 md:translate-y-2 group-hover:translate-y-0 transition-all duration-300 drop-shadow-md">
-                                VIEW PRESENTATION <span class="ml-2">→</span>
-                            </div>
-                        </div>
+                    <!-- 膠囊按鈕 1：專案介紹簡報 -->
+                    <a href="javascript:void(0)" class="trigger-modal-btn group relative inline-flex items-center justify-center px-6 py-3.5 md:px-8 md:py-4 rounded-full bg-white/[0.04] border border-white/10 backdrop-blur-md hover:-translate-y-1.5 hover:bg-[#c8a97e]/15 hover:border-[#c8a97e]/80 hover:shadow-[0_10px_30px_-10px_rgba(200,169,126,0.5)] transition-all duration-400 ease-out cursor-pointer overflow-hidden" data-title="專案介紹簡報" data-url="portfolio/pitch.pdf">
+                        <!-- 懸停時內部打光特效 -->
+                        <div class="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none z-0"></div>
+                        <!-- 文件 Icon -->
+                        <svg class="w-4 h-4 md:w-5 md:h-5 mr-3 text-white/50 group-hover:text-[#c8a97e] group-hover:scale-125 group-hover:-rotate-6 transition-all duration-400 ease-out z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                        </svg>
+                        <span class="text-xs md:text-sm text-white/80 group-hover:text-white tracking-widest font-bold transition-colors duration-400 z-10">專案介紹簡報</span>
                     </a>
 
-                    <!-- 專案卡片 3：訓練數據報告 -->
-                    <a href="javascript:void(0)" class="trigger-modal-btn relative block w-full h-[380px] md:h-[450px] bg-[#0a0a0a] border border-white/5 overflow-hidden rounded-3xl group cursor-pointer" data-title="訓練數據報告" data-url="portfolio/data-report.html">
-                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="Training Data Report Cover" class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:scale-105 group-hover:opacity-70 transition-all duration-700 ease-out z-0 filter grayscale group-hover:grayscale-0">
-                        <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/80 to-transparent pointer-events-none z-10"></div>
-                        <div class="absolute bottom-0 left-0 w-full h-full p-6 md:p-10 flex flex-col justify-end z-20">
-                            <!-- 只有標題，置底對齊 -->
-                            <h3 class="text-2xl md:text-3xl font-bold text-white mb-4 mt-auto group-hover:text-[#c8a97e] transition-colors duration-300 drop-shadow-md">訓練數據報告</h3>
-                            
-                            <div class="flex items-center text-[#c8a97e] text-xs md:text-sm tracking-widest font-medium opacity-100 md:opacity-0 group-hover:opacity-100 transform translate-y-0 md:translate-y-2 group-hover:translate-y-0 transition-all duration-300 drop-shadow-md">
-                                VIEW REPORT <span class="ml-2">→</span>
-                            </div>
-                        </div>
+                    <!-- 膠囊按鈕 2：訓練數據報告 -->
+                    <a href="javascript:void(0)" class="trigger-modal-btn group relative inline-flex items-center justify-center px-6 py-3.5 md:px-8 md:py-4 rounded-full bg-white/[0.04] border border-white/10 backdrop-blur-md hover:-translate-y-1.5 hover:bg-[#c8a97e]/15 hover:border-[#c8a97e]/80 hover:shadow-[0_10px_30px_-10px_rgba(200,169,126,0.5)] transition-all duration-400 ease-out cursor-pointer overflow-hidden" data-title="訓練數據報告" data-url="portfolio/data-report.pdf">
+                        <div class="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none z-0"></div>
+                        <!-- 數據圖表 Icon -->
+                        <svg class="w-4 h-4 md:w-5 md:h-5 mr-3 text-white/50 group-hover:text-[#c8a97e] group-hover:scale-125 group-hover:-rotate-6 transition-all duration-400 ease-out z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                        <span class="text-xs md:text-sm text-white/80 group-hover:text-white tracking-widest font-bold transition-colors duration-400 z-10">訓練數據報告</span>
                     </a>
 
-                    <!-- 專案卡片 4：APP功能介紹 -->
-                    <a href="javascript:void(0)" class="trigger-modal-btn relative block w-full h-[380px] md:h-[450px] bg-[#0a0a0a] border border-white/5 overflow-hidden rounded-3xl group cursor-pointer" data-title="APP功能介紹" data-url="portfolio/app-intro.html">
-                        <!-- 挑選具備手機與 UI 設計感的預設圖片 -->
-                        <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="APP Features Cover" class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:scale-105 group-hover:opacity-70 transition-all duration-700 ease-out z-0 filter grayscale group-hover:grayscale-0">
-                        <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/80 to-transparent pointer-events-none z-10"></div>
-                        <div class="absolute bottom-0 left-0 w-full h-full p-6 md:p-10 flex flex-col justify-end z-20">
-                            <!-- 只有標題，置底對齊 -->
-                            <h3 class="text-2xl md:text-3xl font-bold text-white mb-4 mt-auto group-hover:text-[#c8a97e] transition-colors duration-300 drop-shadow-md">APP功能介紹</h3>
-                            
-                            <div class="flex items-center text-[#c8a97e] text-xs md:text-sm tracking-widest font-medium opacity-100 md:opacity-0 group-hover:opacity-100 transform translate-y-0 md:translate-y-2 group-hover:translate-y-0 transition-all duration-300 drop-shadow-md">
-                                VIEW DETAILS <span class="ml-2">→</span>
-                            </div>
-                        </div>
+                    <!-- 膠囊按鈕 3：APP功能介紹 -->
+                    <a href="javascript:void(0)" class="trigger-modal-btn group relative inline-flex items-center justify-center px-6 py-3.5 md:px-8 md:py-4 rounded-full bg-white/[0.04] border border-white/10 backdrop-blur-md hover:-translate-y-1.5 hover:bg-[#c8a97e]/15 hover:border-[#c8a97e]/80 hover:shadow-[0_10px_30px_-10px_rgba(200,169,126,0.5)] transition-all duration-400 ease-out cursor-pointer overflow-hidden" data-title="APP功能介紹" data-url="portfolio/app-intro.pdf">
+                        <div class="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none z-0"></div>
+                        <!-- 手機 UI Icon -->
+                        <svg class="w-4 h-4 md:w-5 md:h-5 mr-3 text-white/50 group-hover:text-[#c8a97e] group-hover:scale-125 group-hover:rotate-6 transition-all duration-400 ease-out z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                        </svg>
+                        <span class="text-xs md:text-sm text-white/80 group-hover:text-white tracking-widest font-bold transition-colors duration-400 z-10">APP功能介紹</span>
                     </a>
+
+                    <!-- 膠囊按鈕 4：YOLOv8 實機辨識 (影片) -->
+                    <a href="javascript:void(0)" class="trigger-modal-btn group relative inline-flex items-center justify-center px-6 py-3.5 md:px-8 md:py-4 rounded-full bg-white/[0.04] border border-white/10 backdrop-blur-md hover:-translate-y-1.5 hover:bg-[#c8a97e]/15 hover:border-[#c8a97e]/80 hover:shadow-[0_10px_30px_-10px_rgba(200,169,126,0.5)] transition-all duration-400 ease-out cursor-pointer overflow-hidden" data-title="YOLOv8 實機辨識" data-url="portfolio/yolo-demo.mp4">
+                        <div class="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none z-0"></div>
+                        <!-- 播放 Icon -->
+                        <svg class="w-4 h-4 md:w-5 md:h-5 mr-3 text-white/50 group-hover:text-[#c8a97e] group-hover:scale-125 group-hover:-rotate-6 transition-all duration-400 ease-out z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span class="text-xs md:text-sm text-white/80 group-hover:text-white tracking-widest font-bold transition-colors duration-400 z-10">實機辨識影片</span>
+                    </a>
+
+                    <!-- 膠囊按鈕 5：後端開發介面 (圖片) -->
+                    <!-- 💡 注意：把 data-url="portfolio/backend-ui.jpg" 換成你的照片檔案路徑或網址 -->
+                    <a href="javascript:void(0)" class="trigger-modal-btn group relative inline-flex items-center justify-center px-6 py-3.5 md:px-8 md:py-4 rounded-full bg-white/[0.04] border border-white/10 backdrop-blur-md hover:-translate-y-1.5 hover:bg-[#c8a97e]/15 hover:border-[#c8a97e]/80 hover:shadow-[0_10px_30px_-10px_rgba(200,169,126,0.5)] transition-all duration-400 ease-out cursor-pointer overflow-hidden" data-title="後端開發介面" data-url="portfolio/backend-ui.jpg">
+                        <div class="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none z-0"></div>
+                        <!-- 終端機 / 程式碼 Icon -->
+                        <svg class="w-4 h-4 md:w-5 md:h-5 mr-3 text-white/50 group-hover:text-[#c8a97e] group-hover:scale-125 group-hover:rotate-6 transition-all duration-400 ease-out z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                        <span class="text-xs md:text-sm text-white/80 group-hover:text-white tracking-widest font-bold transition-colors duration-400 z-10">後端開發介面</span>
+                    </a>
+
                 </div>
             </div>
 
