@@ -1,372 +1,544 @@
-html_content = """
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>智慧安全居家照護系統 - 模型訓練詳細報告</title>
+    <title>模型訓練成長報告 (科技藍版)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    
     <style>
-        :root {
-            --bg-color: #0a0a0c;
-            --card-bg: #16161a;
-            --text-color: #e0e0e0;
-            --accent-blue: #3b82f6;
-            --accent-green: #10b981;
-            --accent-red: #ef4444;
-            --border-color: #2d2d33;
-        }
-
         body {
-            font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            line-height: 1.6;
-            margin: 0;
-            padding: 20px;
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            /* 科技深藍底色 */
+            background-color: #0b1120;
+            /* 科技感的微光網格背景 */
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(14, 165, 233, 0.15), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(56, 189, 248, 0.1), transparent 25%),
+                radial-gradient(rgba(56, 189, 248, 0.08) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 24px 24px;
+            background-attachment: fixed;
         }
 
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        header {
-            text-align: center;
-            padding: 40px 0;
-            border-bottom: 1px solid var(--border-color);
-            margin-bottom: 40px;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            color: #fff;
-            margin-bottom: 10px;
-        }
-
-        .project-meta {
-            color: #888;
-            font-size: 1.1rem;
-        }
-
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-            border-bottom: 2px solid var(--border-color);
-        }
-
-        .tab-btn {
-            background: none;
-            border: none;
-            color: #888;
-            padding: 12px 24px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 600;
-            transition: all 0.3s;
-            border-bottom: 3px solid transparent;
-        }
-
-        .tab-btn.active {
-            color: var(--accent-blue);
-            border-bottom-color: var(--accent-blue);
-        }
-
-        .section {
+        /* 分頁內容切換動畫 */
+        .tab-content {
             display: none;
-            animation: fadeIn 0.5s ease;
+            opacity: 0;
+            transform: translateY(15px);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
-
-        .section.active {
+        .tab-content.active {
             display: block;
+            opacity: 1;
+            transform: translateY(0);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 25px;
-            margin-bottom: 30px;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        h2 {
-            color: var(--accent-blue);
-            border-left: 4px solid var(--accent-blue);
-            padding-left: 15px;
-            margin-top: 0;
-        }
-
-        .stat-box {
-            background: #252529;
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 1.8rem;
-            font-weight: bold;
-            display: block;
-        }
-
-        .stat-label {
-            font-size: 0.9rem;
-            color: #aaa;
-        }
-
+        /* 深色版圖片佔位符與掃描光效 */
         .image-placeholder {
-            background-color: #252529;
-            border: 2px dashed #444;
-            border-radius: 8px;
-            height: 300px;
+            background: linear-gradient(120deg, #1e293b 0%, #0f172a 100%);
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
+        }
+        .image-placeholder::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(56, 189, 248, 0.15), transparent);
+            animation: shimmer 3s infinite;
+        }
+        @keyframes shimmer {
+            100% { left: 200%; }
+        }
+
+        /* 長條圖動畫與科技感樣式 */
+        .bar-container {
+            background-color: #1e293b; /* 深灰藍底 */
+            border-radius: 9999px;
+            height: 32px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .bar-fill {
+            position: absolute;
+            top: 0; left: 0; height: 100%;
+            border-radius: 9999px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            color: #666;
-            margin-top: 15px;
-            flex-direction: column;
-            text-align: center;
+            justify-content: flex-end;
+            padding-right: 12px;
+            width: 0%; /* 動畫觸發 */
+            transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+            /* 預設霓虹光暈 */
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
         }
-
-        .image-placeholder span {
-            font-size: 0.8rem;
-            margin-top: 10px;
+        .bar-text {
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 0.875rem;
+            letter-spacing: 0.05em;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
         }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th, td {
-            text-align: left;
-            padding: 12px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        th {
-            background-color: #252529;
-            color: var(--accent-blue);
-        }
-
-        .pros { color: var(--accent-green); }
-        .cons { color: var(--accent-red); }
-
-        .badge {
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: bold;
-        }
-
-        .badge-v1 { background: #555; }
-        .badge-v2 { background: var(--accent-blue); }
-        .badge-v3 { background: var(--accent-green); }
     </style>
 </head>
-<body>
+<body class="text-slate-300 antialiased selection:bg-cyan-900 selection:text-cyan-100 min-h-screen flex flex-col">
 
-<div class="container">
-    <header>
-        <h1>智慧安全居家照護系統</h1>
-        <p class="project-meta">專題訓練數據詳細報告 | 研究員：官煒倫 與 第一組團隊</p>
-    </header>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex-grow w-full">
+        
+        <!-- Header -->
+        <header class="text-center mb-10 relative z-10 max-w-3xl mx-auto">
+            <div class="py-5 px-6 md:py-6 bg-slate-800/40 backdrop-blur-xl rounded-2xl md:rounded-full border border-blue-500/30 shadow-[0_0_30px_rgba(14,165,233,0.15)] relative overflow-hidden inline-block">
+                <!-- 頂部光暈點綴 -->
+                <div class="absolute top-0 left-1/2 -translate-x-1/2 w-2/3 h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-60"></div>
+                
+                <div class="flex flex-row items-center justify-center gap-3 md:gap-4">
+                    <span class="bg-cyan-400 text-slate-900 text-sm font-bold px-3 py-1 rounded-full shadow-[0_0_15px_rgba(34,211,238,0.5)] tracking-wide whitespace-nowrap">
+                        v3.0 Updated
+                    </span>
+                    <h1 class="text-2xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-blue-400 to-indigo-400 tracking-tight drop-shadow-md pb-0.5 whitespace-nowrap">
+                        模型訓練成長報告
+                    </h1>
+                </div>
+            </div>
+        </header>
 
-    <div class="tabs">
-        <button class="tab-btn active" onclick="showTab('v1')">v1.0 初始診斷</button>
-        <button class="tab-btn" onclick="showTab('v2')">v2.0 遷移優化</button>
-        <button class="tab-btn" onclick="showTab('v3')">v3.0 蒸餾輕量化</button>
-        <button class="tab-btn" onclick="showTab('compare')">綜合對比</button>
-    </div>
+        <!-- Tabs (Segmented Control Style) -->
+        <div class="flex justify-center mb-10 relative z-10">
+            <div class="inline-flex bg-slate-800/60 backdrop-blur-md p-1.5 rounded-2xl shadow-inner overflow-x-auto border border-slate-700 max-w-full">
+                <!-- Active 狀態預設設定在第一個按鈕 -->
+                <button class="tab-btn active relative px-6 py-2.5 text-sm md:text-base font-bold rounded-xl transition-all duration-300 text-white bg-gradient-to-r from-blue-600 to-cyan-600 shadow-[0_0_15px_rgba(14,165,233,0.4)] ring-1 ring-cyan-400/50" data-target="tab-v1">v1.0 初始診斷</button>
+                <button class="tab-btn relative px-6 py-2.5 text-sm md:text-base font-bold rounded-xl transition-all duration-300 text-slate-400 hover:text-cyan-300 hover:bg-slate-700/50" data-target="tab-v2">v2.0 遷移學習</button>
+                <button class="tab-btn relative px-6 py-2.5 text-sm md:text-base font-bold rounded-xl transition-all duration-300 text-slate-400 hover:text-cyan-300 hover:bg-slate-700/50" data-target="tab-v3">v3.0 知識蒸餾</button>
+                <button class="tab-btn relative px-6 py-2.5 text-sm md:text-base font-bold rounded-xl transition-all duration-300 text-slate-400 hover:text-cyan-300 hover:bg-slate-700/50" data-target="tab-summary">總結與比較</button>
+            </div>
+        </div>
 
-    <div id="v1" class="section active">
-        <div class="grid">
-            <div class="card">
-                <h2>v1.0 基礎版本表現</h2>
-                <div class="grid" style="grid-template-columns: 1fr 1fr; margin-top: 20px;">
-                    <div class="stat-box">
-                        <span class="stat-value">0.607</span>
-                        <span class="stat-label">mAP @0.5</span>
+        <!-- Tab Content: v1.0 -->
+        <div id="tab-v1" class="tab-content active bg-slate-800/80 backdrop-blur-xl rounded-[2rem] shadow-[0_8px_30px_rgba(0,0,0,0.5)] border border-slate-700/50 p-6 md:p-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                <div class="lg:col-span-7 flex flex-col justify-center">
+                    <div class="mb-8">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-10 h-10 rounded-full bg-red-900/40 border border-red-500/50 flex items-center justify-center text-red-400 font-bold text-xl shadow-[0_0_10px_rgba(239,68,68,0.3)]">1</div>
+                            <h2 class="text-3xl font-bold text-white tracking-tight">初始版本缺陷分析</h2>
+                        </div>
+                        
+                        <!-- Callout Box -->
+                        <div class="bg-red-950/30 border-l-4 border-red-500 p-5 rounded-r-2xl mb-8 shadow-inner">
+                            <ul class="space-y-4 text-slate-300 text-[15px] leading-relaxed">
+                                <li><strong class="text-red-400 text-base drop-shadow-md">🚨 人體盲區 (嚴重漏報)：</strong> 真實為「人」的圖片中，高達 <strong class="text-white">64%</strong> 被判定為背景。系統對人的感知能力極度低落，導致風險公式無法觸發。</li>
+                                <li><strong class="text-red-400 text-base drop-shadow-md">🚨 背景誤判 (假警報)：</strong> 當畫面只有背景時，模型有 <strong class="text-white">47%</strong> 機率憑空看到「刀子」，<strong class="text-white">34%</strong> 機率看到「剪刀」，容易造成警報疲勞。</li>
+                                <li><strong class="text-red-400 text-base drop-shadow-md">🚨 資料不平衡：</strong> 模型對剪刀敏感，對人遲鈍。顯示初始訓練集過度關注物品特寫，缺乏人體特徵多樣性。</li>
+                            </ul>
+                        </div>
                     </div>
-                    <div class="stat-box">
-                        <span class="stat-value" style="color:var(--accent-red)">64%</span>
-                        <span class="stat-label">人體漏報率</span>
+                    
+                    <!-- 科技感長條圖 -->
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-200 mb-6 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                            v1.0 模型精準度 (mAP@0.5)
+                        </h3>
+                        
+                        <div class="space-y-5">
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                                <span class="sm:w-36 text-slate-400 font-bold text-[15px]">人 (Person) AP</span>
+                                <div class="bar-container">
+                                    <div class="bar-fill bg-gradient-to-r from-slate-600 to-slate-400 shadow-none" data-width="49.2%">
+                                        <span class="bar-text text-slate-900">0.492</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                                <span class="sm:w-36 text-slate-400 font-bold text-[15px]">刀具 (Knife) AP</span>
+                                <div class="bar-container">
+                                    <div class="bar-fill bg-gradient-to-r from-slate-600 to-slate-400 shadow-none" data-width="59.6%">
+                                        <span class="bar-text text-slate-900">0.596</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                                <span class="sm:w-36 text-slate-400 font-bold text-[15px]">剪刀 (Scissors) AP</span>
+                                <div class="bar-container">
+                                    <div class="bar-fill bg-gradient-to-r from-slate-500 to-slate-300 shadow-none" data-width="73.1%">
+                                        <span class="bar-text text-slate-900">0.731</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <p style="margin-top:20px;">
-                    <b class="cons">缺陷探討：</b><br>
-                    1. <b>人體感知力極低：</b> 超過半數以上的人像被判定為背景。<br>
-                    2. <b>假警報頻發：</b> 背景有 47% 機率誤判為刀子，導致自動化通報失效。<br>
-                    3. <b>特徵混淆：</b> 刀具與剪刀在細長邊緣處辨識力不足。
+
+                <!-- 圖片區塊 -->
+                <div class="lg:col-span-5 space-y-6">
+                    <div class="bg-slate-900/50 p-3 rounded-2xl border border-slate-700 shadow-lg transition-transform hover:scale-[1.02] duration-300">
+                        <div class="flex items-center justify-between mb-3 px-2">
+                            <span class="text-sm font-bold text-slate-300">v1.0 混淆矩陣</span>
+                            <span class="text-xs bg-slate-800 text-cyan-400 px-2 py-1 rounded-md font-mono border border-cyan-900">confusion_matrix_v1.png</span>
+                        </div>
+                        <div class="image-placeholder w-full h-56 rounded-xl border border-slate-700 flex flex-col items-center justify-center">
+                            <svg class="w-8 h-8 text-slate-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            <span class="text-slate-500 text-sm font-medium tracking-wide">圖片放置區</span>
+                        </div>
+                    </div>
+                    <div class="bg-slate-900/50 p-3 rounded-2xl border border-slate-700 shadow-lg transition-transform hover:scale-[1.02] duration-300">
+                        <div class="flex items-center justify-between mb-3 px-2">
+                            <span class="text-sm font-bold text-slate-300">v1.0 PR 曲線</span>
+                            <span class="text-xs bg-slate-800 text-cyan-400 px-2 py-1 rounded-md font-mono border border-cyan-900">PR_curve_v1.png</span>
+                        </div>
+                        <div class="image-placeholder w-full h-56 rounded-xl border border-slate-700 flex flex-col items-center justify-center">
+                            <svg class="w-8 h-8 text-slate-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path></svg>
+                            <span class="text-slate-500 text-sm font-medium tracking-wide">圖片放置區</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Content: v2.0 -->
+        <div id="tab-v2" class="tab-content bg-slate-800/80 backdrop-blur-xl rounded-[2rem] shadow-[0_8px_30px_rgba(0,0,0,0.5)] border border-slate-700/50 p-6 md:p-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                <div class="lg:col-span-7 flex flex-col justify-center">
+                    <div class="mb-8">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-10 h-10 rounded-full bg-blue-900/50 border border-blue-500/50 flex items-center justify-center text-cyan-400 font-bold text-xl shadow-[0_0_10px_rgba(56,189,248,0.3)]">2</div>
+                            <h2 class="text-3xl font-bold text-white tracking-tight">遷移學習優化成果</h2>
+                        </div>
+                        
+                        <!-- Callout Box -->
+                        <div class="bg-blue-950/40 border border-blue-500/30 p-6 rounded-2xl mb-6 shadow-inner">
+                            <h4 class="flex items-center gap-2 text-cyan-300 font-bold text-lg mb-3 drop-shadow-md">
+                                💡 為什麼要使用遷移學習？
+                            </h4>
+                            <p class="text-slate-300 text-[15px] leading-relaxed">
+                                站在巨人的肩膀上。載入大型資料集預先訓練的權重，讓模型繼承強大的「視覺基礎特徵提取能力」。優點是：<strong class="text-cyan-100">大幅減少對資料量依賴、收斂極快，且能突破效能瓶頸避免過擬合</strong>。
+                            </p>
+                        </div>
+
+                        <div class="bg-slate-900/60 border-l-4 border-cyan-500 p-5 rounded-r-2xl mb-8">
+                            <h4 class="font-bold text-white mb-3 tracking-wide">🚀 優化成效：</h4>
+                            <ul class="space-y-2 text-slate-300 text-[15px]">
+                                <li>• <strong class="text-cyan-100">精準度大躍進：</strong> mAP@0.5 從 0.607 狂飆至 <strong class="text-cyan-400">0.758</strong>。</li>
+                                <li>• <strong class="text-cyan-100">解決人體盲區：</strong> 「人」命中率從 0.36 暴增至 <strong class="text-cyan-400">0.79</strong>。</li>
+                                <li>• <strong class="text-cyan-100">假警報下降：</strong> 背景誤判刀子降至 <strong class="text-cyan-400">22%</strong>，剪刀降至 <strong class="text-cyan-400">16%</strong>。</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- 科技感長條圖 -->
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-200 mb-6 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                            v2.0 模型精準度成長對比
+                        </h3>
+                        
+                        <div class="space-y-5">
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                                <span class="sm:w-36 text-slate-400 font-bold text-[15px]">人 (Person) AP</span>
+                                <div class="flex-grow flex items-center gap-3">
+                                    <div class="bar-container">
+                                        <div class="bar-fill bg-gradient-to-r from-blue-600 to-cyan-400" data-width="80.2%">
+                                            <span class="bar-text">0.802</span>
+                                        </div>
+                                    </div>
+                                    <span class="text-cyan-400 font-extrabold text-sm whitespace-nowrap drop-shadow-[0_0_5px_rgba(34,211,238,0.8)]">↑ +0.31</span>
+                                </div>
+                            </div>
+                            
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                                <span class="sm:w-36 text-slate-400 font-bold text-[15px]">刀具 (Knife) AP</span>
+                                <div class="flex-grow flex items-center gap-3">
+                                    <div class="bar-container">
+                                        <div class="bar-fill bg-gradient-to-r from-blue-600 to-cyan-400" data-width="69.6%">
+                                            <span class="bar-text">0.696</span>
+                                        </div>
+                                    </div>
+                                    <span class="text-cyan-400 font-extrabold text-sm whitespace-nowrap drop-shadow-[0_0_5px_rgba(34,211,238,0.8)]">↑ +0.10</span>
+                                </div>
+                            </div>
+                            
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                                <span class="sm:w-36 text-slate-400 font-bold text-[15px]">剪刀 (Scissors) AP</span>
+                                <div class="flex-grow flex items-center gap-3">
+                                    <div class="bar-container">
+                                        <div class="bar-fill bg-gradient-to-r from-blue-600 to-cyan-400" data-width="77.8%">
+                                            <span class="bar-text">0.778</span>
+                                        </div>
+                                    </div>
+                                    <span class="text-cyan-400 font-extrabold text-sm whitespace-nowrap drop-shadow-[0_0_5px_rgba(34,211,238,0.8)]">↑ +0.04</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 圖片區塊 -->
+                <div class="lg:col-span-5 space-y-6">
+                    <div class="bg-slate-900/50 p-3 rounded-2xl border border-slate-700 shadow-lg transition-transform hover:scale-[1.02] duration-300">
+                        <div class="flex items-center justify-between mb-3 px-2">
+                            <span class="text-sm font-bold text-slate-300">v2.0 混淆矩陣</span>
+                            <span class="text-xs bg-slate-800 text-cyan-400 px-2 py-1 rounded-md font-mono border border-cyan-900">confusion_matrix_v2.png</span>
+                        </div>
+                        <div class="image-placeholder w-full h-56 rounded-xl border border-slate-700 flex flex-col items-center justify-center">
+                            <span class="text-slate-500 text-sm font-medium tracking-wide">圖片放置區</span>
+                        </div>
+                    </div>
+                    <div class="bg-slate-900/50 p-3 rounded-2xl border border-slate-700 shadow-lg transition-transform hover:scale-[1.02] duration-300">
+                        <div class="flex items-center justify-between mb-3 px-2">
+                            <span class="text-sm font-bold text-slate-300">v2.0 PR 曲線</span>
+                            <span class="text-xs bg-slate-800 text-cyan-400 px-2 py-1 rounded-md font-mono border border-cyan-900">PR_curve_v2.png</span>
+                        </div>
+                        <div class="image-placeholder w-full h-56 rounded-xl border border-slate-700 flex flex-col items-center justify-center">
+                            <span class="text-slate-500 text-sm font-medium tracking-wide">圖片放置區</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Content: v3.0 -->
+        <div id="tab-v3" class="tab-content bg-slate-800/80 backdrop-blur-xl rounded-[2rem] shadow-[0_8px_30px_rgba(0,0,0,0.5)] border border-slate-700/50 p-6 md:p-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                <div class="lg:col-span-7 flex flex-col justify-center">
+                    <div class="mb-8">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-10 h-10 rounded-full bg-emerald-900/40 border border-emerald-500/50 flex items-center justify-center text-emerald-400 font-bold text-xl shadow-[0_0_10px_rgba(16,185,129,0.3)]">3</div>
+                            <h2 class="text-3xl font-bold text-white tracking-tight">知識蒸餾部署極致優化</h2>
+                        </div>
+                        
+                        <!-- Callout Box -->
+                        <div class="bg-emerald-950/30 border border-emerald-500/30 p-6 rounded-2xl mb-6 shadow-inner">
+                            <h4 class="flex items-center gap-2 text-emerald-400 font-bold text-lg mb-3 drop-shadow-md">
+                                💡 為什麼要使用知識蒸餾？
+                            </h4>
+                            <p class="text-slate-300 text-[15px] leading-relaxed">
+                                採用「師徒制」概念，由龐大聰明的教師模型指導輕量化的學生模型。針對 Jetson Orin Nano 等邊緣設備，能在資源受限下達到最佳運算效能，<strong class="text-emerald-300">大幅提升 FPS 確保警報零延遲</strong>。
+                            </p>
+                        </div>
+
+                        <div class="bg-slate-900/60 border-l-4 border-emerald-500 p-5 rounded-r-2xl mb-8">
+                            <h4 class="font-bold text-white mb-3 tracking-wide">🏆 優化成效：</h4>
+                            <ul class="space-y-2 text-slate-300 text-[15px]">
+                                <li>• <strong class="text-emerald-100">極致壓縮：</strong> 體積壓縮率高達 <strong class="text-emerald-400">88%</strong>。</li>
+                                <li>• <strong class="text-emerald-100">精準度不減反增：</strong> 刀具命中率達 <strong class="text-emerald-400">0.68</strong>，剪刀達 <strong class="text-emerald-400">0.73</strong> (皆優於 v2.0)。</li>
+                                <li>• <strong class="text-emerald-100">背景過濾強化：</strong> 背景被正確排除機率高達 <strong class="text-emerald-400">71%</strong>。</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- 科技感長條圖 -->
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-200 mb-6 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                            模型體積壓縮幅度
+                        </h3>
+                        
+                        <div class="space-y-5">
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                                <span class="sm:w-36 text-slate-400 font-bold text-[15px]">v2.0 (標準模型)</span>
+                                <div class="bar-container">
+                                    <div class="bar-fill bg-gradient-to-r from-slate-600 to-slate-500 shadow-none" data-width="100%">
+                                        <span class="bar-text text-white">49.6 MB</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                                <span class="sm:w-36 text-emerald-400 font-bold text-[15px]">v3.0 (知識蒸餾)</span>
+                                <div class="bar-container">
+                                    <!-- 翡翠綠霓虹光效 -->
+                                    <div class="bar-fill bg-gradient-to-r from-emerald-500 to-teal-400 shadow-[0_0_15px_rgba(16,185,129,0.5)]" data-width="12.1%">
+                                        <span class="bar-text">6.02 MB</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 圖片區塊 -->
+                <div class="lg:col-span-5 space-y-6">
+                    <div class="bg-slate-900/50 p-3 rounded-2xl border border-slate-700 shadow-lg transition-transform hover:scale-[1.02] duration-300">
+                        <div class="flex items-center justify-between mb-3 px-2">
+                            <span class="text-sm font-bold text-slate-300">v3.0 混淆矩陣</span>
+                            <span class="text-xs bg-slate-800 text-emerald-400 px-2 py-1 rounded-md font-mono border border-emerald-900/50">confusion_matrix_v3.png</span>
+                        </div>
+                        <div class="image-placeholder w-full h-56 rounded-xl border border-slate-700 flex flex-col items-center justify-center">
+                            <span class="text-slate-500 text-sm font-medium tracking-wide">圖片放置區</span>
+                        </div>
+                    </div>
+                    <div class="bg-slate-900/50 p-3 rounded-2xl border border-slate-700 shadow-lg transition-transform hover:scale-[1.02] duration-300">
+                        <div class="flex items-center justify-between mb-3 px-2">
+                            <span class="text-sm font-bold text-slate-300">Loss 與 訓練結果</span>
+                            <span class="text-xs bg-slate-800 text-emerald-400 px-2 py-1 rounded-md font-mono border border-emerald-900/50">results_v3.png</span>
+                        </div>
+                        <div class="image-placeholder w-full h-56 rounded-xl border border-slate-700 flex flex-col items-center justify-center">
+                            <span class="text-slate-500 text-sm font-medium tracking-wide">圖片放置區</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Content: Summary -->
+        <div id="tab-summary" class="tab-content bg-slate-800/80 backdrop-blur-xl rounded-[2rem] shadow-[0_8px_30px_rgba(0,0,0,0.5)] border border-slate-700/50 p-6 md:p-12">
+            <h2 class="text-3xl font-extrabold text-white mb-10 text-center tracking-tight">各類別 True Positive (命中率) 歷史演進</h2>
+            
+            <div class="max-w-4xl mx-auto space-y-12">
+                
+                <!-- Person Summary -->
+                <div>
+                    <h3 class="text-lg font-bold text-cyan-400 mb-4 border-b border-slate-700 pb-2 flex items-center gap-2">
+                        <span>👤</span> 人 (Person) 命中率演進
+                    </h3>
+                    <div class="space-y-4 pl-2">
+                        <div class="flex items-center gap-4">
+                            <span class="w-20 text-slate-500 font-bold text-sm">v1.0 初始</span>
+                            <div class="bar-container !h-6">
+                                <div class="bar-fill bg-slate-600 shadow-none" data-width="36%"><span class="bar-text !text-xs !text-slate-200">0.36</span></div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <span class="w-20 text-cyan-400 font-bold text-sm">v2.0 遷移</span>
+                            <div class="bar-container !h-6">
+                                <div class="bar-fill bg-gradient-to-r from-blue-600 to-cyan-500" data-width="79%"><span class="bar-text !text-xs">0.79</span></div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <span class="w-20 text-emerald-400 font-bold text-sm">v3.0 蒸餾</span>
+                            <div class="bar-container !h-6">
+                                <div class="bar-fill bg-gradient-to-r from-emerald-600 to-teal-400 shadow-[0_0_10px_rgba(16,185,129,0.4)]" data-width="77%"><span class="bar-text !text-xs">0.77</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Knife Summary -->
+                <div>
+                    <h3 class="text-lg font-bold text-cyan-400 mb-4 border-b border-slate-700 pb-2 flex items-center gap-2">
+                        <span>🔪</span> 刀具 (Knife) 命中率演進
+                    </h3>
+                    <div class="space-y-4 pl-2">
+                        <div class="flex items-center gap-4">
+                            <span class="w-20 text-slate-500 font-bold text-sm">v1.0 初始</span>
+                            <div class="bar-container !h-6">
+                                <div class="bar-fill bg-slate-600 shadow-none" data-width="58%"><span class="bar-text !text-xs !text-slate-200">0.58</span></div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <span class="w-20 text-cyan-400 font-bold text-sm">v2.0 遷移</span>
+                            <div class="bar-container !h-6">
+                                <div class="bar-fill bg-gradient-to-r from-blue-600 to-cyan-500" data-width="64%"><span class="bar-text !text-xs">0.64</span></div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <span class="w-20 text-emerald-400 font-bold text-sm">v3.0 蒸餾</span>
+                            <div class="bar-container !h-6">
+                                <div class="bar-fill bg-gradient-to-r from-emerald-600 to-teal-400 shadow-[0_0_10px_rgba(16,185,129,0.4)]" data-width="68%"><span class="bar-text !text-xs">0.68</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scissors Summary -->
+                <div>
+                    <h3 class="text-lg font-bold text-cyan-400 mb-4 border-b border-slate-700 pb-2 flex items-center gap-2">
+                        <span>✂️</span> 剪刀 (Scissors) 命中率演進
+                    </h3>
+                    <div class="space-y-4 pl-2">
+                        <div class="flex items-center gap-4">
+                            <span class="w-20 text-slate-500 font-bold text-sm">v1.0 初始</span>
+                            <div class="bar-container !h-6">
+                                <div class="bar-fill bg-slate-600 shadow-none" data-width="70%"><span class="bar-text !text-xs !text-slate-200">0.70</span></div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <span class="w-20 text-cyan-400 font-bold text-sm">v2.0 遷移</span>
+                            <div class="bar-container !h-6">
+                                <div class="bar-fill bg-gradient-to-r from-blue-600 to-cyan-500" data-width="66%"><span class="bar-text !text-xs">0.66</span></div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <span class="w-20 text-emerald-400 font-bold text-sm">v3.0 蒸餾</span>
+                            <div class="bar-container !h-6">
+                                <div class="bar-fill bg-gradient-to-r from-emerald-600 to-teal-400 shadow-[0_0_10px_rgba(16,185,129,0.4)]" data-width="73%"><span class="bar-text !text-xs">0.73</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="mt-14 bg-gradient-to-r from-blue-900/50 to-cyan-900/50 p-8 rounded-2xl text-center shadow-[0_0_20px_rgba(14,165,233,0.15)] border border-cyan-500/20">
+                <p class="text-slate-200 text-lg max-w-3xl mx-auto font-medium leading-relaxed tracking-wide drop-shadow-sm">
+                    專案成功解決了初始盲區。最終透過 <strong class="text-cyan-400 font-bold">知識蒸餾</strong>，我們打造出了一個體積僅 6MB、能極速部署於邊緣設備，且對人體與危險物品均具備高靈敏度辨識能力的防護大腦。
                 </p>
             </div>
-            <div class="card">
-                <h2>數據圖表區 (v1.0)</h2>
-                <div class="image-placeholder">
-                    [ 預留 v1.0 混淆矩陣圖片 ]
-                    <span>Confusion Matrix - Normalized</span>
-                </div>
-                <div class="image-placeholder">
-                    [ 預留 v1.0 PR 曲線圖片 ]
-                    <span>Precision-Recall Curve</span>
-                </div>
-            </div>
         </div>
+
     </div>
 
-    <div id="v2" class="section">
-        <div class="grid">
-            <div class="card">
-                <h2>v2.0 遷移學習優化</h2>
-                <div class="grid" style="grid-template-columns: 1fr 1fr; margin-top: 20px;">
-                    <div class="stat-box">
-                        <span class="stat-value" style="color:var(--accent-blue)">0.758</span>
-                        <span class="stat-label">mAP @0.5 (+0.15)</span>
-                    </div>
-                    <div class="stat-box">
-                        <span class="stat-value" style="color:var(--accent-green)">79%</span>
-                        <span class="stat-label">人體識別命中率</span>
-                    </div>
-                </div>
-                <p style="margin-top:20px;">
-                    <b class="pros">優化方案：遷移學習 (Transfer Learning)</b><br>
-                    1. <b>技術優勢：</b> 載入預訓練權重，減少對數據量的絕對依賴。<br>
-                    2. <b>泛化成效：</b> 成功修補人體辨識盲區，為危險分數計算打下基礎。<br>
-                    3. <b>抑制噪音：</b> 大幅降低背景對刀具的誤判干擾。
-                </p>
-            </div>
-            <div class="card">
-                <h2>數據圖表區 (v2.0)</h2>
-                <div class="image-placeholder">
-                    [ 預留 v2.0 混淆矩陣圖片 ]
-                    <span>Confusion Matrix - Optimized</span>
-                </div>
-                <div class="image-placeholder">
-                    [ 預留 v2.0 PR 曲線圖片 ]
-                    <span>Precision-Recall Curve - Improved</span>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- Scripts for Tab Logic and Bar Animation -->
+    <script>
+        // 長條圖動畫觸發函數
+        function animateBars(tabId) {
+            const tab = document.getElementById(tabId);
+            const bars = tab.querySelectorAll('.bar-fill');
+            
+            // 確保渲染順序
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    bars.forEach(bar => {
+                        const width = bar.getAttribute('data-width');
+                        bar.style.width = width;
+                    });
+                });
+            });
+        }
 
-    <div id="v3" class="section">
-        <div class="grid">
-            <div class="card">
-                <h2>v3.0 知識蒸餾最終版</h2>
-                <div class="grid" style="grid-template-columns: 1fr 1fr; margin-top: 20px;">
-                    <div class="stat-box">
-                        <span class="stat-value" style="color:var(--accent-green)">6.02 MB</span>
-                        <span class="stat-label">模型體積 (-88%)</span>
-                    </div>
-                    <div class="stat-box">
-                        <span class="stat-value">0.76</span>
-                        <span class="stat-label">最終 mAP @0.5</span>
-                    </div>
-                </div>
-                <p style="margin-top:20px;">
-                    <b class="pros">優化方案：知識蒸餾 (Knowledge Distillation)</b><br>
-                    1. <b>輕量化：</b> 將 49.6MB 的教師模型壓縮至 6MB，極致適合邊緣部署。<br>
-                    2. <b>性能維持：</b> 在體積大幅縮減下，精準度不降反升，邊緣運算 FPS 提升。<br>
-                    3. <b>穩定性：</b> 對剪刀 (0.73) 與刀具 (0.68) 的命中率達到開發以來最高峰。
-                </p>
-            </div>
-            <div class="card">
-                <h2>數據圖表區 (v3.0)</h2>
-                <div class="image-placeholder">
-                    [ 預留 v3.0 訓練曲線圖 ]
-                    <span>Results Loss & Metrics</span>
-                </div>
-                <div class="image-placeholder">
-                    [ 預留 v3.0 最終混淆矩陣 ]
-                    <span>Final Normalized Matrix</span>
-                </div>
-            </div>
-        </div>
-    </div>
+        // Tab 切換邏輯
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
 
-    <div id="compare" class="section">
-        <div class="card">
-            <h2>版本綜合對比表</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>指標</th>
-                        <th>v1.0 (初始)</th>
-                        <th>v2.0 (遷移)</th>
-                        <th>v3.0 (蒸餾)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><b>mAP @0.5</b></td>
-                        <td>0.607</td>
-                        <td>0.758</td>
-                        <td>0.760</td>
-                    </tr>
-                    <tr>
-                        <td><b>人體辨識率</b></td>
-                        <td>36%</td>
-                        <td>79%</td>
-                        <td>77%</td>
-                    </tr>
-                    <tr>
-                        <td><b>模型體積</b></td>
-                        <td>-</td>
-                        <td>49.6 MB</td>
-                        <td>6.02 MB</td>
-                    </tr>
-                    <tr>
-                        <td><b>核心技術</b></td>
-                        <td>隨機初始化</td>
-                        <td>遷移學習</td>
-                        <td>知識蒸餾</td>
-                    </tr>
-                    <tr>
-                        <td><b>部署建議</b></td>
-                        <td class="cons">不建議</td>
-                        <td>適合雲端</td>
-                        <td class="pros">強烈建議部署於 Orin Nano</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // 重置所有標籤樣式為非活躍狀態 (深色模式樣式)
+                tabBtns.forEach(b => {
+                    b.classList.remove('text-white', 'bg-gradient-to-r', 'from-blue-600', 'to-cyan-600', 'shadow-[0_0_15px_rgba(14,165,233,0.4)]', 'ring-1', 'ring-cyan-400/50', 'active');
+                    b.classList.add('text-slate-400');
+                });
+                
+                // 隱藏所有內容，並將長條圖寬度歸零
+                tabContents.forEach(c => {
+                    c.classList.remove('active');
+                    const bars = c.querySelectorAll('.bar-fill');
+                    bars.forEach(bar => bar.style.width = '0%');
+                });
 
-<script>
-    function showTab(tabId) {
-        // Hide all sections
-        const sections = document.querySelectorAll('.section');
-        sections.forEach(s => s.classList.remove('active'));
+                // 啟動當前標籤的科技霓虹發光樣式
+                btn.classList.remove('text-slate-400');
+                btn.classList.add('text-white', 'bg-gradient-to-r', 'from-blue-600', 'to-cyan-600', 'shadow-[0_0_15px_rgba(14,165,233,0.4)]', 'ring-1', 'ring-cyan-400/50', 'active');
+                
+                const targetId = btn.getAttribute('data-target');
+                document.getElementById(targetId).classList.add('active');
+                
+                // 觸發該分頁的長條圖動畫
+                animateBars(targetId);
+            });
+        });
 
-        // Deactivate all buttons
-        const buttons = document.querySelectorAll('.tab-btn');
-        buttons.forEach(b => b.classList.remove('active'));
-
-        // Show selected
-        document.getElementById(tabId).classList.add('active');
-        event.currentTarget.classList.add('active');
-    }
-</script>
-
+        // 頁面載入時觸發第一個分頁的動畫
+        document.addEventListener('DOMContentLoaded', () => {
+            animateBars('tab-v1');
+        });
+    </script>
 </body>
 </html>
-"""
-
-file_path = "Smart_Safety_Care_Training_Report.html"
-with open(file_path, "w", encoding="utf-8") as f:
-    f.write(html_content)
-
-print(file_path)
