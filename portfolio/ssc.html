@@ -184,15 +184,29 @@
         .arrow-flow-x { animation: arrowFlowX 1.5s infinite ease-in-out; }
         .arrow-flow-y { animation: arrowFlowY 1.5s infinite ease-in-out; }
 
-        /* ✨ 卡片互動懸浮特效 (包含Q彈縮放與發光) */
+        /* ✨ 卡片互動懸浮特效 (區分桌機懸浮與手機按壓) */
         .interactive-card {
             position: relative;
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.4s ease;
+            -webkit-tap-highlight-color: transparent; /* 移除手機原生的點擊灰底，讓發光特效更乾淨 */
         }
-        .interactive-card:hover {
-            transform: translateY(-6px) scale(1.015);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 0 20px rgba(34, 211, 238, 0.15);
-            border-color: rgba(34, 211, 238, 0.4);
+        
+        /* 桌機滑鼠：Q彈放大上浮 */
+        @media (hover: hover) {
+            .interactive-card:hover {
+                transform: translateY(-6px) scale(1.015);
+                box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 0 20px rgba(34, 211, 238, 0.15);
+                border-color: rgba(34, 211, 238, 0.4);
+                z-index: 20;
+            }
+        }
+        
+        /* 手機觸控：快速真實按壓感 */
+        .interactive-card.touch-active {
+            transform: scale(0.98); 
+            box-shadow: 0 0 20px rgba(34, 211, 238, 0.3);
+            border-color: rgba(34, 211, 238, 0.7);
+            transition-duration: 0.1s; /* 按壓反應極速 */
             z-index: 20;
         }
         
@@ -200,11 +214,21 @@
         .interactive-item {
             position: relative;
             transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease, border-color 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
         }
-        .interactive-item:hover {
-            transform: translateY(-4px) scale(1.05);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 0 15px rgba(34, 211, 238, 0.2);
-            border-color: rgba(34, 211, 238, 0.5);
+        @media (hover: hover) {
+            .interactive-item:hover {
+                transform: translateY(-4px) scale(1.05);
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 0 15px rgba(34, 211, 238, 0.2);
+                border-color: rgba(34, 211, 238, 0.5);
+                z-index: 10;
+            }
+        }
+        .interactive-item.touch-active {
+            transform: scale(0.95);
+            box-shadow: 0 0 15px rgba(34, 211, 238, 0.4);
+            border-color: rgba(34, 211, 238, 0.7);
+            transition-duration: 0.1s;
             z-index: 10;
         }
 
@@ -1288,45 +1312,49 @@
             if (e.key === 'ArrowLeft' || e.key === 'PageUp') prevSlide();
         });
 
-        // 2. 支援手機左右滑動 (Swipe) - 終極強健版
+        // 2. 支援手機左右滑動 (Swipe) - ✨ 即時觸發版 (解決有時滑不動的終極方案)
         let touchStartX = 0;
         let touchStartY = 0;
-        let touchEndX = 0;
-        let touchEndY = 0;
-        let touchStartTime = 0;
+        let hasSwiped = false; // 紀錄本次觸控是否已經觸發過翻頁
         
         window.addEventListener('touchstart', e => {
-            touchStartX = e.changedTouches[0].screenX;
-            touchStartY = e.changedTouches[0].screenY;
-            touchEndX = touchStartX; // 初始化
-            touchEndY = touchStartY;
-            touchStartTime = Date.now();
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+            hasSwiped = false; // 每次手指碰觸時重置狀態
         }, { passive: true });
 
-        // 隨時記錄最後的手指位置
         window.addEventListener('touchmove', e => {
-            touchEndX = e.changedTouches[0].screenX;
-            touchEndY = e.changedTouches[0].screenY;
-        }, { passive: true });
-        
-        const handleSwipe = () => {
-            let dx = touchEndX - touchStartX;
-            let dy = touchEndY - touchStartY;
-            let duration = Date.now() - touchStartTime;
+            if (!touchStartX || !touchStartY || hasSwiped) return; // 若已經翻頁或無起始座標則忽略
 
-            // ✅ 終極寬容判定：
-            // 1. 時間在 600ms 以內 (快速滑動)
-            // 2. 水平距離超過 35px
-            // 3. 水平滑動的距離大於垂直滑動 (允許稍微斜滑)
-            if (duration < 600 && Math.abs(dx) > 35 && Math.abs(dx) > Math.abs(dy)) {
+            let currentX = e.touches[0].clientX;
+            let currentY = e.touches[0].clientY;
+            let dx = currentX - touchStartX;
+            let dy = currentY - touchStartY;
+
+            // ✅ 核心修正：不要等到手指離開才算！在滑動途中只要達到門檻就「立即翻頁」
+            // 條件：水平位移大於 40px，且水平滑動意圖明顯大於垂直 (確保不會跟上下滾動打架)
+            if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+                hasSwiped = true; // 鎖定本次滑動，防止連續狂跳
                 if (dx < 0) nextSlide(); // 向左滑：下一頁
                 else prevSlide();        // 向右滑：上一頁
+                
+                // 清除起始座標
+                touchStartX = 0;
+                touchStartY = 0;
             }
-        };
+        }, { passive: true });
 
-        window.addEventListener('touchend', handleSwipe, { passive: true });
-        // ✅ 關鍵修復：監聽 touchcancel，防止系統手勢或原生滾動中斷事件導致漏判
-        window.addEventListener('touchcancel', handleSwipe, { passive: true });
+        window.addEventListener('touchend', () => {
+            touchStartX = 0;
+            touchStartY = 0;
+            hasSwiped = false;
+        }, { passive: true });
+        
+        window.addEventListener('touchcancel', () => {
+            touchStartX = 0;
+            touchStartY = 0;
+            hasSwiped = false;
+        }, { passive: true });
 
         // (已移除滑鼠滾輪滾到底自動換頁的功能，讓滾動單純只做內部內容檢視)
 
