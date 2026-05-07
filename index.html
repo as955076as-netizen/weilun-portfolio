@@ -470,8 +470,10 @@
 
         <!-- ✅ 手機版高度設為 h-[75vh]，並帶有圓角，呈現漂浮感 -->
         <div id="modal-content" class="w-full h-[75vh] md:h-[85vh] md:max-w-[1200px] flex flex-col scale-95 transition-transform duration-500">
-            <div class="w-full h-full relative bg-[#050505] rounded-2xl md:rounded-xl overflow-hidden shadow-2xl shadow-black border border-white/10">
-                <iframe id="modal-iframe" src="" class="absolute inset-0 w-full h-full border-none" allowfullscreen></iframe>
+            <!-- 💡 修正手機版無法滑動問題：改用 overflow-auto 並加入 -webkit-overflow-scrolling: touch; -->
+            <div class="w-full h-full bg-[#050505] rounded-2xl md:rounded-xl overflow-auto shadow-2xl shadow-black border border-white/10" style="-webkit-overflow-scrolling: touch;">
+                <!-- 💡 確保 iframe 設定為 block 並允許捲動 -->
+                <iframe id="modal-iframe" src="" class="w-full h-full border-none block" allowfullscreen scrolling="yes"></iframe>
             </div>
         </div>
     </div>
