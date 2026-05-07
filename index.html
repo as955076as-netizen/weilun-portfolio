@@ -301,7 +301,7 @@
             <div class="flex flex-col space-y-16 md:space-y-32 mb-32 md:mb-48">
                 
                 <!-- 專案卡片 1：實機 Demo (外部連結) -->
-                <a href="https://as955076as-netizen.github.io/Smart-Safety-Care/" target="_blank" rel="noopener noreferrer" class="relative block w-full h-[420px] md:h-auto md:aspect-[21/9] bg-[#0a0a0a] border border-white/5 overflow-hidden rounded-3xl group cursor-pointer">
+                <a href="#" target="_blank" rel="noopener noreferrer" class="relative block w-full h-[420px] md:h-auto md:aspect-[21/9] bg-[#0a0a0a] border border-white/5 overflow-hidden rounded-3xl group cursor-pointer">
                     <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="Smart Safety Care Cover" class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:scale-105 group-hover:opacity-70 transition-all duration-700 ease-out z-0">
                     <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/80 to-transparent pointer-events-none z-10"></div>
                     <div class="absolute bottom-0 left-0 w-full h-full md:h-auto p-6 md:p-16 flex flex-col justify-end z-20">
@@ -320,7 +320,8 @@
                 </a>
 
                 <!-- 專案卡片 2：專案介紹簡報 (觸發 Modal 彈出視窗) -->
-                <a href="javascript:void(0)" class="trigger-modal-btn relative block w-full h-[420px] md:h-auto md:aspect-[21/9] bg-[#0a0a0a] border border-white/5 overflow-hidden rounded-3xl group cursor-pointer" data-title="Project Pitch Deck">
+                <!-- 💡 注意這裡：新增了 data-url 屬性，請把 portfolio/pitch.pdf 換成你的簡報連結 -->
+                <a href="javascript:void(0)" class="trigger-modal-btn relative block w-full h-[420px] md:h-auto md:aspect-[21/9] bg-[#0a0a0a] border border-white/5 overflow-hidden rounded-3xl group cursor-pointer" data-title="Project Pitch Deck" data-url="portfolio/ssc.html">
                     <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="Pitch Deck Cover" class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:scale-105 group-hover:opacity-70 transition-all duration-700 ease-out z-0 filter grayscale group-hover:grayscale-0">
                     <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/80 to-transparent pointer-events-none z-10"></div>
                     <div class="absolute bottom-0 left-0 w-full h-full md:h-auto p-6 md:p-16 flex flex-col justify-end z-20">
@@ -340,8 +341,8 @@
                 </a>
 
                 <!-- 專案卡片 3：訓練數據詳細報告 (觸發 Modal 彈出視窗) -->
-                <a href="javascript:void(0)" class="trigger-modal-btn relative block w-full h-[420px] md:h-auto md:aspect-[21/9] bg-[#0a0a0a] border border-white/5 overflow-hidden rounded-3xl group cursor-pointer" data-title="Training Data Report">
-                    <!-- 替換為數據分析、圖表感的背景圖 -->
+                <!-- 💡 注意這裡：新增了 data-url 屬性，請把 portfolio/data-report.pdf 換成你的數據報告連結 -->
+                <a href="javascript:void(0)" class="trigger-modal-btn relative block w-full h-[420px] md:h-auto md:aspect-[21/9] bg-[#0a0a0a] border border-white/5 overflow-hidden rounded-3xl group cursor-pointer" data-title="Training Data Report" data-url="portfolio/data-report.html">
                     <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="Training Data Report Cover" class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:scale-105 group-hover:opacity-70 transition-all duration-700 ease-out z-0 filter grayscale group-hover:grayscale-0">
                     <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/80 to-transparent pointer-events-none z-10"></div>
                     
@@ -447,7 +448,8 @@
 
         <div id="modal-content" class="w-full h-full md:max-w-[1440px] flex flex-col scale-95 transition-transform duration-500">
             <div class="w-full h-full relative bg-white rounded-t-xl md:rounded-xl overflow-hidden shadow-2xl shadow-black">
-                <iframe src="portfolio/ssc.html" class="absolute inset-0 w-full h-full border-none" allowfullscreen></iframe>
+                <!-- 💡 注意這裡：加入了 id="modal-iframe"，讓 JS 知道要替換這裡的網址 -->
+                <iframe id="modal-iframe" src="" class="absolute inset-0 w-full h-full border-none" allowfullscreen></iframe>
             </div>
         </div>
     </div>
@@ -747,13 +749,23 @@
     const modalContent = document.getElementById('modal-content');
     const closeModalBtn = document.getElementById('close-modal-btn');
     const modalTitleText = document.getElementById('modal-title-text');
+    const modalIframe = document.getElementById('modal-iframe'); // 抓取 iframe 元素
     const triggers = document.querySelectorAll('.trigger-modal-btn');
 
     function openModal(e) {
-        if (e && e.currentTarget && modalTitleText) {
-            const title = e.currentTarget.getAttribute('data-title');
-            if (title) modalTitleText.innerText = title;
+        if (e && e.currentTarget) {
+            // 動態替換標題
+            if (modalTitleText) {
+                const title = e.currentTarget.getAttribute('data-title');
+                if (title) modalTitleText.innerText = title;
+            }
+            // 動態替換 Iframe 內的 PDF/網頁連結
+            if (modalIframe) {
+                const url = e.currentTarget.getAttribute('data-url');
+                if (url) modalIframe.src = url;
+            }
         }
+        
         modal.classList.remove('hidden'); modal.classList.add('flex');
         document.body.classList.add('no-scroll');
         setTimeout(() => { modal.classList.remove('opacity-0'); modalContent.classList.remove('scale-95'); modalContent.classList.add('scale-100'); }, 10);
@@ -762,7 +774,13 @@
     function closeModal() {
         modal.classList.add('opacity-0'); modalContent.classList.remove('scale-100'); modalContent.classList.add('scale-95');
         document.body.classList.remove('no-scroll');
-        setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 500); 
+        
+        // 關閉視窗時，把 iframe 連結清空，避免下次打開前出現上一個內容的殘影
+        setTimeout(() => { 
+            modal.classList.add('hidden'); 
+            modal.classList.remove('flex'); 
+            if(modalIframe) modalIframe.src = "";
+        }, 500); 
     }
 
     if(triggers.length > 0 && modal && closeModalBtn) {
