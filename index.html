@@ -301,24 +301,26 @@
             <!-- 縮小了區塊間距 (space-y-6 md:space-y-8) 讓排版更緊湊精緻 -->
             <div class="flex flex-col space-y-6 md:space-y-8 mb-32 md:mb-48">
                 
-                <!-- 專案展示 1：實機 Demo (恢復背景圖卡片，並大幅縮小高度) -->
-                <a href="#" target="_blank" rel="noopener noreferrer" class="relative block w-full h-[280px] md:h-[360px] bg-[#0a0a0a] border border-white/5 overflow-hidden rounded-[2rem] group cursor-pointer shadow-xl shadow-black/50">
+                <!-- 專案展示 1：實機 Demo (進一步縮小高度，變為精緻橫幅) -->
+                <a href="#" target="_blank" rel="noopener noreferrer" class="relative block w-full h-[220px] md:h-[280px] bg-[#0a0a0a] border border-white/5 overflow-hidden rounded-[2rem] group cursor-pointer shadow-xl shadow-black/50">
                     <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="Smart Safety Care Cover" class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:scale-105 group-hover:opacity-70 transition-all duration-700 ease-out z-0">
-                    <!-- 漸層遮罩 -->
-                    <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/70 to-transparent pointer-events-none z-10"></div>
+                    <!-- 漸層遮罩 (加深一點確保小卡片文字易讀) -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/80 to-transparent pointer-events-none z-10"></div>
                     
-                    <div class="absolute bottom-0 left-0 w-full p-6 md:p-10 flex flex-col justify-end z-20">
-                        <div class="flex items-center space-x-2 mb-3">
+                    <div class="absolute bottom-0 left-0 w-full p-6 md:p-8 flex flex-col justify-end z-20">
+                        <div class="flex items-center space-x-2 mb-2">
                             <span class="text-[10px] border border-[#c8a97e]/30 text-[#c8a97e] px-2 py-1 rounded-lg tracking-wider backdrop-blur-sm bg-black/30">YOLOv8</span>
                             <span class="text-[10px] border border-[#c8a97e]/30 text-[#c8a97e] px-2 py-1 rounded-lg tracking-wider backdrop-blur-sm bg-black/30">n8n</span>
                         </div>
-                        <h3 class="text-2xl md:text-3xl font-bold text-white mb-3 group-hover:text-[#c8a97e] transition-colors duration-300 drop-shadow-md">Smart Safety Care</h3>
-                        <p class="text-xs md:text-sm text-white/70 max-w-2xl font-light tracking-wide leading-relaxed drop-shadow-md line-clamp-2 md:line-clamp-none">
+                        <h3 class="text-xl md:text-2xl font-bold text-white mb-2 group-hover:text-[#c8a97e] transition-colors duration-300 drop-shadow-md">Smart Safety Care</h3>
+                        
+                        <!-- 設定文字最多兩行 line-clamp-2 避免爆版 -->
+                        <p class="text-xs md:text-sm text-white/70 max-w-2xl font-light tracking-wide leading-relaxed drop-shadow-md line-clamp-2">
                             基於邊緣計算的 AI 居家安全監控系統。透過輕量化 YOLO 模型實現跌倒偵測，並結合 n8n 工作流，在異常發生時自動觸發即時群組通報機制。
                         </p>
                         
                         <!-- 把浮現指標加回來，並設定為 Hover 時才出現 -->
-                        <div class="mt-4 flex items-center text-[#c8a97e] text-[10px] md:text-xs tracking-widest font-medium opacity-100 md:opacity-0 group-hover:opacity-100 transform translate-y-0 md:translate-y-2 group-hover:translate-y-0 transition-all duration-300 drop-shadow-md">
+                        <div class="mt-3 flex items-center text-[#c8a97e] text-[10px] md:text-xs tracking-widest font-medium opacity-100 md:opacity-0 group-hover:opacity-100 transform translate-y-0 md:translate-y-2 group-hover:translate-y-0 transition-all duration-300 drop-shadow-md">
                             CLICK TO VIEW DEMO <span class="ml-2">↗</span>
                         </div>
                     </div>
@@ -328,7 +330,7 @@
                 <div class="flex flex-wrap items-center gap-4 md:gap-5 w-full pt-4 md:pt-6">
                     
                     <!-- 膠囊按鈕 1：專案介紹簡報 -->
-                    <a href="javascript:void(0)" class="trigger-modal-btn group relative inline-flex items-center justify-center px-6 py-3.5 md:px-8 md:py-4 rounded-full bg-white/[0.04] border border-white/10 backdrop-blur-md hover:-translate-y-1.5 hover:bg-[#c8a97e]/15 hover:border-[#c8a97e]/80 hover:shadow-[0_10px_30px_-10px_rgba(200,169,126,0.5)] transition-all duration-400 ease-out cursor-pointer overflow-hidden" data-title="專案介紹簡報" data-url="portfolio/pitch.pdf">
+                    <a href="javascript:void(0)" class="trigger-modal-btn group relative inline-flex items-center justify-center px-6 py-3.5 md:px-8 md:py-4 rounded-full bg-white/[0.04] border border-white/10 backdrop-blur-md hover:-translate-y-1.5 hover:bg-[#c8a97e]/15 hover:border-[#c8a97e]/80 hover:shadow-[0_10px_30px_-10px_rgba(200,169,126,0.5)] transition-all duration-400 ease-out cursor-pointer overflow-hidden" data-title="專案介紹簡報" data-url="portfolio/ssc.html">
                         <!-- 懸停時內部打光特效 -->
                         <div class="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none z-0"></div>
                         <!-- 文件 Icon -->
