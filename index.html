@@ -298,13 +298,13 @@
                 <h2 class="text-3xl md:text-5xl font-black tracking-tight text-white/90">精選專案實績</h2>
             </div>
 
-            <div class="flex flex-col space-y-16 md:space-y-32 mb-32 md:mb-48">
+            <div class="flex flex-col space-y-6 md:space-y-8 mb-32 md:mb-48">
                 
-                <!-- 專案卡片 1：實機 Demo (外部連結) -->
-                <a href="https://as955076as-netizen.github.io/Smart-Safety-Care/" target="_blank" rel="noopener noreferrer" class="relative block w-full h-[420px] md:h-auto md:aspect-[21/9] bg-[#0a0a0a] border border-white/5 overflow-hidden rounded-3xl group cursor-pointer">
+                <!-- 專案卡片 1：實機 Demo (外部連結，全寬) -->
+                <a href="#" target="_blank" rel="noopener noreferrer" class="relative block w-full h-[420px] md:h-[500px] bg-[#0a0a0a] border border-white/5 overflow-hidden rounded-3xl group cursor-pointer">
                     <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="Smart Safety Care Cover" class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:scale-105 group-hover:opacity-70 transition-all duration-700 ease-out z-0">
                     <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/80 to-transparent pointer-events-none z-10"></div>
-                    <div class="absolute bottom-0 left-0 w-full h-full md:h-auto p-6 md:p-16 flex flex-col justify-end z-20">
+                    <div class="absolute bottom-0 left-0 w-full h-full p-6 md:p-16 flex flex-col justify-end z-20">
                         <div class="flex items-center space-x-3 mb-4 mt-auto md:mt-0">
                             <span class="text-[10px] border border-[#c8a97e]/30 text-[#c8a97e] px-2 py-1 rounded-lg tracking-wider backdrop-blur-sm bg-black/30">YOLOv8</span>
                             <span class="text-[10px] border border-[#c8a97e]/30 text-[#c8a97e] px-2 py-1 rounded-lg tracking-wider backdrop-blur-sm bg-black/30">n8n</span>
@@ -319,48 +319,52 @@
                     </div>
                 </a>
 
-                <!-- 專案卡片 2：專案介紹簡報 (觸發 Modal 彈出視窗) -->
-                <!-- 💡 注意這裡：新增了 data-url 屬性，請把 portfolio/pitch.pdf 換成你的簡報連結 -->
-                <a href="javascript:void(0)" class="trigger-modal-btn relative block w-full h-[420px] md:h-auto md:aspect-[21/9] bg-[#0a0a0a] border border-white/5 overflow-hidden rounded-3xl group cursor-pointer" data-title="Project Pitch Deck" data-url="portfolio/ssc.html">
-                    <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="Pitch Deck Cover" class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:scale-105 group-hover:opacity-70 transition-all duration-700 ease-out z-0 filter grayscale group-hover:grayscale-0">
-                    <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/80 to-transparent pointer-events-none z-10"></div>
-                    <div class="absolute bottom-0 left-0 w-full h-full md:h-auto p-6 md:p-16 flex flex-col justify-end z-20">
-                        <div class="flex items-center space-x-3 mb-4 mt-auto md:mt-0">
-                            <!-- 專案簡報標籤 -->
-                            <span class="text-[10px] border border-[#c8a97e]/30 text-[#c8a97e] px-2 py-1 rounded-lg tracking-wider backdrop-blur-sm bg-black/30">Pitch Deck</span>
-                            <span class="text-[10px] border border-[#c8a97e]/30 text-[#c8a97e] px-2 py-1 rounded-lg tracking-wider backdrop-blur-sm bg-black/30">System Architecture</span>
-                        </div>
-                        <h3 class="text-2xl md:text-4xl font-bold text-white mb-4 group-hover:text-[#c8a97e] transition-colors duration-300 drop-shadow-md">Project Pitch Deck</h3>
-                        <p class="text-sm md:text-base text-white/70 max-w-2xl font-light tracking-wide mb-6 drop-shadow-md">
-                            深入解析 Smart Safety Care 的系統架構與技術細節。透過本份簡報，快速了解邊緣運算模型落地、自動化通報整合及實務應用的工程完整解法。
-                        </p>
-                        <div class="flex items-center text-[#c8a97e] text-sm tracking-widest font-medium opacity-100 md:opacity-0 group-hover:opacity-100 transform translate-y-0 md:translate-y-2 group-hover:translate-y-0 transition-all duration-300 drop-shadow-md">
-                            CLICK TO VIEW PRESENTATION <span class="ml-2">→</span>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- 專案卡片 3：訓練數據詳細報告 (觸發 Modal 彈出視窗) -->
-                <!-- 💡 注意這裡：新增了 data-url 屬性，請把 portfolio/data-report.pdf 換成你的數據報告連結 -->
-                <a href="javascript:void(0)" class="trigger-modal-btn relative block w-full h-[420px] md:h-auto md:aspect-[21/9] bg-[#0a0a0a] border border-white/5 overflow-hidden rounded-3xl group cursor-pointer" data-title="Training Data Report" data-url="portfolio/data-report.html">
-                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="Training Data Report Cover" class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:scale-105 group-hover:opacity-70 transition-all duration-700 ease-out z-0 filter grayscale group-hover:grayscale-0">
-                    <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/80 to-transparent pointer-events-none z-10"></div>
+                <!-- 專案卡片 2, 3, 4：並列在一個三欄式網格中 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                     
-                    <div class="absolute bottom-0 left-0 w-full h-full md:h-auto p-6 md:p-16 flex flex-col justify-end z-20">
-                        <div class="flex items-center space-x-3 mb-4 mt-auto md:mt-0">
-                            <!-- 數據報告專屬標籤 -->
-                            <span class="text-[10px] border border-[#c8a97e]/30 text-[#c8a97e] px-2 py-1 rounded-lg tracking-wider backdrop-blur-sm bg-black/30">Dataset</span>
-                            <span class="text-[10px] border border-[#c8a97e]/30 text-[#c8a97e] px-2 py-1 rounded-lg tracking-wider backdrop-blur-sm bg-black/30">Model Metrics</span>
+                    <!-- 專案卡片 2：專案介紹簡報 -->
+                    <a href="javascript:void(0)" class="trigger-modal-btn relative block w-full h-[380px] md:h-[450px] bg-[#0a0a0a] border border-white/5 overflow-hidden rounded-3xl group cursor-pointer" data-title="專案介紹簡報" data-url="portfolio/pitch.pdf">
+                        <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="Pitch Deck Cover" class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:scale-105 group-hover:opacity-70 transition-all duration-700 ease-out z-0 filter grayscale group-hover:grayscale-0">
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/80 to-transparent pointer-events-none z-10"></div>
+                        <div class="absolute bottom-0 left-0 w-full h-full p-6 md:p-10 flex flex-col justify-end z-20">
+                            <!-- 只有標題，置底對齊 -->
+                            <h3 class="text-2xl md:text-3xl font-bold text-white mb-4 mt-auto group-hover:text-[#c8a97e] transition-colors duration-300 drop-shadow-md">專案介紹簡報</h3>
+                            
+                            <div class="flex items-center text-[#c8a97e] text-xs md:text-sm tracking-widest font-medium opacity-100 md:opacity-0 group-hover:opacity-100 transform translate-y-0 md:translate-y-2 group-hover:translate-y-0 transition-all duration-300 drop-shadow-md">
+                                VIEW PRESENTATION <span class="ml-2">→</span>
+                            </div>
                         </div>
-                        <h3 class="text-2xl md:text-4xl font-bold text-white mb-4 group-hover:text-[#c8a97e] transition-colors duration-300 drop-shadow-md">Training Data Report</h3>
-                        <p class="text-sm md:text-base text-white/70 max-w-2xl font-light tracking-wide mb-6 drop-shadow-md">
-                            完整收錄 YOLO 模型訓練過程的數據指標（mAP、Precision、Recall）與資料集分佈情形。透過視覺化圖表，清晰展現模型從初始到最佳化的收斂歷程與成效驗證。
-                        </p>
-                        <div class="flex items-center text-[#c8a97e] text-sm tracking-widest font-medium opacity-100 md:opacity-0 group-hover:opacity-100 transform translate-y-0 md:translate-y-2 group-hover:translate-y-0 transition-all duration-300 drop-shadow-md">
-                            CLICK TO VIEW REPORT <span class="ml-2">→</span>
+                    </a>
+
+                    <!-- 專案卡片 3：訓練數據報告 -->
+                    <a href="javascript:void(0)" class="trigger-modal-btn relative block w-full h-[380px] md:h-[450px] bg-[#0a0a0a] border border-white/5 overflow-hidden rounded-3xl group cursor-pointer" data-title="訓練數據報告" data-url="portfolio/data-report.pdf">
+                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="Training Data Report Cover" class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:scale-105 group-hover:opacity-70 transition-all duration-700 ease-out z-0 filter grayscale group-hover:grayscale-0">
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/80 to-transparent pointer-events-none z-10"></div>
+                        <div class="absolute bottom-0 left-0 w-full h-full p-6 md:p-10 flex flex-col justify-end z-20">
+                            <!-- 只有標題，置底對齊 -->
+                            <h3 class="text-2xl md:text-3xl font-bold text-white mb-4 mt-auto group-hover:text-[#c8a97e] transition-colors duration-300 drop-shadow-md">訓練數據報告</h3>
+                            
+                            <div class="flex items-center text-[#c8a97e] text-xs md:text-sm tracking-widest font-medium opacity-100 md:opacity-0 group-hover:opacity-100 transform translate-y-0 md:translate-y-2 group-hover:translate-y-0 transition-all duration-300 drop-shadow-md">
+                                VIEW REPORT <span class="ml-2">→</span>
+                            </div>
                         </div>
-                    </div>
-                </a>
+                    </a>
+
+                    <!-- 專案卡片 4：APP功能介紹 -->
+                    <a href="javascript:void(0)" class="trigger-modal-btn relative block w-full h-[380px] md:h-[450px] bg-[#0a0a0a] border border-white/5 overflow-hidden rounded-3xl group cursor-pointer" data-title="APP功能介紹" data-url="portfolio/app-intro.pdf">
+                        <!-- 挑選具備手機與 UI 設計感的預設圖片 -->
+                        <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="APP Features Cover" class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:scale-105 group-hover:opacity-70 transition-all duration-700 ease-out z-0 filter grayscale group-hover:grayscale-0">
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/80 to-transparent pointer-events-none z-10"></div>
+                        <div class="absolute bottom-0 left-0 w-full h-full p-6 md:p-10 flex flex-col justify-end z-20">
+                            <!-- 只有標題，置底對齊 -->
+                            <h3 class="text-2xl md:text-3xl font-bold text-white mb-4 mt-auto group-hover:text-[#c8a97e] transition-colors duration-300 drop-shadow-md">APP功能介紹</h3>
+                            
+                            <div class="flex items-center text-[#c8a97e] text-xs md:text-sm tracking-widest font-medium opacity-100 md:opacity-0 group-hover:opacity-100 transform translate-y-0 md:translate-y-2 group-hover:translate-y-0 transition-all duration-300 drop-shadow-md">
+                                VIEW DETAILS <span class="ml-2">→</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
             </div>
 
             <!-- 02 / CROSS-DOMAIN CAPABILITY 跨域整合量能 -->
