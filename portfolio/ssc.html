@@ -62,6 +62,9 @@
             display: flex; 
             flex-direction: column;
             
+            /* ✅ 關鍵修復：禁止瀏覽器原生水平滑動手勢(如返回上一頁)，確保我們的左右切換 JS 能確實觸發 */
+            touch-action: pan-y pinch-zoom;
+            
             /* 離開時的狀態 (未啟動) */
             opacity: 0;
             visibility: hidden;
@@ -1300,8 +1303,8 @@
             let dx = touchEndX - touchStartX;
             let dy = touchEndY - touchStartY;
 
-            // 如果是水平滑動（大於垂直滑動），且滑動距離超過 50px
-            if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+            // ✅ 放寬判定條件：只要水平距離超過 30px，且水平位移 > 垂直位移的 1.2 倍，就視為左右滑動
+            if (Math.abs(dx) > 30 && Math.abs(dx) > Math.abs(dy) * 1.2) {
                 if (dx < 0) nextSlide(); // 向左滑：下一頁
                 else prevSlide();        // 向右滑：上一頁
             }
