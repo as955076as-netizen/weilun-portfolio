@@ -38,6 +38,7 @@
             height: 100dvh; /* ✅ 解決手機瀏覽器網址列遮擋問題 */
             margin: 0;
             padding: 0;
+            overscroll-behavior: none; /* ✅ 徹底阻絕整個網頁的滑動穿透與下拉刷新 (橡皮筋效果) */
         }
 
         /* 👑 全新過場主容器設定：改為相對定位，隱藏原生滾動軸 */
@@ -59,6 +60,7 @@
             height: 100dvh; /* ✅ 解決手機瀏覽器網址列遮擋問題 */
             overflow-y: auto; /* 依然保留內容過長時的垂直滾動 */
             overflow-x: hidden;
+            overscroll-behavior: none; /* ✅ 防止內部元素滾到底部時，穿透並觸發外部滾動 */
             display: flex; 
             flex-direction: column;
             
