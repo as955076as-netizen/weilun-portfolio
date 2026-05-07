@@ -455,8 +455,8 @@
 
         </div>
     </section>
-    <!-- 彈出視窗 (✅ 手機版也改為浮動視窗，不再貼死螢幕邊緣) -->
-    <div id="presentation-modal" class="fixed inset-0 z-[85] hidden flex-col items-center justify-center bg-black/95 opacity-0 transition-opacity duration-500 px-4 pt-16 pb-6 md:p-8 md:pt-16">
+    <!-- 彈出視窗 (✅ 修正手機版「滑動穿透」與手勢被瀏覽器攔截的問題) -->
+    <div id="presentation-modal" class="fixed inset-0 z-[85] hidden flex-col items-center justify-center bg-black/95 opacity-0 transition-opacity duration-500 px-4 pt-16 pb-6 md:p-8 md:pt-16 overscroll-none">
         
         <div class="absolute top-0 left-0 w-full h-16 flex items-center justify-center z-50 pointer-events-none">
             <span id="modal-title-text" class="text-white/50 text-xs md:text-sm font-light tracking-wide mt-2 md:mt-0">Project Pitch Deck</span>
@@ -468,12 +468,11 @@
             </button>
         </div>
 
-        <!-- ✅ 重新調整：將觸控權限完全交還給裡面的 iframe -->
-        <div id="modal-content" class="w-full h-[75vh] md:h-[85vh] md:max-w-[1200px] flex flex-col scale-95 transition-transform duration-500">
-            <!-- 💡 改回 overflow-hidden，確保外層不會「吃掉」內部的滑動手勢 -->
+        <!-- ✅ 加入 overscroll-contain 阻斷滑動事件往外傳遞，並使用 touch-auto 確保內部接收所有觸控 -->
+        <div id="modal-content" class="w-full h-[75vh] md:h-[85vh] md:max-w-[1200px] flex flex-col scale-95 transition-transform duration-500 pointer-events-auto touch-auto overscroll-contain">
             <div class="w-full h-full relative bg-[#050505] rounded-2xl md:rounded-xl overflow-hidden shadow-2xl shadow-black border border-white/10">
-                <!-- 💡 加入 absolute inset-0 確保滿版，並加上 sandbox 權限，讓線上簡報的 JS 滑動腳本能順利運作 -->
-                <iframe id="modal-iframe" src="" class="absolute inset-0 w-full h-full border-none pointer-events-auto" allowfullscreen allow="autoplay; fullscreen" sandbox="allow-scripts allow-same-origin allow-popups allow-forms"></iframe>
+                <!-- 💡 解除 sandbox 限制，確保線上簡報的所有觸控腳本都能獲得最高權限執行 -->
+                <iframe id="modal-iframe" src="" class="absolute inset-0 w-full h-full border-none touch-auto" allowfullscreen allow="autoplay; fullscreen; clipboard-write; encrypted-media; picture-in-picture"></iframe>
             </div>
         </div>
     </div>
