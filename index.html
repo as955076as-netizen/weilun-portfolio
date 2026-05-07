@@ -468,12 +468,12 @@
             </button>
         </div>
 
-        <!-- ✅ 手機版高度設為 h-[75vh]，並帶有圓角，呈現漂浮感 -->
+        <!-- ✅ 重新調整：將觸控權限完全交還給裡面的 iframe -->
         <div id="modal-content" class="w-full h-[75vh] md:h-[85vh] md:max-w-[1200px] flex flex-col scale-95 transition-transform duration-500">
-            <!-- 💡 修正手機版無法滑動問題：改用 overflow-auto 並加入 -webkit-overflow-scrolling: touch; -->
-            <div class="w-full h-full bg-[#050505] rounded-2xl md:rounded-xl overflow-auto shadow-2xl shadow-black border border-white/10" style="-webkit-overflow-scrolling: touch;">
-                <!-- 💡 確保 iframe 設定為 block 並允許捲動 -->
-                <iframe id="modal-iframe" src="" class="w-full h-full border-none block" allowfullscreen scrolling="yes"></iframe>
+            <!-- 💡 改回 overflow-hidden，確保外層不會「吃掉」內部的滑動手勢 -->
+            <div class="w-full h-full relative bg-[#050505] rounded-2xl md:rounded-xl overflow-hidden shadow-2xl shadow-black border border-white/10">
+                <!-- 💡 加入 absolute inset-0 確保滿版，並加上 sandbox 權限，讓線上簡報的 JS 滑動腳本能順利運作 -->
+                <iframe id="modal-iframe" src="" class="absolute inset-0 w-full h-full border-none pointer-events-auto" allowfullscreen allow="autoplay; fullscreen" sandbox="allow-scripts allow-same-origin allow-popups allow-forms"></iframe>
             </div>
         </div>
     </div>
