@@ -38,7 +38,6 @@
             height: 100dvh; /* ✅ 解決手機瀏覽器網址列遮擋問題 */
             margin: 0;
             padding: 0;
-            overscroll-behavior: none; /* ✅ 徹底阻絕整個網頁的滑動穿透與下拉刷新 (橡皮筋效果) */
         }
 
         /* 👑 全新過場主容器設定：改為相對定位，隱藏原生滾動軸 */
@@ -60,7 +59,6 @@
             height: 100dvh; /* ✅ 解決手機瀏覽器網址列遮擋問題 */
             overflow-y: auto; /* 依然保留內容過長時的垂直滾動 */
             overflow-x: hidden;
-            overscroll-behavior: none; /* ✅ 防止內部元素滾到底部時，穿透並觸發外部滾動 */
             display: flex; 
             flex-direction: column;
             
@@ -1314,32 +1312,7 @@
             }
         }, { passive: true });
 
-        // 3. 支援滑鼠滾輪 (整合內部滾動檢測)
-        let isWheeling = false;
-        window.addEventListener('wheel', (e) => {
-            if (isWheeling) return; // 防抖期間不處理
-            
-            const wrapper = wrappers[currentIdx];
-            
-            // 檢查當前幻燈片內部是否還有可以滾動的空間
-            const canScrollUp = wrapper.scrollTop > 0;
-            // 加上 1 像素容錯，避免小數點導致計算誤差
-            const canScrollDown = Math.ceil(wrapper.scrollTop + wrapper.clientHeight) < wrapper.scrollHeight - 1;
-
-            if (e.deltaY > 0 && canScrollDown) return; // 內部還能往下滾，放行
-            if (e.deltaY < 0 && canScrollUp) return;   // 內部還能往上滾，放行
-
-            // 若內部滾到底/頂了，則觸發翻頁
-            isWheeling = true;
-            if (e.deltaY > 30) {
-                nextSlide();
-            } else if (e.deltaY < -30) {
-                prevSlide();
-            }
-            
-            // 鎖定 800ms 防抖，避免滾動一次滑鼠直接跳好幾頁
-            setTimeout(() => { isWheeling = false; }, 800); 
-        }, { passive: true });
+        // (已移除滑鼠滾輪滾到底自動換頁的功能，讓滾動單純只做內部內容檢視)
 
         // 處理數據增長動畫
         function animateCounters(contentContainer) {
