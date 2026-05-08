@@ -194,6 +194,7 @@
         /* 確保彈出視窗時背景不會滾動 */
         .no-scroll {
             overflow: hidden;
+            overscroll-behavior: none; /* 🚀 新增：防止手機瀏覽器觸發下拉更新或左右滑動回上一頁 */
         }
 
         /* 自訂光線掃描動畫 (用於 Philosophy 區塊) */
@@ -331,7 +332,7 @@
                 <div class="flex flex-wrap items-center gap-4 md:gap-5 w-full pt-4 md:pt-6">
                     
                     <!-- 膠囊按鈕 1：專案介紹簡報 -->
-                    <a href="javascript:void(0)" class="trigger-modal-btn group relative inline-flex items-center justify-center px-6 py-3.5 md:px-8 md:py-4 rounded-full bg-white/[0.04] border border-white/10 backdrop-blur-md hover:-translate-y-1.5 hover:bg-[#c8a97e]/15 hover:border-[#c8a97e]/80 hover:shadow-[0_10px_30px_-10px_rgba(200,169,126,0.5)] transition-all duration-400 ease-out cursor-pointer overflow-hidden" data-title="專案介紹簡報" data-url="portfolio/ssc.html">
+                    <a href="javascript:void(0)" class="trigger-modal-btn group relative inline-flex items-center justify-center px-6 py-3.5 md:px-8 md:py-4 rounded-full bg-white/[0.04] border border-white/10 backdrop-blur-md hover:-translate-y-1.5 hover:bg-[#c8a97e]/15 hover:border-[#c8a97e]/80 hover:shadow-[0_10px_30px_-10px_rgba(200,169,126,0.5)] transition-all duration-400 ease-out cursor-pointer overflow-hidden" data-title="專案介紹簡報" data-url="portfolio/pitch.pdf">
                         <!-- 懸停時內部打光特效 -->
                         <div class="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none z-0"></div>
                         <!-- 文件 Icon -->
@@ -342,7 +343,7 @@
                     </a>
 
                     <!-- 膠囊按鈕 2：訓練數據報告 -->
-                    <a href="javascript:void(0)" class="trigger-modal-btn group relative inline-flex items-center justify-center px-6 py-3.5 md:px-8 md:py-4 rounded-full bg-white/[0.04] border border-white/10 backdrop-blur-md hover:-translate-y-1.5 hover:bg-[#c8a97e]/15 hover:border-[#c8a97e]/80 hover:shadow-[0_10px_30px_-10px_rgba(200,169,126,0.5)] transition-all duration-400 ease-out cursor-pointer overflow-hidden" data-title="訓練數據報告" data-url="portfolio/data-report.html">
+                    <a href="javascript:void(0)" class="trigger-modal-btn group relative inline-flex items-center justify-center px-6 py-3.5 md:px-8 md:py-4 rounded-full bg-white/[0.04] border border-white/10 backdrop-blur-md hover:-translate-y-1.5 hover:bg-[#c8a97e]/15 hover:border-[#c8a97e]/80 hover:shadow-[0_10px_30px_-10px_rgba(200,169,126,0.5)] transition-all duration-400 ease-out cursor-pointer overflow-hidden" data-title="訓練數據報告" data-url="portfolio/data-report.pdf">
                         <div class="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none z-0"></div>
                         <!-- 數據圖表 Icon -->
                         <svg class="w-4 h-4 md:w-5 md:h-5 mr-3 text-white/50 group-hover:text-[#c8a97e] group-hover:scale-125 group-hover:-rotate-6 transition-all duration-400 ease-out z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -470,8 +471,7 @@
 
         <!-- ✅ 手機版高度設為 h-[75vh]，並帶有圓角，呈現漂浮感 -->
         <div id="modal-content" class="w-full h-[75vh] md:h-[85vh] md:max-w-[1200px] flex flex-col scale-95 transition-transform duration-500">
-            <!-- 🚀 修正滑動問題：改用 overflow-auto、overscroll-contain，並加入 -webkit-overflow-scrolling 釋放原生滑動效能 -->
-            <div class="w-full h-full relative bg-[#050505] rounded-2xl md:rounded-xl overflow-auto overscroll-contain shadow-2xl shadow-black border border-white/10" style="-webkit-overflow-scrolling: touch;">
+            <div class="w-full h-full relative bg-[#050505] rounded-2xl md:rounded-xl overflow-hidden shadow-2xl shadow-black border border-white/10">
                 <iframe id="modal-iframe" src="" class="absolute inset-0 w-full h-full border-none" allowfullscreen></iframe>
             </div>
         </div>
