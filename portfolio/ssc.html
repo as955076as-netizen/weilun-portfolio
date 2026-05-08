@@ -200,9 +200,9 @@
             }
         }
         
-        /* 手機觸控：快速真實按壓感 (使用 :active 完美支援) */
-        .interactive-card:active {
-            transform: scale(0.96) !important; 
+        /* 手機觸控：改用 JS 控制 .touch-active 避免滑動誤觸 */
+        .interactive-card.touch-active {
+            transform: scale(0.97) !important; 
             box-shadow: 0 0 15px rgba(34, 211, 238, 0.4) !important;
             border-color: rgba(34, 211, 238, 0.7) !important;
             transition-duration: 0.1s !important;
@@ -224,8 +224,8 @@
                 z-index: 10;
             }
         }
-        .interactive-item:active {
-            transform: scale(0.92) !important;
+        .interactive-item.touch-active {
+            transform: scale(0.94) !important;
             box-shadow: 0 0 15px rgba(34, 211, 238, 0.5) !important;
             border-color: rgba(34, 211, 238, 0.8) !important;
             transition-duration: 0.1s !important;
@@ -253,8 +253,7 @@
         ::-webkit-scrollbar-thumb:hover { background: #475569; }
     </style>
 </head>
-<!-- ✅ 加入 ontouchstart="" 啟用 iOS  Safari 全局觸控反饋支援，讓卡片特效活過來 -->
-<body class="text-slate-50 relative selection:bg-primary selection:text-darkbg" ontouchstart="">
+<body class="text-slate-50 relative selection:bg-primary selection:text-darkbg">
 
     <div id="progress-bar" class="fixed top-0 left-0 h-1 bg-primary z-[60] w-0 shadow-[0_0_10px_#22d3ee] transition-all duration-500 ease-out"></div>
 
@@ -1348,6 +1347,34 @@
         document.body.addEventListener('touchcancel', () => {
             touchStartX = 0;
         }, { passive: true });
+
+        // 3. ✨ 卡片觸控反饋優化 (解決手機版特效太靈敏、滑動誤觸的問題)
+        const interactiveElements = document.querySelectorAll('.interactive-card, .interactive-item');
+        interactiveElements.forEach(el => {
+            let touchTimer;
+            
+            el.addEventListener('touchstart', () => {
+                // 延遲 60ms，過濾掉「其實是要滑動」的瞬間觸碰
+                touchTimer = setTimeout(() => {
+                    el.classList.add('touch-active');
+                }, 60);
+            }, { passive: true });
+            
+            el.addEventListener('touchmove', () => {
+                // 如果手指開始滑動了，立刻取消點擊的 Q 彈特效
+                clearTimeout(touchTimer);
+                el.classList.remove('touch-active');
+            }, { passive: true });
+            
+            const clearTouch = () => {
+                clearTimeout(touchTimer);
+                // 稍微延遲移除，確保確實有點擊時，人眼能看到閃爍的回饋
+                setTimeout(() => el.classList.remove('touch-active'), 100);
+            };
+            
+            el.addEventListener('touchend', clearTouch, { passive: true });
+            el.addEventListener('touchcancel', clearTouch, { passive: true });
+        });
 
         // (已移除滑鼠滾輪滾到底自動換頁的功能，讓滾動單純只做內部內容檢視)
 
