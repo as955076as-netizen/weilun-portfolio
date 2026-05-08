@@ -182,12 +182,12 @@
         .arrow-flow-x { animation: arrowFlowX 1.5s infinite ease-in-out; }
         .arrow-flow-y { animation: arrowFlowY 1.5s infinite ease-in-out; }
 
-        /* ✨ 卡片互動懸浮特效 (區分桌機懸浮與手機按壓) */
+        /* ✨ 卡片互動懸浮特效 (區分桌機懸浮與手機點擊停留) */
         .interactive-card {
             position: relative;
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.4s ease;
-            -webkit-tap-highlight-color: transparent; /* 移除手機原生的點擊灰底，讓發光特效更乾淨 */
-            cursor: pointer; /* ✅ 讓手機與電腦都能正確識別為可點擊元素，這是觸發按壓的關鍵 */
+            -webkit-tap-highlight-color: transparent;
+            cursor: pointer;
         }
         
         /* 桌機滑鼠：Q彈放大上浮 */
@@ -200,12 +200,12 @@
             }
         }
         
-        /* 手機觸控：改用 JS 控制 .touch-active 避免滑動誤觸 */
+        /* 手機觸控：點擊開啟特效 (Toggle 狀態) */
         .interactive-card.touch-active {
-            transform: scale(0.97) !important; 
-            box-shadow: 0 0 15px rgba(34, 211, 238, 0.4) !important;
-            border-color: rgba(34, 211, 238, 0.7) !important;
-            transition-duration: 0.1s !important;
+            /* 停留時產生微微放大的選中感與科技光暈 */
+            transform: scale(1.02) translateY(-4px) !important; 
+            box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.6), 0 0 25px rgba(34, 211, 238, 0.3) !important;
+            border-color: rgba(34, 211, 238, 0.8) !important;
             z-index: 20 !important;
         }
         
@@ -224,11 +224,11 @@
                 z-index: 10;
             }
         }
+        /* 內部小元素的手機觸控 Toggle 狀態 */
         .interactive-item.touch-active {
-            transform: scale(0.94) !important;
-            box-shadow: 0 0 15px rgba(34, 211, 238, 0.5) !important;
-            border-color: rgba(34, 211, 238, 0.8) !important;
-            transition-duration: 0.1s !important;
+            transform: scale(1.04) translateY(-2px) !important;
+            box-shadow: 0 10px 20px -3px rgba(0, 0, 0, 0.5), 0 0 20px rgba(34, 211, 238, 0.4) !important;
+            border-color: rgba(34, 211, 238, 0.9) !important;
             z-index: 10 !important;
         }
 
@@ -1287,6 +1287,11 @@
                 }
             });
             
+            // ✅ 切換頁面時，清除所有卡片的選中狀態
+            document.querySelectorAll('.interactive-card.touch-active, .interactive-item.touch-active').forEach(el => {
+                el.classList.remove('touch-active');
+            });
+
             document.getElementById('current-page').innerText = currentIdx + 1;
             
             // 更新進度條
@@ -1332,7 +1337,7 @@
             let dy = touchEndY - touchStartY;
             let dt = Date.now() - touchStartTime;
 
-            // ✅ 判斷條件：水平滑動超過 35px，且水平大於垂直 (容許稍微斜滑)，或者快速短滑
+            // 判斷條件：水平滑動超過 35px，且水平大於垂直 (容許稍微斜滑)，或者快速短滑
             if ((Math.abs(dx) > 35 && Math.abs(dx) > Math.abs(dy)) || 
                 (dt < 400 && Math.abs(dx) > 20 && Math.abs(dx) > Math.abs(dy))) {
                 
@@ -1348,35 +1353,32 @@
             touchStartX = 0;
         }, { passive: true });
 
-        // 3. ✨ 卡片觸控反饋優化 (解決手機版特效太靈敏、滑動誤觸的問題)
+        // 3. ✨ 卡片觸控反饋 Toggle (點擊開啟，再點關閉)
         const interactiveElements = document.querySelectorAll('.interactive-card, .interactive-item');
-        interactiveElements.forEach(el => {
-            let touchTimer;
-            
-            el.addEventListener('touchstart', () => {
-                // 延遲 60ms，過濾掉「其實是要滑動」的瞬間觸碰
-                touchTimer = setTimeout(() => {
-                    el.classList.add('touch-active');
-                }, 60);
-            }, { passive: true });
-            
-            el.addEventListener('touchmove', () => {
-                // 如果手指開始滑動了，立刻取消點擊的 Q 彈特效
-                clearTimeout(touchTimer);
-                el.classList.remove('touch-active');
-            }, { passive: true });
-            
-            const clearTouch = () => {
-                clearTimeout(touchTimer);
-                // 稍微延遲移除，確保確實有點擊時，人眼能看到閃爍的回饋
-                setTimeout(() => el.classList.remove('touch-active'), 100);
-            };
-            
-            el.addEventListener('touchend', clearTouch, { passive: true });
-            el.addEventListener('touchcancel', clearTouch, { passive: true });
+        
+        // 當點擊頁面空白處時，關閉所有已開啟的卡片
+        document.body.addEventListener('click', (e) => {
+            // 如果點擊的目標不是卡片本身，也不是卡片內部的元素
+            if (!e.target.closest('.interactive-card') && !e.target.closest('.interactive-item')) {
+                interactiveElements.forEach(el => el.classList.remove('touch-active'));
+            }
         });
 
-        // (已移除滑鼠滾輪滾到底自動換頁的功能，讓滾動單純只做內部內容檢視)
+        interactiveElements.forEach(el => {
+            // 監聽點擊事件
+            el.addEventListener('click', (e) => {
+                // 如果目前是開啟狀態，就關閉
+                if (el.classList.contains('touch-active')) {
+                    el.classList.remove('touch-active');
+                } else {
+                    // 如果目前是關閉狀態，先將其他卡片關閉（確保一次只凸顯一張），再開啟自己
+                    interactiveElements.forEach(otherEl => otherEl.classList.remove('touch-active'));
+                    el.classList.add('touch-active');
+                }
+                // 阻止事件冒泡，以免觸發 body 的點擊關閉邏輯
+                e.stopPropagation();
+            });
+        });
 
         // 處理數據增長動畫
         function animateCounters(contentContainer) {
