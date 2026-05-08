@@ -38,6 +38,7 @@
             height: 100dvh; /* ✅ 解決手機瀏覽器網址列遮擋問題 */
             margin: 0;
             padding: 0;
+            touch-action: pan-y pinch-zoom; /* ✅ 全局禁止原生水平滑動，確保左右切換 100% 觸發不被瀏覽器吃掉 */
         }
 
         /* 👑 全新過場主容器設定：改為相對定位，隱藏原生滾動軸 */
@@ -61,9 +62,6 @@
             overflow-x: hidden;
             display: flex; 
             flex-direction: column;
-            
-            /* ✅ 關鍵修復：禁止瀏覽器原生水平滑動手勢(如返回上一頁)，確保我們的左右切換 JS 能確實觸發 */
-            touch-action: pan-y pinch-zoom;
             
             /* 離開時的狀態 (未啟動) */
             opacity: 0;
@@ -189,6 +187,7 @@
             position: relative;
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.4s ease;
             -webkit-tap-highlight-color: transparent; /* 移除手機原生的點擊灰底，讓發光特效更乾淨 */
+            cursor: pointer; /* ✅ 讓手機與電腦都能正確識別為可點擊元素，這是觸發按壓的關鍵 */
         }
         
         /* 桌機滑鼠：Q彈放大上浮 */
@@ -201,13 +200,13 @@
             }
         }
         
-        /* 手機觸控：快速真實按壓感 */
-        .interactive-card.touch-active {
-            transform: scale(0.98); 
-            box-shadow: 0 0 20px rgba(34, 211, 238, 0.3);
-            border-color: rgba(34, 211, 238, 0.7);
-            transition-duration: 0.1s; /* 按壓反應極速 */
-            z-index: 20;
+        /* 手機觸控：快速真實按壓感 (使用 :active 完美支援) */
+        .interactive-card:active {
+            transform: scale(0.96) !important; 
+            box-shadow: 0 0 15px rgba(34, 211, 238, 0.4) !important;
+            border-color: rgba(34, 211, 238, 0.7) !important;
+            transition-duration: 0.1s !important;
+            z-index: 20 !important;
         }
         
         /* 較小內部元素的懸浮特效 */
@@ -215,6 +214,7 @@
             position: relative;
             transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease, border-color 0.3s ease;
             -webkit-tap-highlight-color: transparent;
+            cursor: pointer;
         }
         @media (hover: hover) {
             .interactive-item:hover {
@@ -224,12 +224,12 @@
                 z-index: 10;
             }
         }
-        .interactive-item.touch-active {
-            transform: scale(0.95);
-            box-shadow: 0 0 15px rgba(34, 211, 238, 0.4);
-            border-color: rgba(34, 211, 238, 0.7);
-            transition-duration: 0.1s;
-            z-index: 10;
+        .interactive-item:active {
+            transform: scale(0.92) !important;
+            box-shadow: 0 0 15px rgba(34, 211, 238, 0.5) !important;
+            border-color: rgba(34, 211, 238, 0.8) !important;
+            transition-duration: 0.1s !important;
+            z-index: 10 !important;
         }
 
         .img-placeholder {
@@ -253,7 +253,8 @@
         ::-webkit-scrollbar-thumb:hover { background: #475569; }
     </style>
 </head>
-<body class="text-slate-50 relative selection:bg-primary selection:text-darkbg">
+<!-- ✅ 加入 ontouchstart="" 啟用 iOS  Safari 全局觸控反饋支援，讓卡片特效活過來 -->
+<body class="text-slate-50 relative selection:bg-primary selection:text-darkbg" ontouchstart="">
 
     <div id="progress-bar" class="fixed top-0 left-0 h-1 bg-primary z-[60] w-0 shadow-[0_0_10px_#22d3ee] transition-all duration-500 ease-out"></div>
 
@@ -1312,48 +1313,40 @@
             if (e.key === 'ArrowLeft' || e.key === 'PageUp') prevSlide();
         });
 
-        // 2. 支援手機左右滑動 (Swipe) - ✨ 即時觸發版 (解決有時滑不動的終極方案)
+        // 2. 支援手機左右滑動 (Swipe) - 🍎 蘋果與安卓通用的終極穩定版
         let touchStartX = 0;
         let touchStartY = 0;
-        let hasSwiped = false; // 紀錄本次觸控是否已經觸發過翻頁
+        let touchStartTime = 0;
         
-        window.addEventListener('touchstart', e => {
-            touchStartX = e.touches[0].clientX;
-            touchStartY = e.touches[0].clientY;
-            hasSwiped = false; // 每次手指碰觸時重置狀態
+        document.body.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].clientX;
+            touchStartY = e.changedTouches[0].clientY;
+            touchStartTime = Date.now();
         }, { passive: true });
 
-        window.addEventListener('touchmove', e => {
-            if (!touchStartX || !touchStartY || hasSwiped) return; // 若已經翻頁或無起始座標則忽略
+        document.body.addEventListener('touchend', e => {
+            if (!touchStartX) return; // 沒有起點則不處理
+            
+            let touchEndX = e.changedTouches[0].clientX;
+            let touchEndY = e.changedTouches[0].clientY;
+            let dx = touchEndX - touchStartX;
+            let dy = touchEndY - touchStartY;
+            let dt = Date.now() - touchStartTime;
 
-            let currentX = e.touches[0].clientX;
-            let currentY = e.touches[0].clientY;
-            let dx = currentX - touchStartX;
-            let dy = currentY - touchStartY;
-
-            // ✅ 核心修正：不要等到手指離開才算！在滑動途中只要達到門檻就「立即翻頁」
-            // 條件：水平位移大於 40px，且水平滑動意圖明顯大於垂直 (確保不會跟上下滾動打架)
-            if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5) {
-                hasSwiped = true; // 鎖定本次滑動，防止連續狂跳
-                if (dx < 0) nextSlide(); // 向左滑：下一頁
-                else prevSlide();        // 向右滑：上一頁
+            // ✅ 判斷條件：水平滑動超過 35px，且水平大於垂直 (容許稍微斜滑)，或者快速短滑
+            if ((Math.abs(dx) > 35 && Math.abs(dx) > Math.abs(dy)) || 
+                (dt < 400 && Math.abs(dx) > 20 && Math.abs(dx) > Math.abs(dy))) {
                 
-                // 清除起始座標
-                touchStartX = 0;
-                touchStartY = 0;
+                if (dx < 0) nextSlide(); // 往左滑：切換到下一頁
+                else prevSlide();        // 往右滑：切換到上一頁
             }
-        }, { passive: true });
-
-        window.addEventListener('touchend', () => {
-            touchStartX = 0;
-            touchStartY = 0;
-            hasSwiped = false;
+            
+            touchStartX = 0; // 重置
         }, { passive: true });
         
-        window.addEventListener('touchcancel', () => {
+        // 萬一被系統中斷 (touchcancel)，清空座標避免錯亂
+        document.body.addEventListener('touchcancel', () => {
             touchStartX = 0;
-            touchStartY = 0;
-            hasSwiped = false;
         }, { passive: true });
 
         // (已移除滑鼠滾輪滾到底自動換頁的功能，讓滾動單純只做內部內容檢視)
