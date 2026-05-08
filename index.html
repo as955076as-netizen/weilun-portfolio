@@ -194,6 +194,7 @@
         /* 確保彈出視窗時背景不會滾動 */
         .no-scroll {
             overflow: hidden;
+            overscroll-behavior: none; /* 🚀 新增：防止手機瀏覽器觸發下拉更新或左右滑動回上一頁 */
         }
 
         /* 自訂光線掃描動畫 (用於 Philosophy 區塊) */
@@ -470,8 +471,7 @@
 
         <!-- ✅ 手機版高度設為 h-[75vh]，並帶有圓角，呈現漂浮感 -->
         <div id="modal-content" class="w-full h-[75vh] md:h-[85vh] md:max-w-[1200px] flex flex-col scale-95 transition-transform duration-500">
-            <!-- 🚀 修正滑動問題：改用 overflow-auto、overscroll-contain，並加入 -webkit-overflow-scrolling 釋放原生滑動效能 -->
-            <div class="w-full h-full relative bg-[#050505] rounded-2xl md:rounded-xl overflow-auto overscroll-contain shadow-2xl shadow-black border border-white/10" style="-webkit-overflow-scrolling: touch;">
+            <div class="w-full h-full relative bg-[#050505] rounded-2xl md:rounded-xl overflow-hidden shadow-2xl shadow-black border border-white/10">
                 <iframe id="modal-iframe" src="" class="absolute inset-0 w-full h-full border-none" allowfullscreen></iframe>
             </div>
         </div>
