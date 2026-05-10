@@ -482,33 +482,6 @@
                             <p>過去擁有豐富的影音工程背景，這讓我對「影像」有著超越純軟體開發的敏銳度。從現場的訊號串接、系統架構設計，到後端的 YOLO 模型訓練、邊緣運算部署，我能夠以「端到端 (End-to-End)」的全局思維來重構工作流程。</p>
                             <p>我深信，最好的工程不是最複雜的程式碼，而是最精準、最穩定，能與現實世界完美嵌合的解決方案。</p>
                         </div>
-
-                        <!-- 簡潔的時間軸 / 經歷 -->
-                        <div class="pt-6 border-t border-white/[0.05]">
-                            <!-- 已將 Experience 標題移除，保持極簡 -->
-                            
-                            <div class="relative pl-6 md:pl-8 border-l border-white/10 space-y-10 pt-2">
-                                <!-- 經歷 1 -->
-                                <div class="relative group">
-                                    <div class="absolute -left-[29px] md:-left-[37px] top-1.5 w-2 h-2 rounded-full bg-[#c8a97e] shadow-[0_0_10px_rgba(200,169,126,0.8)] transition-transform duration-300 group-hover:scale-150"></div>
-                                    <div class="flex flex-col md:flex-row md:items-baseline md:justify-between mb-2">
-                                        <h5 class="text-base md:text-lg font-bold text-white group-hover:text-[#c8a97e] transition-colors">AI 視覺工程師</h5>
-                                        <span class="text-[10px] md:text-xs text-[#c8a97e] tracking-widest mt-1 md:mt-0 font-medium">2024 — PRESENT</span>
-                                    </div>
-                                    <p class="text-sm text-white/50 font-light leading-relaxed">主導電腦視覺模型開發、邊緣裝置部署，並整合 n8n 等工具建置自動化即時通報工作流。</p>
-                                </div>
-                                
-                                <!-- 經歷 2 -->
-                                <div class="relative group">
-                                    <div class="absolute -left-[29px] md:-left-[37px] top-1.5 w-2 h-2 rounded-full bg-white/20 transition-all duration-300 group-hover:bg-white/60 group-hover:scale-150"></div>
-                                    <div class="flex flex-col md:flex-row md:items-baseline md:justify-between mb-2">
-                                        <h5 class="text-base md:text-lg font-bold text-white/80 group-hover:text-white transition-colors">資深影音工程師</h5>
-                                        <span class="text-[10px] md:text-xs text-white/40 tracking-widest mt-1 md:mt-0 font-medium">2021 — 2024</span>
-                                    </div>
-                                    <p class="text-sm text-white/50 font-light leading-relaxed">大型展演系統整合、多媒體訊號路由設計、現場導播與技術統籌，熟稔影音硬體與底層協定。</p>
-                                </div>
-                            </div>
-                        </div>
                         
                     </div>
                 </div>
@@ -844,6 +817,7 @@
     const ambientBreathe = document.getElementById('ambient-breathe');
     const pathwayCanvas = document.getElementById('pathway-canvas');
     const visionCanvas = document.getElementById('cv-canvas');
+    const mainNav = document.getElementById('main-nav'); // 🚀 新增：取得導覽列元素
 
     if(enterBtn) {
         enterBtn.addEventListener('click', (e) => {
@@ -852,6 +826,7 @@
             setTimeout(() => {
                 pageHero.classList.add('hidden-page');      
                 pageWorks.classList.remove('hidden-page');  
+                if(mainNav) mainNav.classList.remove('hidden-page'); // 🚀 新增：切換畫面時顯示導覽列
                 window.scrollTo(0, 0);                      
                 ambientBreathe.classList.add('hidden-page');
                 pathwayCanvas.classList.add('hidden-page');
@@ -965,6 +940,51 @@
             }
         });
     }
+
+    // ==========================================
+    // 8. 手機版導覽列選單控制
+    // ==========================================
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuIconPath = document.getElementById('menu-icon-path');
+    const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+    let isMenuOpen = false;
+
+    if (mobileMenuBtn && mobileMenu) {
+        // 點擊漢堡選單切換開關
+        mobileMenuBtn.addEventListener('click', () => {
+            isMenuOpen = !isMenuOpen;
+            if (isMenuOpen) {
+                mobileMenu.classList.remove('hidden');
+                mobileMenu.classList.add('flex');
+                menuIconPath.setAttribute('d', 'M6 18L18 6M6 6l12 12'); // 切換為叉叉 X
+                setTimeout(() => mobileMenu.classList.remove('opacity-0'), 10);
+            } else {
+                mobileMenu.classList.add('opacity-0');
+                menuIconPath.setAttribute('d', 'M4 6h16M4 12h16M4 18h16'); // 換回漢堡線條
+                setTimeout(() => {
+                    mobileMenu.classList.add('hidden');
+                    mobileMenu.classList.remove('flex');
+                }, 300);
+            }
+        });
+
+        // 點擊手機版連結後，自動關閉選單
+        mobileNavLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if(isMenuOpen) {
+                    isMenuOpen = false;
+                    mobileMenu.classList.add('opacity-0');
+                    menuIconPath.setAttribute('d', 'M4 6h16M4 12h16M4 18h16');
+                    setTimeout(() => {
+                        mobileMenu.classList.add('hidden');
+                        mobileMenu.classList.remove('flex');
+                    }, 300);
+                }
+            });
+        });
+    }
+
 </script>
 </body>
 </html>
