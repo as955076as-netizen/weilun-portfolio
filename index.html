@@ -282,22 +282,11 @@
     <nav id="navbar" class="fixed top-0 left-0 w-full z-[80] hidden-page bg-[#050505]/80 backdrop-blur-xl border-b border-white/[0.05] transition-opacity duration-1000 opacity-0">
         <div class="max-w-6xl mx-auto px-5 md:px-8 xl:px-0 h-20 flex justify-between items-center">
             
-            <!-- 左側 Logo (點擊平滑滾回最上方) - 升級版動態視覺 Logo -->
+            <!-- 左側 Logo (點擊平滑滾回最上方) - 已替換為圖片 Logo -->
             <a href="#" onclick="window.scrollTo(0,0); return false;" class="magnetic-btn flex items-center group relative z-50 cursor-pointer">
-                <!-- 幾何動態 Icon (相機/對焦框概念) -->
-                <div class="relative flex items-center justify-center w-8 h-8 mr-3 md:mr-4 bg-white/[0.01] transition-colors duration-500 group-hover:bg-[#c8a97e]/10">
-                    <!-- 左上對焦角 -->
-                    <div class="absolute top-0 left-0 w-2.5 h-2.5 border-t-[1.5px] border-l-[1.5px] border-white/40 group-hover:border-[#c8a97e] group-hover:w-full group-hover:h-full transition-all duration-500 ease-out z-10"></div>
-                    <!-- 右下對焦角 -->
-                    <div class="absolute bottom-0 right-0 w-2.5 h-2.5 border-b-[1.5px] border-r-[1.5px] border-white/40 group-hover:border-[#c8a97e] group-hover:w-full group-hover:h-full transition-all duration-500 ease-out z-10"></div>
-                    
-                    <!-- 內部實體 R -->
-                    <div class="absolute inset-0 flex items-center justify-center overflow-hidden">
-                        <span class="text-white/90 group-hover:text-[#c8a97e] text-[15px] font-black tracking-tighter group-hover:scale-110 transition-all duration-500 z-20">R</span>
-                    </div>
-                    
-                    <!-- AI 運作指示燈 (紅點，懸停時變為金色) -->
-                    <div class="absolute -top-1 -right-1 w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse shadow-[0_0_6px_rgba(239,68,68,0.8)] z-30 group-hover:bg-[#c8a97e] group-hover:shadow-[0_0_6px_rgba(200,169,126,0.8)] transition-colors duration-500"></div>
+                <!-- 自訂圖片 Logo -->
+                <div class="relative flex items-center justify-center w-8 h-8 mr-3 md:mr-4 transition-transform duration-500 group-hover:scale-110">
+                    <img src="Gemini_Generated_Image_7vkdh17vkdh17vkd.png" alt="ROY Logo" class="w-full h-full object-contain filter drop-shadow-[0_0_5px_rgba(200,169,126,0.2)] group-hover:drop-shadow-[0_0_10px_rgba(200,169,126,0.6)] transition-all duration-500">
                 </div>
                 
                 <!-- 文字排版 -->
