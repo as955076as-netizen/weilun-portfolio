@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-TW" class="scroll-smooth scroll-pt-20">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -278,6 +278,58 @@
         </div>
     </main>
     
+    <!-- ✅ 全新導覽列 (預設隱藏，進入系統後淡入顯示) -->
+    <nav id="navbar" class="fixed top-0 left-0 w-full z-[80] hidden-page bg-[#050505]/80 backdrop-blur-xl border-b border-white/[0.05] transition-opacity duration-1000 opacity-0">
+        <div class="max-w-6xl mx-auto px-5 md:px-8 xl:px-0 h-20 flex justify-between items-center">
+            
+            <!-- 左側 Logo (點擊平滑滾回最上方) - 升級版動態視覺 Logo -->
+            <a href="#" onclick="window.scrollTo(0,0); return false;" class="magnetic-btn flex items-center group relative z-50 cursor-pointer">
+                <!-- 幾何動態 Icon (相機/對焦框概念) -->
+                <div class="relative flex items-center justify-center w-8 h-8 mr-3 md:mr-4 bg-white/[0.01] transition-colors duration-500 group-hover:bg-[#c8a97e]/10">
+                    <!-- 左上對焦角 -->
+                    <div class="absolute top-0 left-0 w-2.5 h-2.5 border-t-[1.5px] border-l-[1.5px] border-white/40 group-hover:border-[#c8a97e] group-hover:w-full group-hover:h-full transition-all duration-500 ease-out z-10"></div>
+                    <!-- 右下對焦角 -->
+                    <div class="absolute bottom-0 right-0 w-2.5 h-2.5 border-b-[1.5px] border-r-[1.5px] border-white/40 group-hover:border-[#c8a97e] group-hover:w-full group-hover:h-full transition-all duration-500 ease-out z-10"></div>
+                    
+                    <!-- 內部實體 R -->
+                    <div class="absolute inset-0 flex items-center justify-center overflow-hidden">
+                        <span class="text-white/90 group-hover:text-[#c8a97e] text-[15px] font-black tracking-tighter group-hover:scale-110 transition-all duration-500 z-20">R</span>
+                    </div>
+                    
+                    <!-- AI 運作指示燈 (紅點，懸停時變為金色) -->
+                    <div class="absolute -top-1 -right-1 w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse shadow-[0_0_6px_rgba(239,68,68,0.8)] z-30 group-hover:bg-[#c8a97e] group-hover:shadow-[0_0_6px_rgba(200,169,126,0.8)] transition-colors duration-500"></div>
+                </div>
+                
+                <!-- 文字排版 -->
+                <div class="flex flex-col justify-center">
+                    <span class="text-white font-black tracking-[0.2em] text-lg leading-none group-hover:text-[#c8a97e] transition-colors duration-500">ROY.</span>
+                    <span class="text-[7px] md:text-[8px] text-white/40 tracking-[0.3em] font-bold mt-1 group-hover:text-[#c8a97e]/80 transition-colors duration-500">AI VISION</span>
+                </div>
+            </a>
+
+            <!-- 右側選單 (電腦版) -->
+            <div class="hidden md:flex space-x-8 items-center">
+                <a href="#archives" class="text-xs tracking-[0.2em] text-white/50 hover:text-[#c8a97e] transition-colors font-medium">作品</a>
+                <a href="#capabilities" class="text-xs tracking-[0.2em] text-white/50 hover:text-[#c8a97e] transition-colors font-medium">能力</a>
+                <a href="#about" class="text-xs tracking-[0.2em] text-white/50 hover:text-[#c8a97e] transition-colors font-medium">關於我</a>
+                <a href="#contact" class="text-xs tracking-[0.2em] text-white/50 hover:text-[#c8a97e] transition-colors font-medium">聯絡我</a>
+            </div>
+
+            <!-- 漢堡選單按鈕 (手機版) -->
+            <button id="mobile-menu-btn" class="md:hidden magnetic-btn text-white/70 hover:text-[#c8a97e] transition-colors p-2">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 7h16M4 12h16M4 17h16"></path></svg>
+            </button>
+        </div>
+
+        <!-- 手機版下拉全螢幕選單 -->
+        <div id="mobile-menu" class="absolute top-20 left-0 w-full bg-[#050505]/95 backdrop-blur-2xl border-b border-white/10 flex-col items-center py-8 space-y-8 transition-all duration-500 ease-out origin-top scale-y-0 opacity-0 hidden md:hidden shadow-2xl shadow-black">
+            <a href="#archives" class="mobile-nav-link text-sm tracking-[0.2em] text-white/70 hover:text-[#c8a97e] font-bold">作品</a>
+            <a href="#capabilities" class="mobile-nav-link text-sm tracking-[0.2em] text-white/70 hover:text-[#c8a97e] font-bold">能力</a>
+            <a href="#about" class="mobile-nav-link text-sm tracking-[0.2em] text-white/70 hover:text-[#c8a97e] font-bold">關於我</a>
+            <a href="#contact" class="mobile-nav-link text-sm tracking-[0.2em] text-white/70 hover:text-[#c8a97e] font-bold">聯絡我</a>
+        </div>
+    </nav>
+
     <section id="works" class="w-full min-h-screen relative z-10 py-24 md:py-40 hidden-page">
         <!-- ✅ 精準設定容器最大寬度為 1152px (max-w-6xl)，並在超大螢幕移除內縮，確保卡片呈現剛好的 1152px -->
         <div class="max-w-6xl mx-auto px-5 md:px-8 xl:px-0">
@@ -817,7 +869,6 @@
     const ambientBreathe = document.getElementById('ambient-breathe');
     const pathwayCanvas = document.getElementById('pathway-canvas');
     const visionCanvas = document.getElementById('cv-canvas');
-    const mainNav = document.getElementById('main-nav'); // 🚀 新增：取得導覽列元素
 
     if(enterBtn) {
         enterBtn.addEventListener('click', (e) => {
@@ -826,7 +877,14 @@
             setTimeout(() => {
                 pageHero.classList.add('hidden-page');      
                 pageWorks.classList.remove('hidden-page');  
-                if(mainNav) mainNav.classList.remove('hidden-page'); // 🚀 新增：切換畫面時顯示導覽列
+                
+                // ✅ 顯示導覽列 (加上微小延遲讓淡入更平滑)
+                const navbar = document.getElementById('navbar');
+                if(navbar) {
+                    navbar.classList.remove('hidden-page');
+                    setTimeout(() => navbar.classList.remove('opacity-0'), 50);
+                }
+
                 window.scrollTo(0, 0);                      
                 ambientBreathe.classList.add('hidden-page');
                 pathwayCanvas.classList.add('hidden-page');
@@ -942,49 +1000,43 @@
     }
 
     // ==========================================
-    // 8. 手機版導覽列選單控制
+    // 8. 手機版導覽列選單邏輯
     // ==========================================
     const mobileMenuBtn = document.getElementById('mobile-menu-btn');
     const mobileMenu = document.getElementById('mobile-menu');
-    const menuIconPath = document.getElementById('menu-icon-path');
     const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
-    let isMenuOpen = false;
+    let isMobileMenuOpen = false;
 
     if (mobileMenuBtn && mobileMenu) {
-        // 點擊漢堡選單切換開關
         mobileMenuBtn.addEventListener('click', () => {
-            isMenuOpen = !isMenuOpen;
-            if (isMenuOpen) {
+            isMobileMenuOpen = !isMobileMenuOpen;
+            if (isMobileMenuOpen) {
                 mobileMenu.classList.remove('hidden');
-                mobileMenu.classList.add('flex');
-                menuIconPath.setAttribute('d', 'M6 18L18 6M6 6l12 12'); // 切換為叉叉 X
-                setTimeout(() => mobileMenu.classList.remove('opacity-0'), 10);
-            } else {
-                mobileMenu.classList.add('opacity-0');
-                menuIconPath.setAttribute('d', 'M4 6h16M4 12h16M4 18h16'); // 換回漢堡線條
                 setTimeout(() => {
-                    mobileMenu.classList.add('hidden');
+                    mobileMenu.classList.add('flex');
+                    mobileMenu.classList.remove('scale-y-0', 'opacity-0');
+                }, 10); // 確保 display flex 生效後再執行動畫
+            } else {
+                mobileMenu.classList.add('scale-y-0', 'opacity-0');
+                setTimeout(() => {
                     mobileMenu.classList.remove('flex');
-                }, 300);
+                    mobileMenu.classList.add('hidden');
+                }, 500);
             }
         });
 
-        // 點擊手機版連結後，自動關閉選單
+        // 點擊選項後，自動收合手機版選單
         mobileNavLinks.forEach(link => {
             link.addEventListener('click', () => {
-                if(isMenuOpen) {
-                    isMenuOpen = false;
-                    mobileMenu.classList.add('opacity-0');
-                    menuIconPath.setAttribute('d', 'M4 6h16M4 12h16M4 18h16');
-                    setTimeout(() => {
-                        mobileMenu.classList.add('hidden');
-                        mobileMenu.classList.remove('flex');
-                    }, 300);
-                }
+                isMobileMenuOpen = false;
+                mobileMenu.classList.add('scale-y-0', 'opacity-0');
+                setTimeout(() => {
+                    mobileMenu.classList.remove('flex');
+                    mobileMenu.classList.add('hidden');
+                }, 500);
             });
         });
     }
-
 </script>
 </body>
 </html>
