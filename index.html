@@ -860,6 +860,20 @@
     if(enterBtn) {
         enterBtn.addEventListener('click', (e) => {
             e.preventDefault();
+            
+            // ✅ 關鍵修正：在點擊的當下立刻觸發音樂播放，避免被瀏覽器阻擋
+            const bgMusic = document.getElementById('bg-music');
+            if (bgMusic) {
+                bgMusic.volume = 0.5; // 音量可依需求調整 (0.0 ~ 1.0)
+                bgMusic.play().then(() => {
+                    if(typeof updateAudioIcon === 'function') updateAudioIcon(true);
+                }).catch(e => {
+                    console.log("音檔播放被阻擋:", e);
+                    // 如果還是被擋，確保按鈕狀態正確
+                    if(typeof updateAudioIcon === 'function') updateAudioIcon(false);
+                });
+            }
+
             document.body.classList.add('transition-active');
             setTimeout(() => {
                 pageHero.classList.add('hidden-page');      
@@ -878,14 +892,6 @@
                 visionCanvas.classList.remove('hidden-page');
                 isCVActive = true; 
                 initCV(); animateCV();   
-                
-                // ✅ 進入系統時開始播放音樂
-                const bgMusic = document.getElementById('bg-music');
-                if (bgMusic) {
-                    bgMusic.volume = 1.0; // 音量可依需求調整 (0.0 ~ 1.0)
-                    bgMusic.play().catch(e => console.log("音檔播放被阻擋:", e));
-                    if(typeof updateAudioIcon === 'function') updateAudioIcon(true);
-                }
 
                 document.body.classList.remove('transition-active');
                 document.body.classList.add('transition-out');
