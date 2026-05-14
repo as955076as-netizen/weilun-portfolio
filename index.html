@@ -292,7 +292,6 @@
         <div class="max-w-6xl mx-auto px-5 md:px-8 xl:px-0 h-20 flex justify-between items-center">
             
             <!-- 左側 Logo (點擊平滑滾回最上方) -->
-            <!-- ✅ 優化 1：加入 aria-label、擴大點擊範圍 (p-2)、微弱背景回饋 -->
             <a href="#" onclick="window.scrollTo(0,0); return false;" aria-label="返回首頁" class="magnetic-btn flex items-center justify-center group relative z-50 cursor-pointer p-2 -ml-2 rounded-full hover:bg-white/[0.03] transition-colors duration-300">
                 <!-- 自訂圖片 Logo -->
                 <div class="relative flex items-center justify-center w-8 h-8 md:w-10 md:h-10 transition-transform duration-500 group-hover:scale-110">
@@ -578,7 +577,7 @@
     <!-- ✅ 背景音樂播放器 (隱藏) -->
     <audio id="bg-music" loop preload="auto">
         <!-- 🎵 請將此處的 src 替換為您的音檔路徑 (例如: ./audio/bgm.mp3) -->
-        <source src="velvet-comet.mp3" type="audio/mpeg">
+        <source src="Velvet_Comet_out.mp3" type="audio/mpeg">
     </audio>
 
 <script>
@@ -599,18 +598,17 @@
         cursorY = e.clientY;
     });
 
-    // ✅ 優化 2：加入 Debounce (防抖) 機制，減少頻繁觸發視窗重繪導致的卡頓
     let resizeTimeout;
     window.addEventListener('resize', () => {
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(() => {
             if(isPathsActive) initPaths();
             if(isCVActive) initCV();
-        }, 200); // 停止縮放 200 毫秒後才重新計算 Canvas
+        }, 200); 
     });
 
     // ==========================================
-    // 1. 首頁特效：自動化光軌 (Algorithmic Pathways)
+    // 1. 首頁特效：自動化光軌
     // ==========================================
     const canvas = document.getElementById('pathway-canvas');
     const ctx = canvas.getContext('2d');
@@ -848,7 +846,41 @@
     }
 
     // ==========================================
-    // 5. 無縫切換頁面
+    // 10. 背景音樂控制邏輯 (提前定義)
+    // ==========================================
+    const audioToggleBtn = document.getElementById('audio-toggle-btn');
+    const iconSoundOn = document.getElementById('icon-sound-on');
+    const iconSoundOff = document.getElementById('icon-sound-off');
+    const bgMusicElem = document.getElementById('bg-music');
+    let isPlaying = false;
+
+    function updateAudioIcon(playing) {
+        isPlaying = playing;
+        if (iconSoundOn && iconSoundOff) {
+            if (playing) {
+                iconSoundOn.classList.remove('hidden');
+                iconSoundOff.classList.add('hidden');
+            } else {
+                iconSoundOn.classList.add('hidden');
+                iconSoundOff.classList.remove('hidden');
+            }
+        }
+    }
+
+    if (audioToggleBtn && bgMusicElem) {
+        audioToggleBtn.addEventListener('click', () => {
+            if (isPlaying) {
+                bgMusicElem.pause();
+                updateAudioIcon(false);
+            } else {
+                bgMusicElem.play().catch(e => console.error("播放失敗:", e));
+                updateAudioIcon(true);
+            }
+        });
+    }
+
+    // ==========================================
+    // 5. 無縫切換頁面與音樂播放
     // ==========================================
     const enterBtn = document.getElementById('enter-btn');
     const pageHero = document.getElementById('page-hero');
@@ -861,17 +893,22 @@
         enterBtn.addEventListener('click', (e) => {
             e.preventDefault();
             
-            // ✅ 關鍵修正：在點擊的當下立刻觸發音樂播放，避免被瀏覽器阻擋
+            // ✅ 強化的音樂播放邏輯與錯誤日誌
             const bgMusic = document.getElementById('bg-music');
             if (bgMusic) {
-                bgMusic.volume = 0.5; // 音量可依需求調整 (0.0 ~ 1.0)
-                bgMusic.play().then(() => {
-                    if(typeof updateAudioIcon === 'function') updateAudioIcon(true);
-                }).catch(e => {
-                    console.log("音檔播放被阻擋:", e);
-                    // 如果還是被擋，確保按鈕狀態正確
-                    if(typeof updateAudioIcon === 'function') updateAudioIcon(false);
-                });
+                bgMusic.volume = 0.5;
+                const playPromise = bgMusic.play();
+                
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        console.log("🎵 音樂播放成功！");
+                        updateAudioIcon(true);
+                    }).catch(error => {
+                        console.error("⛔ 音樂播放被瀏覽器阻擋！", error);
+                        console.error("詳細原因：如果是 NotAllowedError，代表環境政策(如 iframe)不允許；如果本機執行，請確認是使用 http://localhost 開啟。");
+                        updateAudioIcon(false);
+                    });
+                }
             }
 
             document.body.classList.add('transition-active');
@@ -1044,53 +1081,18 @@
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('reveal-visible');
-                // ✅ 優化 3：進場動畫播放後立即解除觀察，節省瀏覽器效能
                 observer.unobserve(entry.target); 
             }
         });
     }, {
         root: null,
         rootMargin: '0px',
-        threshold: 0.1 // 當元素 10% 進入畫面時觸發
+        threshold: 0.1 
     });
 
     revealElements.forEach(element => {
         revealObserver.observe(element);
     });
-
-    // ==========================================
-    // 10. 背景音樂控制邏輯
-    // ==========================================
-    const audioToggleBtn = document.getElementById('audio-toggle-btn');
-    const iconSoundOn = document.getElementById('icon-sound-on');
-    const iconSoundOff = document.getElementById('icon-sound-off');
-    const bgMusicElem = document.getElementById('bg-music');
-    let isPlaying = false;
-
-    function updateAudioIcon(playing) {
-        isPlaying = playing;
-        if (iconSoundOn && iconSoundOff) {
-            if (playing) {
-                iconSoundOn.classList.remove('hidden');
-                iconSoundOff.classList.add('hidden');
-            } else {
-                iconSoundOn.classList.add('hidden');
-                iconSoundOff.classList.remove('hidden');
-            }
-        }
-    }
-
-    if (audioToggleBtn && bgMusicElem) {
-        audioToggleBtn.addEventListener('click', () => {
-            if (isPlaying) {
-                bgMusicElem.pause();
-                updateAudioIcon(false);
-            } else {
-                bgMusicElem.play().catch(e => console.log("播放失敗:", e));
-                updateAudioIcon(true);
-            }
-        });
-    }
 
 </script>
 </body>
