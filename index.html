@@ -244,6 +244,33 @@
             text-shadow: 0 0 15px rgba(200, 169, 126, 0.1);
             will-change: transform, opacity, text-shadow;
         }
+
+        /* ✅ 音樂波形 (EQ) 動畫 */
+        .eq-bar {
+            width: 2.5px;
+            background-color: currentColor;
+            border-radius: 9999px;
+            transition: height 0.3s ease, opacity 0.3s ease, background-color 0.3s ease;
+            height: 4px; /* 預設暫停高度 */
+            opacity: 0.5;
+        }
+        
+        .eq-playing .eq-bar {
+            opacity: 1;
+            background-color: var(--accent-gold);
+            animation: eq-bounce 0.8s infinite alternate ease-in-out;
+        }
+        
+        /* 讓每根波形的跳動頻率不同，看起來更自然 */
+        .eq-playing .eq-bar:nth-child(1) { animation-duration: 0.6s; }
+        .eq-playing .eq-bar:nth-child(2) { animation-duration: 0.8s; }
+        .eq-playing .eq-bar:nth-child(3) { animation-duration: 0.7s; }
+        .eq-playing .eq-bar:nth-child(4) { animation-duration: 0.5s; }
+
+        @keyframes eq-bounce {
+            0% { height: 4px; }
+            100% { height: 16px; }
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col relative selection:bg-white/20 selection:text-white">
@@ -292,6 +319,7 @@
         <div class="max-w-6xl mx-auto px-5 md:px-8 xl:px-0 h-20 flex justify-between items-center">
             
             <!-- 左側 Logo (點擊平滑滾回最上方) -->
+            <!-- ✅ 優化 1：加入 aria-label、擴大點擊範圍 (p-2)、微弱背景回饋 -->
             <a href="#" onclick="window.scrollTo(0,0); return false;" aria-label="返回首頁" class="magnetic-btn flex items-center justify-center group relative z-50 cursor-pointer p-2 -ml-2 rounded-full hover:bg-white/[0.03] transition-colors duration-300">
                 <!-- 自訂圖片 Logo -->
                 <div class="relative flex items-center justify-center w-8 h-8 md:w-10 md:h-10 transition-transform duration-500 group-hover:scale-110">
@@ -299,8 +327,8 @@
                 </div>
             </a>
 
-            <!-- 右側區塊 (包含選單與音樂控制) -->
-            <div class="flex items-center space-x-4 md:space-x-8">
+            <!-- 右側選單與控制元件 -->
+            <div class="flex items-center space-x-2 md:space-x-6">
                 <!-- 右側選單 (電腦版) -->
                 <div class="hidden md:flex space-x-8 items-center">
                     <a href="#archives" class="text-xs tracking-[0.2em] text-white/50 hover:text-[#c8a97e] transition-colors font-medium">作品</a>
@@ -309,12 +337,14 @@
                     <a href="#contact" class="text-xs tracking-[0.2em] text-white/50 hover:text-[#c8a97e] transition-colors font-medium">聯絡我</a>
                 </div>
 
-                <!-- 音樂控制按鈕 (全裝置顯示) -->
-                <button id="audio-toggle-btn" class="magnetic-btn text-white/70 hover:text-[#c8a97e] transition-colors p-2 flex items-center justify-center" aria-label="切換背景音樂">
-                    <!-- 播放中 Icon -->
-                    <svg id="icon-sound-on" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
-                    <!-- 靜音 Icon -->
-                    <svg id="icon-sound-off" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path></svg>
+                <!-- ✅ 音樂切換按鈕 (改為音頻波形樣式) -->
+                <button id="music-toggle-btn" class="magnetic-btn text-white/50 hover:text-[#c8a97e] transition-colors p-2 flex items-center justify-center w-10 h-10" aria-label="切換背景音樂">
+                    <div id="eq-container" class="flex items-end justify-center gap-[3px] h-4">
+                        <div class="eq-bar"></div>
+                        <div class="eq-bar"></div>
+                        <div class="eq-bar"></div>
+                        <div class="eq-bar"></div>
+                    </div>
                 </button>
 
                 <!-- 漢堡選單按鈕 (手機版) -->
@@ -574,10 +604,9 @@
         </div>
     </div>
     
-    <!-- ✅ 背景音樂播放器 (隱藏) -->
+    <!-- ✅ 背景音樂音檔 (您可以將 src 替換為您的音樂檔案路徑) -->
     <audio id="bg-music" loop preload="auto">
-        <!-- 🎵 請將此處的 src 替換為您的音檔路徑 (例如: ./audio/bgm.mp3) -->
-        <source src="https://as955076as-netizen.github.io/weilun-portfolio/velvet-comet.mp3" type="audio/mpeg">
+        <source src="Velvet Comet.mp3" type="audio/mpeg">
     </audio>
 
 <script>
@@ -598,17 +627,18 @@
         cursorY = e.clientY;
     });
 
+    // ✅ 優化 2：加入 Debounce (防抖) 機制，減少頻繁觸發視窗重繪導致的卡頓
     let resizeTimeout;
     window.addEventListener('resize', () => {
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(() => {
             if(isPathsActive) initPaths();
             if(isCVActive) initCV();
-        }, 200); 
+        }, 200); // 停止縮放 200 毫秒後才重新計算 Canvas
     });
 
     // ==========================================
-    // 1. 首頁特效：自動化光軌
+    // 1. 首頁特效：自動化光軌 (Algorithmic Pathways)
     // ==========================================
     const canvas = document.getElementById('pathway-canvas');
     const ctx = canvas.getContext('2d');
@@ -846,41 +876,7 @@
     }
 
     // ==========================================
-    // 10. 背景音樂控制邏輯 (提前定義)
-    // ==========================================
-    const audioToggleBtn = document.getElementById('audio-toggle-btn');
-    const iconSoundOn = document.getElementById('icon-sound-on');
-    const iconSoundOff = document.getElementById('icon-sound-off');
-    const bgMusicElem = document.getElementById('bg-music');
-    let isPlaying = false;
-
-    function updateAudioIcon(playing) {
-        isPlaying = playing;
-        if (iconSoundOn && iconSoundOff) {
-            if (playing) {
-                iconSoundOn.classList.remove('hidden');
-                iconSoundOff.classList.add('hidden');
-            } else {
-                iconSoundOn.classList.add('hidden');
-                iconSoundOff.classList.remove('hidden');
-            }
-        }
-    }
-
-    if (audioToggleBtn && bgMusicElem) {
-        audioToggleBtn.addEventListener('click', () => {
-            if (isPlaying) {
-                bgMusicElem.pause();
-                updateAudioIcon(false);
-            } else {
-                bgMusicElem.play().catch(e => console.error("播放失敗:", e));
-                updateAudioIcon(true);
-            }
-        });
-    }
-
-    // ==========================================
-    // 5. 無縫切換頁面與音樂播放
+    // 5. 無縫切換頁面
     // ==========================================
     const enterBtn = document.getElementById('enter-btn');
     const pageHero = document.getElementById('page-hero');
@@ -888,30 +884,21 @@
     const ambientBreathe = document.getElementById('ambient-breathe');
     const pathwayCanvas = document.getElementById('pathway-canvas');
     const visionCanvas = document.getElementById('cv-canvas');
+    const bgMusic = document.getElementById('bg-music'); // 取得音樂元素
 
     if(enterBtn) {
         enterBtn.addEventListener('click', (e) => {
             e.preventDefault();
+            document.body.classList.add('transition-active');
             
-            // ✅ 強化的音樂播放邏輯與錯誤日誌
-            const bgMusic = document.getElementById('bg-music');
-            if (bgMusic) {
-                bgMusic.volume = 0.5;
-                const playPromise = bgMusic.play();
-                
-                if (playPromise !== undefined) {
-                    playPromise.then(() => {
-                        console.log("🎵 音樂播放成功！");
-                        updateAudioIcon(true);
-                    }).catch(error => {
-                        console.error("⛔ 音樂播放被瀏覽器阻擋！", error);
-                        console.error("詳細原因：如果是 NotAllowedError，代表環境政策(如 iframe)不允許；如果本機執行，請確認是使用 http://localhost 開啟。");
-                        updateAudioIcon(false);
-                    });
-                }
+            // ✅ 點擊進入系統時，開始播放音樂
+            if(bgMusic) {
+                bgMusic.volume = 0.4; // 設定初始音量
+                bgMusic.play().catch(err => console.log("音樂播放遭到阻擋：", err));
+                isMusicPlaying = true;
+                updateMusicIcon();
             }
 
-            document.body.classList.add('transition-active');
             setTimeout(() => {
                 pageHero.classList.add('hidden-page');      
                 pageWorks.classList.remove('hidden-page');  
@@ -929,7 +916,6 @@
                 visionCanvas.classList.remove('hidden-page');
                 isCVActive = true; 
                 initCV(); animateCV();   
-
                 document.body.classList.remove('transition-active');
                 document.body.classList.add('transition-out');
                 setTimeout(() => { document.body.classList.remove('transition-out'); }, 600);
@@ -1081,18 +1067,46 @@
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('reveal-visible');
+                // ✅ 優化 3：進場動畫播放後立即解除觀察，節省瀏覽器效能
                 observer.unobserve(entry.target); 
             }
         });
     }, {
         root: null,
         rootMargin: '0px',
-        threshold: 0.1 
+        threshold: 0.1 // 當元素 10% 進入畫面時觸發
     });
 
     revealElements.forEach(element => {
         revealObserver.observe(element);
     });
+
+    // ==========================================
+    // 10. 背景音樂控制邏輯
+    // ==========================================
+    const musicToggleBtn = document.getElementById('music-toggle-btn');
+    const eqContainer = document.getElementById('eq-container');
+    let isMusicPlaying = false;
+
+    function updateMusicIcon() {
+        if (isMusicPlaying) {
+            eqContainer.classList.add('eq-playing');
+        } else {
+            eqContainer.classList.remove('eq-playing');
+        }
+    }
+
+    if (musicToggleBtn && bgMusic) {
+        musicToggleBtn.addEventListener('click', () => {
+            if (isMusicPlaying) {
+                bgMusic.pause();
+            } else {
+                bgMusic.play().catch(err => console.log("音樂播放遭到阻擋：", err));
+            }
+            isMusicPlaying = !isMusicPlaying;
+            updateMusicIcon();
+        });
+    }
 
 </script>
 </body>
