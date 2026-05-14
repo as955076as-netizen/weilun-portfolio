@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ROY | AI Engineering Portfolio</title>
+    <link rel="icon" type="image/png" href="portfolio/pictures/personal_logo.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=Noto+Sans+TC:wght@300;400;700;900&display=swap" rel="stylesheet">
     
@@ -271,6 +272,14 @@
             0% { height: 4px; }
             100% { height: 16px; }
         }
+
+        /* ✅ 實體雕刻陰影 (無模糊特效，利用硬邊色塊模擬真實厚度與凹凸感) */
+        .engraved-text {
+            color: rgba(245, 245, 245, 1) !important; /* 字體微調，讓邊緣的受光面更自然 */
+            text-shadow: 
+                -2px -2px 0px rgba(0, 0, 0, 1),             /* 左上暗部：物理陰影 */
+                2px 2px 0px rgba(200, 169, 126, 0.3) !important; /* 右下亮部：主題金色的微弱反光 */
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col relative selection:bg-white/20 selection:text-white">
@@ -381,7 +390,7 @@
             <!-- 01 / ARCHIVES 精選專案實績 -->
             <div id="archives" class="mb-16 md:mb-24 reveal-hidden">
                 <div class="text-[10px] tracking-[0.3em] text-[#c8a97e] mb-4 uppercase">01 — Archives</div>
-                <h2 class="text-3xl md:text-5xl font-black tracking-tight text-white/90">精選專案實績</h2>
+                <h2 class="text-3xl md:text-5xl font-black tracking-tight engraved-text">精選專案實績</h2>
             </div>
 
             <div class="flex flex-col space-y-6 md:space-y-8 mb-32 md:mb-48">
@@ -435,7 +444,8 @@
                         <span class="text-xs md:text-sm text-white/80 group-hover:text-white tracking-widest font-bold transition-colors duration-400 z-10">APP功能介紹</span>
                     </a>
 
-                    <a href="javascript:void(0)" class="trigger-modal-btn group relative inline-flex items-center justify-center px-6 py-3.5 md:px-8 md:py-4 rounded-full bg-white/[0.04] border border-white/10 backdrop-blur-md hover:-translate-y-1.5 hover:bg-[#c8a97e]/15 hover:border-[#c8a97e]/80 hover:shadow-[0_10px_30px_-10px_rgba(200,169,126,0.5)] transition-all duration-400 ease-out cursor-pointer overflow-hidden" data-title="YOLOv8 實機辨識" data-url="portfolio/videos/YOLO實機辨識.mp4">
+                    <!-- ✅ 加上 data-type="video" 讓系統知道這是影片檔 -->
+                    <a href="javascript:void(0)" class="trigger-modal-btn group relative inline-flex items-center justify-center px-6 py-3.5 md:px-8 md:py-4 rounded-full bg-white/[0.04] border border-white/10 backdrop-blur-md hover:-translate-y-1.5 hover:bg-[#c8a97e]/15 hover:border-[#c8a97e]/80 hover:shadow-[0_10px_30px_-10px_rgba(200,169,126,0.5)] transition-all duration-400 ease-out cursor-pointer overflow-hidden" data-title="YOLOv8 實機辨識" data-url="portfolio/videos/YOLO實機辨識.mp4" data-type="video">
                         <div class="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none z-0"></div>
                         <svg class="w-4 h-4 md:w-5 md:h-5 mr-3 text-white/50 group-hover:text-[#c8a97e] group-hover:scale-125 group-hover:-rotate-6 transition-all duration-400 ease-out z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
@@ -459,7 +469,7 @@
             <div id="capabilities" class="mb-16 md:mb-24">
                 <div class="mb-16 md:mb-20 reveal-hidden">
                     <div class="text-[10px] tracking-[0.3em] text-[#c8a97e] mb-4 uppercase">02 — Cross-Domain Capability</div>
-                    <h2 class="text-3xl md:text-5xl font-black tracking-tight text-white/90">跨領域實力</h2>
+                    <h2 class="text-3xl md:text-5xl font-black tracking-tight engraved-text">跨領域實力</h2>
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
@@ -526,7 +536,7 @@
             <div id="about" class="pt-24 md:pt-32 border-t border-white/[0.05] pb-12">
                 <div class="mb-12 md:mb-20 reveal-hidden">
                     <div class="text-[10px] tracking-[0.3em] text-[#c8a97e] mb-4 uppercase">03 — About</div>
-                    <h2 class="text-3xl md:text-5xl font-black tracking-tight text-white/90">關於我</h2>
+                    <h2 class="text-3xl md:text-5xl font-black tracking-tight engraved-text">關於我</h2>
                 </div>
 
                 <div class="flex flex-col lg:flex-row gap-12 lg:gap-20">
@@ -554,7 +564,7 @@
             <div id="contact" class="pt-24 md:pt-32 border-t border-white/[0.05] pb-32 flex flex-col items-center text-center">
                 <div class="mb-12 md:mb-16 reveal-hidden">
                     <div class="text-[10px] tracking-[0.3em] text-[#c8a97e] mb-4 uppercase">04 — Contact</div>
-                    <h2 class="text-3xl md:text-5xl font-black tracking-tight text-white/90">聯絡我</h2>
+                    <h2 class="text-3xl md:text-5xl font-black tracking-tight engraved-text">聯絡我</h2>
                 </div>
 
                 <div class="w-full flex flex-col items-center space-y-8 md:space-y-10 reveal-hidden delay-300">
@@ -599,7 +609,9 @@
 
         <div id="modal-content" class="w-full h-[85vh] md:max-w-[1200px] flex flex-col scale-95 transition-transform duration-500">
             <div class="w-full h-full relative bg-[#050505] rounded-2xl md:rounded-xl overflow-hidden shadow-2xl shadow-black border border-white/10">
-                <img id="modal-image" src="" class="absolute inset-0 w-full h-full object-cover hidden" alt="Modal Image Preview">
+                <!-- ✅ 新增專屬的 video 標籤，playsinline 是手機版不強制全螢幕並能順利播放的關鍵 -->
+                <video id="modal-video" controls playsinline class="absolute inset-0 w-full h-full object-contain hidden"></video>
+                <img id="modal-image" src="" class="absolute inset-0 w-full h-full object-contain hidden" alt="Modal Image Preview">
                 <iframe id="modal-iframe" src="" class="absolute inset-0 w-full h-full border-none bg-black" allowfullscreen></iframe>
             </div>
         </div>
@@ -935,6 +947,7 @@
     const modalTitleText = document.getElementById('modal-title-text');
     const modalIframe = document.getElementById('modal-iframe');
     const modalImage = document.getElementById('modal-image');
+    const modalVideo = document.getElementById('modal-video'); // ✅ 取得影片元素
     const triggers = document.querySelectorAll('.trigger-modal-btn');
 
     function openModal(e) {
@@ -948,14 +961,24 @@
             const type = e.currentTarget.getAttribute('data-type');
 
             if (url) {
+                // 隱藏所有元素，再根據類型打開對應的
+                if (modalIframe) modalIframe.classList.add('hidden');
+                if (modalImage) modalImage.classList.add('hidden');
+                if (modalVideo) modalVideo.classList.add('hidden');
+
                 if (type === 'image') {
-                    if (modalIframe) modalIframe.classList.add('hidden');
                     if (modalImage) {
                         modalImage.classList.remove('hidden');
                         modalImage.src = url;
                     }
-                } else {
-                    if (modalImage) modalImage.classList.add('hidden');
+                } else if (type === 'video') { // ✅ 如果是影片，使用 video 標籤播放
+                    if (modalVideo) {
+                        modalVideo.classList.remove('hidden');
+                        modalVideo.src = url;
+                        // 自動嘗試播放影片
+                        modalVideo.play().catch(err => console.log("自動播放失敗", err)); 
+                    }
+                } else { // 預設使用 iframe 顯示 (適用於 PDF、外部網頁)
                     if (modalIframe) {
                         modalIframe.classList.remove('hidden');
                         modalIframe.src = url;
@@ -976,13 +999,13 @@
         setTimeout(() => { 
             modal.classList.add('hidden'); 
             modal.classList.remove('flex'); 
-            if(modalIframe) {
-                modalIframe.src = "";
-                modalIframe.classList.remove('hidden');
-            }
-            if(modalImage) {
-                modalImage.src = "";
-                modalImage.classList.add('hidden');
+            
+            // ✅ 關閉時清空所有來源並暫停影片
+            if(modalIframe) modalIframe.src = "";
+            if(modalImage) modalImage.src = "";
+            if(modalVideo) {
+                modalVideo.pause();
+                modalVideo.src = "";
             }
         }, 500); 
     }
