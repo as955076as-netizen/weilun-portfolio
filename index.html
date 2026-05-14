@@ -891,7 +891,7 @@
     }
 
     // ==========================================
-    // 5. 無縫切換頁面
+    // 5. 無縫切換頁面與音樂非同步播放修正
     // ==========================================
     const enterBtn = document.getElementById('enter-btn');
     const pageHero = document.getElementById('page-hero');
@@ -904,21 +904,25 @@
     const soundToggleBtn = document.getElementById('sound-toggle-btn'); // 提前抓取按鈕元素
 
     if(enterBtn) {
-        enterBtn.addEventListener('click', (e) => {
+        enterBtn.addEventListener('click', async (e) => {
             e.preventDefault();
 
-            // 🎵 在使用者點擊時立刻觸發播放，避免被瀏覽器阻擋
+            // 🎵 在使用者點擊時立刻觸發載入與播放，避免被瀏覽器阻擋
             const bgMusic = document.getElementById('bg-music');
             if (bgMusic) {
-                bgMusic.volume = 0.4; // 設定初始音量
-                bgMusic.play().then(() => {
+                try {
+                    bgMusic.volume = 0.4; // 設定初始音量
+                    bgMusic.load(); // 🚀 強制載入音檔 (對付大檔案必備)
+                    await bgMusic.play(); // 🚀 等待播放啟動
                     isMusicPlaying = true;
                     // ✅ 播放成功時啟動聲波動畫
                     if (soundToggleBtn) {
                         soundToggleBtn.classList.remove('is-paused');
                         soundToggleBtn.classList.add('is-playing');
                     }
-                }).catch(err => console.log('Audio autoplay blocked:', err));
+                } catch (err) {
+                    console.error('Audio playback failed. Reason:', err); // 顯示詳細錯誤
+                }
             }
 
             document.body.classList.add('transition-active');
@@ -1104,7 +1108,7 @@
     }
 
     // ==========================================
-    // 9. 滾 কথ進場動畫 (Intersection Observer)
+    // 9. 滾動進場動畫 (Intersection Observer)
     // ==========================================
     const revealElements = document.querySelectorAll('.reveal-hidden');
 
