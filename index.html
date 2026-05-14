@@ -882,7 +882,7 @@
                 // ✅ 進入系統時開始播放音樂
                 const bgMusic = document.getElementById('bg-music');
                 if (bgMusic) {
-                    bgMusic.volume = 0.5; // 音量可依需求調整 (0.0 ~ 1.0)
+                    bgMusic.volume = 1.0; // 音量可依需求調整 (0.0 ~ 1.0)
                     bgMusic.play().catch(e => console.log("音檔播放被阻擋:", e));
                     if(typeof updateAudioIcon === 'function') updateAudioIcon(true);
                 }
