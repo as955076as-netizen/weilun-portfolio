@@ -891,12 +891,14 @@
             e.preventDefault();
             document.body.classList.add('transition-active');
             
-            // ✅ 點擊進入系統時，開始播放音樂
+            // ✅ 點擊進入系統 1 秒後，開始播放音樂
             if(bgMusic) {
-                bgMusic.volume = 0.4; // 設定初始音量
-                bgMusic.play().catch(err => console.log("音樂播放遭到阻擋：", err));
-                isMusicPlaying = true;
-                updateMusicIcon();
+                setTimeout(() => {
+                    bgMusic.volume = 0.4; // 設定初始音量
+                    bgMusic.play().catch(err => console.log("音樂播放遭到阻擋：", err));
+                    isMusicPlaying = true;
+                    updateMusicIcon();
+                }, 1000);
             }
 
             setTimeout(() => {
