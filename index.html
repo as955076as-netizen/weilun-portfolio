@@ -439,8 +439,7 @@
                         <span class="text-xs md:text-sm text-white/80 group-hover:text-white tracking-widest font-bold transition-colors duration-400 z-10">訓練數據報告</span>
                     </a>
 
-                    <!-- ✅ 加上 data-type="app"，讓程式獨立處理這個項目的高度 -->
-                    <a href="javascript:void(0)" class="trigger-modal-btn group relative inline-flex items-center justify-center px-6 py-3.5 md:px-8 md:py-4 rounded-full bg-white/[0.04] border border-white/10 backdrop-blur-md hover:-translate-y-1.5 hover:bg-[#c8a97e]/15 hover:border-[#c8a97e]/80 hover:shadow-[0_10px_30px_-10px_rgba(200,169,126,0.5)] transition-all duration-400 ease-out cursor-pointer overflow-hidden" data-title="APP功能介紹" data-url="portfolio/app-intro.html" data-type="app">
+                    <a href="javascript:void(0)" class="trigger-modal-btn group relative inline-flex items-center justify-center px-6 py-3.5 md:px-8 md:py-4 rounded-full bg-white/[0.04] border border-white/10 backdrop-blur-md hover:-translate-y-1.5 hover:bg-[#c8a97e]/15 hover:border-[#c8a97e]/80 hover:shadow-[0_10px_30px_-10px_rgba(200,169,126,0.5)] transition-all duration-400 ease-out cursor-pointer overflow-hidden" data-title="APP功能介紹" data-url="portfolio/app-intro.html">
                         <div class="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none z-0"></div>
                         <svg class="w-4 h-4 md:w-5 md:h-5 mr-3 text-white/50 group-hover:text-[#c8a97e] group-hover:scale-125 group-hover:rotate-6 transition-all duration-400 ease-out z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
@@ -448,7 +447,7 @@
                         <span class="text-xs md:text-sm text-white/80 group-hover:text-white tracking-widest font-bold transition-colors duration-400 z-10">APP功能介紹</span>
                     </a>
 
-                    <!-- 實機辨識影片按鈕維持 data-type="video" 不變 -->
+                    <!-- ✅ 加上 data-type="video"，讓 JS 知道這顆按鈕是影片 -->
                     <a href="javascript:void(0)" class="trigger-modal-btn group relative inline-flex items-center justify-center px-6 py-3.5 md:px-8 md:py-4 rounded-full bg-white/[0.04] border border-white/10 backdrop-blur-md hover:-translate-y-1.5 hover:bg-[#c8a97e]/15 hover:border-[#c8a97e]/80 hover:shadow-[0_10px_30px_-10px_rgba(200,169,126,0.5)] transition-all duration-400 ease-out cursor-pointer overflow-hidden" data-title="YOLOv8 實機辨識" data-url="https://www.youtube.com/watch?v=c4hNA1DD9hc" data-type="video">
                         <div class="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none z-0"></div>
                         <svg class="w-4 h-4 md:w-5 md:h-5 mr-3 text-white/50 group-hover:text-[#c8a97e] group-hover:scale-125 group-hover:-rotate-6 transition-all duration-400 ease-out z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -962,18 +961,14 @@
             const type = e.currentTarget.getAttribute('data-type');
 
             if (url) {
-                // ✅ 獨立控制各種彈出視窗的尺寸，保證絕對不會互相干擾
+                // ✅ 僅針對影片，將容器改為 16:9 比例 (aspect-video)，解決手機版 YT 控制列被切掉的問題
                 if (type === 'video') {
-                    modalContent.classList.remove('flex-1', 'min-h-0', 'h-[85vh]');
+                    modalContent.classList.remove('flex-1', 'min-h-0');
                     modalContent.classList.add('aspect-video', 'h-auto');
-                } else if (type === 'app') {
-                    // ✅ 僅針對 APP 功能介紹設定明確高度，修復手機版 iframe 底部被裁切的問題
-                    modalContent.classList.remove('flex-1', 'min-h-0', 'aspect-video', 'h-auto');
-                    modalContent.classList.add('h-[85vh]');
                 } else {
-                    // 預設 (簡報、報告、圖片) 維持原本的彈性滿版設計，不受影響
-                    modalContent.classList.remove('aspect-video', 'h-auto', 'h-[85vh]');
+                    // 其他專案維持不變，保持彈性滿版設計
                     modalContent.classList.add('flex-1', 'min-h-0');
+                    modalContent.classList.remove('aspect-video', 'h-auto');
                 }
 
                 if (type === 'image') {
