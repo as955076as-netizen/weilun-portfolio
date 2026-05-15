@@ -331,7 +331,7 @@
             <!-- ✅ 優化 1：加入 aria-label、擴大點擊範圍 (p-2)、微弱背景回饋 -->
             <a href="#" onclick="window.scrollTo(0,0); return false;" aria-label="返回首頁" class="magnetic-btn flex items-center justify-center group relative z-50 cursor-pointer p-2 -ml-2 rounded-full hover:bg-white/[0.03] transition-colors duration-300">
                 <!-- 自訂圖片 Logo -->
-                <div class="relative flex items-center justify-center w-8 h-8 md:w-10 md:h-10 transition-transform duration-500 group-hover:scale-110">
+                <div class="relative flex items-center justify-center w-20 h-20 md:w-22 md:h-22 transition-transform duration-500 group-hover:scale-110">
                     <img src="portfolio/pictures/personal_logo.png" alt="ROY Logo" class="w-full h-full object-contain filter drop-shadow-[0_0_5px_rgba(200,169,126,0.2)] group-hover:drop-shadow-[0_0_10px_rgba(200,169,126,0.6)] transition-all duration-500">
                 </div>
             </a>
@@ -609,25 +609,14 @@
 
         <div id="modal-content" class="w-full h-[85vh] md:max-w-[1200px] flex flex-col scale-95 transition-transform duration-500">
             <div class="w-full h-full relative bg-[#050505] rounded-2xl md:rounded-xl overflow-hidden shadow-2xl shadow-black border border-white/10">
+                <!-- ✅ 新增專屬的 video 標籤，playsinline 是手機版不強制全螢幕並能順利播放的關鍵 -->
+                <video id="modal-video" controls playsinline class="absolute inset-0 w-full h-full object-contain hidden"></video>
+                <img id="modal-image" src="" class="absolute inset-0 w-full h-full object-contain hidden" alt="Modal Image Preview">
                 <iframe id="modal-iframe" src="" class="absolute inset-0 w-full h-full border-none bg-black" allowfullscreen></iframe>
             </div>
         </div>
     </div>
     
-    <!-- ✅ 單純的全螢幕純淨展示層 (劇院模式，適用於影片與圖片) -->
-    <div id="video-overlay" class="fixed inset-0 z-[100] hidden flex-col items-center justify-center bg-black opacity-0 transition-opacity duration-500">
-        <!-- 關閉按鈕 -->
-        <button id="close-video-btn" class="absolute top-4 right-4 md:top-8 md:right-8 text-white/50 hover:text-white transition-all cursor-pointer p-3 rounded-full border border-white/20 hover:border-white/60 hover:bg-white/10 bg-black/50 backdrop-blur-md z-50">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-        </button>
-        <!-- 影片本體 -->
-        <video id="pure-video-player" controls playsinline class="w-full h-full max-h-screen object-contain outline-none hidden"></video>
-        <!-- 圖片本體 -->
-        <img id="pure-image-viewer" src="" class="w-full h-full max-h-screen object-contain outline-none hidden" alt="Fullscreen Image">
-    </div>
-
     <!-- ✅ 背景音樂音檔 (您可以將 src 替換為您的音樂檔案路徑) -->
     <audio id="bg-music" loop preload="auto">
         <source src="portfolio/music/Velvet Comet.mp3" type="audio/mpeg">
@@ -957,53 +946,43 @@
     const closeModalBtn = document.getElementById('close-modal-btn');
     const modalTitleText = document.getElementById('modal-title-text');
     const modalIframe = document.getElementById('modal-iframe');
+    const modalImage = document.getElementById('modal-image');
+    const modalVideo = document.getElementById('modal-video'); // ✅ 取得影片元素
     const triggers = document.querySelectorAll('.trigger-modal-btn');
-
-    // ✅ 純淨全螢幕專用變數 (包含圖片與影片)
-    const videoOverlay = document.getElementById('video-overlay');
-    const pureVideoPlayer = document.getElementById('pure-video-player');
-    const pureImageViewer = document.getElementById('pure-image-viewer');
-    const closeVideoBtn = document.getElementById('close-video-btn');
 
     function openModal(e) {
         if (e && e.currentTarget) {
-            const url = e.currentTarget.getAttribute('data-url');
-            const type = e.currentTarget.getAttribute('data-type');
-            
-            // ✅ 如果是影片或圖片，執行「單純全螢幕」彈出邏輯
-            if (url && (type === 'video' || type === 'image')) {
-                // 使用 encodeURI 處理中文檔名
-                const safeUrl = encodeURI(url);
-                
-                if (type === 'video') {
-                    pureImageViewer.classList.add('hidden');
-                    pureVideoPlayer.classList.remove('hidden');
-                    pureVideoPlayer.src = safeUrl;
-                    pureVideoPlayer.load();
-                    pureVideoPlayer.play().catch(err => console.log("自動播放被阻擋", err));
-                } else if (type === 'image') {
-                    pureVideoPlayer.classList.add('hidden');
-                    pureImageViewer.classList.remove('hidden');
-                    pureImageViewer.src = safeUrl;
-                }
-                
-                videoOverlay.classList.remove('hidden'); 
-                videoOverlay.classList.add('flex');
-                document.body.classList.add('no-scroll');
-                
-                setTimeout(() => { videoOverlay.classList.remove('opacity-0'); }, 10);
-                return; // 終止原本的自訂視窗邏輯
-            }
-
-            // 原本的簡報 PDF 彈窗邏輯
             if (modalTitleText) {
                 const title = e.currentTarget.getAttribute('data-title');
                 if (title) modalTitleText.innerText = title;
             }
+            
+            const url = e.currentTarget.getAttribute('data-url');
+            const type = e.currentTarget.getAttribute('data-type');
+
             if (url) {
-                if (modalIframe) {
-                    modalIframe.classList.remove('hidden');
-                    modalIframe.src = url;
+                // 隱藏所有元素，再根據類型打開對應的
+                if (modalIframe) modalIframe.classList.add('hidden');
+                if (modalImage) modalImage.classList.add('hidden');
+                if (modalVideo) modalVideo.classList.add('hidden');
+
+                if (type === 'image') {
+                    if (modalImage) {
+                        modalImage.classList.remove('hidden');
+                        modalImage.src = url;
+                    }
+                } else if (type === 'video') { // ✅ 如果是影片，使用 video 標籤播放
+                    if (modalVideo) {
+                        modalVideo.classList.remove('hidden');
+                        modalVideo.src = url;
+                        // 自動嘗試播放影片
+                        modalVideo.play().catch(err => console.log("自動播放失敗", err)); 
+                    }
+                } else { // 預設使用 iframe 顯示 (適用於 PDF、外部網頁)
+                    if (modalIframe) {
+                        modalIframe.classList.remove('hidden');
+                        modalIframe.src = url;
+                    }
                 }
             }
         }
@@ -1020,36 +999,21 @@
         setTimeout(() => { 
             modal.classList.add('hidden'); 
             modal.classList.remove('flex'); 
-            if(modalIframe) {
-                modalIframe.src = "";
-                modalIframe.classList.remove('hidden');
+            
+            // ✅ 關閉時清空所有來源並暫停影片
+            if(modalIframe) modalIframe.src = "";
+            if(modalImage) modalImage.src = "";
+            if(modalVideo) {
+                modalVideo.pause();
+                modalVideo.src = "";
             }
         }, 500); 
-    }
-
-    // ✅ 關閉純展示層的邏輯
-    function closeVideoOverlay() {
-        videoOverlay.classList.add('opacity-0');
-        document.body.classList.remove('no-scroll');
-        setTimeout(() => {
-            videoOverlay.classList.add('hidden');
-            videoOverlay.classList.remove('flex');
-            pureVideoPlayer.pause();
-            pureVideoPlayer.src = ""; // 清空影片資源
-            pureImageViewer.src = ""; // 清空圖片資源
-        }, 500);
     }
 
     if(triggers.length > 0 && modal && closeModalBtn) {
         triggers.forEach(trigger => { trigger.addEventListener('click', openModal); });
         closeModalBtn.addEventListener('click', closeModal);
         modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
-    }
-    
-    // ✅ 綁定純影片層的關閉事件
-    if(closeVideoBtn && videoOverlay) {
-        closeVideoBtn.addEventListener('click', closeVideoOverlay);
-        videoOverlay.addEventListener('click', (e) => { if(e.target === videoOverlay) closeVideoOverlay(); });
     }
 
     // ==========================================
