@@ -610,9 +610,11 @@
         </div>
 
         <div id="modal-content" class="w-full md:max-w-[1200px] flex-1 min-h-0 flex flex-col scale-95 transition-transform duration-500">
-            <div class="w-full h-full relative bg-[#050505] rounded-2xl md:rounded-xl overflow-hidden shadow-2xl shadow-black border border-white/10">
+            <!-- ✅ 在這裡新增了 flex items-center justify-center 讓影片可以在手機上完美垂直置中 -->
+            <div class="w-full h-full relative bg-[#050505] rounded-2xl md:rounded-xl overflow-hidden shadow-2xl shadow-black border border-white/10 flex items-center justify-center">
                 <img id="modal-image" src="" class="absolute inset-0 w-full h-full object-contain hidden" alt="Modal Image Preview">
-                <iframe id="modal-iframe" src="" class="absolute inset-0 w-full h-full border-none bg-black" allowfullscreen></iframe>
+                <!-- ✅ 修改了 iframe 的 class：手機版強制使用 16:9 (aspect-video)，電腦版 (md:) 恢復原本的滿版 -->
+                <iframe id="modal-iframe" src="" class="w-full aspect-video md:aspect-auto md:absolute md:inset-0 md:h-full border-none bg-black" allowfullscreen></iframe>
             </div>
         </div>
     </div>
