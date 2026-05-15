@@ -597,7 +597,7 @@
     </section>
     
     <!-- 彈出視窗 -->
-    <div id="presentation-modal" class="fixed inset-0 z-[85] hidden flex-col items-center justify-center bg-black/95 opacity-0 transition-opacity duration-500 p-0 md:p-8 md:pt-16">
+    <div id="presentation-modal" class="fixed inset-0 z-[85] hidden flex-col items-center justify-center bg-black/95 opacity-0 transition-opacity duration-500 px-4 pt-16 pb-6 md:p-8 md:pt-16">
         
         <div class="absolute top-0 left-0 w-full h-16 flex items-center justify-center z-50 pointer-events-none">
             <span id="modal-title-text" class="text-white/50 text-xs md:text-sm font-light tracking-wide mt-2 md:mt-0">Project Pitch Deck</span>
@@ -609,8 +609,8 @@
             </button>
         </div>
 
-        <div id="modal-content" class="w-full h-full md:h-[85vh] md:max-w-[1200px] flex flex-col scale-95 transition-transform duration-500">
-            <div class="w-full h-full relative bg-black md:bg-[#050505] rounded-none md:rounded-xl overflow-hidden shadow-2xl shadow-black border-none md:border md:border-white/10">
+        <div id="modal-content" class="w-full md:max-w-[1200px] flex-1 min-h-0 flex flex-col scale-95 transition-transform duration-500">
+            <div class="w-full h-full relative bg-[#050505] rounded-2xl md:rounded-xl overflow-hidden shadow-2xl shadow-black border border-white/10">
                 <img id="modal-image" src="" class="absolute inset-0 w-full h-full object-contain hidden" alt="Modal Image Preview">
                 <iframe id="modal-iframe" src="" class="absolute inset-0 w-full h-full border-none bg-black" allowfullscreen></iframe>
             </div>
