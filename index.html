@@ -447,7 +447,8 @@
                         <span class="text-xs md:text-sm text-white/80 group-hover:text-white tracking-widest font-bold transition-colors duration-400 z-10">APP功能介紹</span>
                     </a>
 
-                    <a href="javascript:void(0)" class="trigger-modal-btn group relative inline-flex items-center justify-center px-6 py-3.5 md:px-8 md:py-4 rounded-full bg-white/[0.04] border border-white/10 backdrop-blur-md hover:-translate-y-1.5 hover:bg-[#c8a97e]/15 hover:border-[#c8a97e]/80 hover:shadow-[0_10px_30px_-10px_rgba(200,169,126,0.5)] transition-all duration-400 ease-out cursor-pointer overflow-hidden" data-title="YOLOv8 實機辨識" data-url="https://www.youtube.com/watch?v=c4hNA1DD9hc">
+                    <!-- ✅ 加上 data-type="video"，讓 JS 知道這顆按鈕是影片 -->
+                    <a href="javascript:void(0)" class="trigger-modal-btn group relative inline-flex items-center justify-center px-6 py-3.5 md:px-8 md:py-4 rounded-full bg-white/[0.04] border border-white/10 backdrop-blur-md hover:-translate-y-1.5 hover:bg-[#c8a97e]/15 hover:border-[#c8a97e]/80 hover:shadow-[0_10px_30px_-10px_rgba(200,169,126,0.5)] transition-all duration-400 ease-out cursor-pointer overflow-hidden" data-title="YOLOv8 實機辨識" data-url="https://www.youtube.com/watch?v=c4hNA1DD9hc" data-type="video">
                         <div class="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none z-0"></div>
                         <svg class="w-4 h-4 md:w-5 md:h-5 mr-3 text-white/50 group-hover:text-[#c8a97e] group-hover:scale-125 group-hover:-rotate-6 transition-all duration-400 ease-out z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
@@ -610,11 +611,9 @@
         </div>
 
         <div id="modal-content" class="w-full md:max-w-[1200px] flex-1 min-h-0 flex flex-col scale-95 transition-transform duration-500">
-            <!-- ✅ 在這裡新增了 flex items-center justify-center 讓影片可以在手機上完美垂直置中 -->
-            <div class="w-full h-full relative bg-[#050505] rounded-2xl md:rounded-xl overflow-hidden shadow-2xl shadow-black border border-white/10 flex items-center justify-center">
+            <div class="w-full h-full relative bg-[#050505] rounded-2xl md:rounded-xl overflow-hidden shadow-2xl shadow-black border border-white/10">
                 <img id="modal-image" src="" class="absolute inset-0 w-full h-full object-contain hidden" alt="Modal Image Preview">
-                <!-- ✅ 修改了 iframe 的 class：手機版強制使用 16:9 (aspect-video)，電腦版 (md:) 恢復原本的滿版 -->
-                <iframe id="modal-iframe" src="" class="w-full aspect-video md:aspect-auto md:absolute md:inset-0 md:h-full border-none bg-black" allowfullscreen></iframe>
+                <iframe id="modal-iframe" src="" class="absolute inset-0 w-full h-full border-none bg-black" allowfullscreen></iframe>
             </div>
         </div>
     </div>
@@ -962,6 +961,16 @@
             const type = e.currentTarget.getAttribute('data-type');
 
             if (url) {
+                // ✅ 僅針對影片，將容器改為 16:9 比例 (aspect-video)，解決手機版 YT 控制列被切掉的問題
+                if (type === 'video') {
+                    modalContent.classList.remove('flex-1', 'min-h-0');
+                    modalContent.classList.add('aspect-video', 'h-auto');
+                } else {
+                    // 其他專案維持不變，保持彈性滿版設計
+                    modalContent.classList.add('flex-1', 'min-h-0');
+                    modalContent.classList.remove('aspect-video', 'h-auto');
+                }
+
                 if (type === 'image') {
                     if (modalIframe) modalIframe.classList.add('hidden');
                     if (modalImage) {
